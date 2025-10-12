@@ -1,5 +1,7 @@
 [gd_scene format=3 uid="uid://crpj6v8sqf4h"]
 
-[node name="RootGameplay" type="Node"]
+[node name="Root_MainMenu" type="Node"]
+
+[node name="CONTENT" type="Node" parent="."]
 
 [node name="CONSTANT" type="Node" parent="."]

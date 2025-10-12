@@ -1,7 +1,11 @@
-[gd_scene format=3 uid="uid://vnxf3yga43ax"]
+[gd_scene load_steps=2 format=3 uid="uid://vnxf3yga43ax"]
+
+[ext_resource type="PackedScene" uid="uid://cyxcjwc3tm3ad" path="res://Scenes/Roots/ROOT_Gameplay.tscn" id="1_hpc76"]
 
 [node name="MainScene" type="Node"]
 
 [node name="ROOT" type="Node" parent="."]
+
+[node name="RootGameplay" parent="ROOT" instance=ExtResource("1_hpc76")]
 
 [node name="CONSTANT" type="Node" parent="."]
