@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://cyxcjwc3tm3ad"]
+
+[node name="RootGameplay" type="Node"]
+
+[node name="MAP" type="Node" parent="."]
+
+[node name="CONSTANT" type="Node" parent="."]

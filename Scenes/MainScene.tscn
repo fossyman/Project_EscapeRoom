@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://vnxf3yga43ax"]
+
+[node name="MainScene" type="Node"]
+
+[node name="ROOT" type="Node" parent="."]
+
+[node name="CONSTANT" type="Node" parent="."]
