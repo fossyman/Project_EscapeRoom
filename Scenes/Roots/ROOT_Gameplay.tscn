@@ -1,7 +1,138 @@
-[gd_scene format=3 uid="uid://cyxcjwc3tm3ad"]
+[gd_scene load_steps=9 format=3 uid="uid://cyxcjwc3tm3ad"]
+
+[ext_resource type="Script" uid="uid://c5fo8y2mkh734" path="res://Src/SCR_CameraController.gd" id="1_y3unb"]
+[ext_resource type="Texture2D" uid="uid://d15sugtlh8nby" path="res://icon.svg" id="2_cy1kc"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_y3unb"]
+sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
+
+[sub_resource type="Sky" id="Sky_cy1kc"]
+sky_material = SubResource("ProceduralSkyMaterial_y3unb")
+
+[sub_resource type="Environment" id="Environment_j55jw"]
+background_mode = 2
+sky = SubResource("Sky_cy1kc")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_cy1kc"]
+size = Vector2(15, 15)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_kkcb1"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_cy1kc"]
 
 [node name="RootGameplay" type="Node"]
 
 [node name="MAP" type="Node" parent="."]
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="MAP"]
+environment = SubResource("Environment_j55jw")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="MAP"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MAP"]
+mesh = SubResource("PlaneMesh_cy1kc")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, -1, 1, 0)
+mesh = SubResource("PlaneMesh_kkcb1")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 1, 1)
+mesh = SubResource("PlaneMesh_kkcb1")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(4.37114e-08, 1, -8.74228e-08, 1, -4.37114e-08, 0, -3.82137e-15, -8.74228e-08, -1, 1, 1, 0)
+mesh = SubResource("PlaneMesh_kkcb1")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-5.73206e-15, -1.31134e-07, -1, 1, -4.37114e-08, 0, -4.37114e-08, -1, 1.31134e-07, 0, 1, -1)
+mesh = SubResource("PlaneMesh_kkcb1")
+
 [node name="CONSTANT" type="Node" parent="."]
+
+[node name="CameraOrigin" type="Node3D" parent="CONSTANT" node_paths=PackedStringArray("CameraPositionRoot", "CameraHolder", "Camera")]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0, 0, 0)
+script = ExtResource("1_y3unb")
+CameraPositionRoot = NodePath("CameraPosRoot")
+CameraHolder = NodePath("CameraPosRoot/CameraHolder")
+Camera = NodePath("CameraPosRoot/CameraHolder/Node3D/Camera3D")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CONSTANT/CameraOrigin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("SphereMesh_cy1kc")
+
+[node name="CameraPosRoot" type="Node3D" parent="CONSTANT/CameraOrigin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="CameraHolder" type="Node3D" parent="CONSTANT/CameraOrigin/CameraPosRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Node3D" type="Node3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder"]
+
+[node name="Camera3D" type="Camera3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 10, 10)
+
+[node name="Control" type="Control" parent="CONSTANT"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LCamMover" type="Control" parent="CONSTANT/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -319.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="CONSTANT/Control/LCamMover"]
+visible = false
+modulate = Color(1, 1, 1, 0.239216)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+texture = ExtResource("2_cy1kc")
+
+[node name="UCamMover" type="Control" parent="CONSTANT/Control"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 70.0
+grow_horizontal = 2
+
+[node name="DCamMover" type="Control" parent="CONSTANT/Control"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 70.0
+grow_horizontal = 2
+grow_vertical = 0
+rotation = 3.14159
+pivot_offset = Vector2(640, 0)
+
+[node name="RCamMover" type="Control" parent="CONSTANT/Control"]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -70.0
+grow_horizontal = 0
+grow_vertical = 2
+pivot_offset = Vector2(70, 0)
