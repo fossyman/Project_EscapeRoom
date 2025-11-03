@@ -55,22 +55,21 @@ mesh = SubResource("PlaneMesh_kkcb1")
 
 [node name="CONSTANT" type="Node" parent="."]
 
-[node name="CameraOrigin" type="Node3D" parent="CONSTANT" node_paths=PackedStringArray("CameraPositionRoot", "CameraHolder", "Camera")]
+[node name="CameraOrigin" type="Node3D" parent="CONSTANT" node_paths=PackedStringArray("CameraPositionRoot", "CameraHolder", "Camera", "MousePositionText", "ShouldMoveText")]
 transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0, 0, 0)
 script = ExtResource("1_y3unb")
 CameraPositionRoot = NodePath("CameraPosRoot")
 CameraHolder = NodePath("CameraPosRoot/CameraHolder")
 Camera = NodePath("CameraPosRoot/CameraHolder/Node3D/Camera3D")
+MousePositionText = NodePath("../../Control/MousePositionDebug")
+ShouldMoveText = NodePath("../../Control/ShouldMoveDebug")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CONSTANT/CameraOrigin"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("SphereMesh_cy1kc")
 
 [node name="CameraPosRoot" type="Node3D" parent="CONSTANT/CameraOrigin"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="CameraHolder" type="Node3D" parent="CONSTANT/CameraOrigin/CameraPosRoot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="Node3D" type="Node3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder"]
 
@@ -136,3 +135,29 @@ offset_left = -70.0
 grow_horizontal = 0
 grow_vertical = 2
 pivot_offset = Vector2(70, 0)
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="CONSTANT"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="CONSTANT/SubViewportContainer"]
+size = Vector2i(40, 40)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MousePositionDebug" type="RichTextLabel" parent="Control"]
+layout_mode = 0
+offset_right = 584.0
+offset_bottom = 146.0
+
+[node name="ShouldMoveDebug" type="RichTextLabel" parent="Control"]
+layout_mode = 0
+offset_top = 187.0
+offset_right = 584.0
+offset_bottom = 333.0
