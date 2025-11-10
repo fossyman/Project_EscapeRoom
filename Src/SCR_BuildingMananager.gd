@@ -15,6 +15,13 @@ var DragEnd:Vector3
 
 @export var PreviewBuildMesh:MeshInstance3D
 
+var SelectedSpaces:Array[Vector3]
+var CurrentDragSpaces:Array[Vector3]
+
+var Points = []
+
+var Labels:Array[Label3D]
+
 func _enter_tree() -> void:
 	instance = self
 
@@ -31,6 +38,53 @@ func _process(delta: float) -> void:
 			DragEnd = MousePos
 			print("MAKING SQUARE BETWEEN " + str(DragStart) + " AND " + str(DragEnd))
 			DrawBuildRect(DragStart,DragEnd)
+	if Input.is_action_just_released("Lclick"):
+		var points = []
+		if DragEnd == DragStart:
+			return
+		
+		var StartX = DragStart.x if DragStart.x < DragEnd.x else DragEnd.x
+		var StartZ = DragStart.z if DragStart.z < DragEnd.z else DragEnd.z
+		
+		var EndX = DragEnd.x if DragEnd.x > DragStart.x else DragStart.x
+		var EndZ = DragEnd.z if DragEnd.z > DragStart.z else DragStart.z
+		
+		for X in range(StartX,EndX):
+			print("width " + str(X))
+			for Z in range(StartZ,EndZ):
+				print("height " + str(Z))
+				points.append(Vector3(X,0,Z))
+		print(points.size())
+		
+		Points.append_array(points)
+		for i in points.size():
+			pass
+		
+		for i in Labels.size():
+			Labels[i].queue_free()
+		Labels.clear()
+		
+		for i in Points.size():
+			var CheckPositions = [Vector3(1,0,1),Vector3(0,0,1),Vector3(-1,0,1),
+								 Vector3(1,0,0),Vector3(0,0,0),Vector3(-1,0,0),
+								 Vector3(1,0,-1),Vector3(0,0,-1),Vector3(-1,0,-1)]
+			var ye = Label3D.new()
+			add_child(ye)
+			Labels.append(ye)
+			ye.global_position = Points[i]
+			
+			var EdgeCount = 0
+			
+			for x in CheckPositions.size():
+				if Points.has(Points[i] + CheckPositions[x]) && Points[i] + CheckPositions[x] != Points[i]:
+					EdgeCount += 1
+			
+			ye.text = str(EdgeCount)
+			ye.font_size = 100
+			ye.billboard = true
+		
+		print(str(StartX) + " || " + str(StartZ))
+		print(str(EndX) + " || " + str(EndZ))
 
 func MoveCursor(_movement:Vector3):
 	BuildingCursorPosition = _movement
