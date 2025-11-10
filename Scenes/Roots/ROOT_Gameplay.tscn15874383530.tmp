@@ -35,9 +35,8 @@ rings = 1
 albedo_color = Color(1, 0, 0, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j55jw"]
-transparency = 1
 shading_mode = 0
-albedo_color = Color(0, 0.341176, 1, 0.439216)
+albedo_color = Color(0, 1, 1, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wm8y7"]
 albedo_color = Color(0, 0.443137, 1, 1)
