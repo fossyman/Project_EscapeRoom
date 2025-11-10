@@ -144,15 +144,40 @@ surface_material_override/0 = SubResource("StandardMaterial3D_cy1kc")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CONSTANT"]
 material_override = SubResource("StandardMaterial3D_j55jw")
 cast_shadow = 0
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.1153, 6, 0)
 mesh = SubResource("BoxMesh_emfuj")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D"]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="CONSTANT"]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="CONSTANT/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(40, 40)
+render_target_update_mode = 4
+
+[node name="MeshInstance3D#MeshInstance3D2" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_nxnwt")
 skeleton = NodePath("../..")
 
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="MeshInstance3D"]
+[node name="MeshInstance3D#MeshInstance3D3" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_6rgy0")
 skeleton = NodePath("../..")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MousePositionDebug" type="RichTextLabel" parent="Control"]
+layout_mode = 0
+offset_right = 584.0
+offset_bottom = 146.0
+
+[node name="ShouldMoveDebug" type="RichTextLabel" parent="Control"]
+layout_mode = 0
+offset_top = 187.0
+offset_right = 584.0
+offset_bottom = 333.0
