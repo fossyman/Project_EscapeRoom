@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://vnxf3yga43ax"]
+[gd_scene load_steps=3 format=3 uid="uid://vnxf3yga43ax"]
 
 [ext_resource type="PackedScene" uid="uid://cyxcjwc3tm3ad" path="res://Scenes/Roots/ROOT_Gameplay.tscn" id="1_hpc76"]
+[ext_resource type="PackedScene" uid="uid://c0pcu655mndor" path="res://Scenes/DEBUG/DEBUG_OVERLAY.tscn" id="2_tr2i4"]
 
 [node name="MainScene" type="Node"]
 
@@ -9,3 +10,5 @@
 [node name="RootGameplay" parent="ROOT" instance=ExtResource("1_hpc76")]
 
 [node name="CONSTANT" type="Node" parent="."]
+
+[node name="DEBUG TOOLS" parent="CONSTANT" instance=ExtResource("2_tr2i4")]

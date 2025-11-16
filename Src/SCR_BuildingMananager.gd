@@ -18,7 +18,7 @@ var DragEnd:Vector3
 var SelectedSpaces:Array[Vector3]
 var CurrentDragSpaces:Array[Vector3]
 
-var Points = []
+var Points:Array[Vector3] = []
 
 var Labels:Array[Label3D]
 
@@ -26,6 +26,9 @@ func _enter_tree() -> void:
 	instance = self
 
 func _process(delta: float) -> void:
+	if !GLOBALS.CanInteract:
+		return
+		
 	MoveCursor(mouse_position(true))
 	
 	if Input.is_action_pressed("Lclick"):
@@ -74,17 +77,32 @@ func _process(delta: float) -> void:
 			ye.global_position = Points[i]
 			
 			var EdgeCount = 0
-			
+			var Edges = []
+			var FailedPositions = []
 			for x in CheckPositions.size():
 				if Points.has(Points[i] + CheckPositions[x]) && Points[i] + CheckPositions[x] != Points[i]:
+					Edges.append(Points[i] + CheckPositions[x])
 					EdgeCount += 1
-			
+				else:
+					FailedPositions.append(CheckPositions[x])
+					
 			ye.text = str(EdgeCount)
 			ye.font_size = 100
 			ye.billboard = true
-		
-		print(str(StartX) + " || " + str(StartZ))
-		print(str(EndX) + " || " + str(EndZ))
+			
+			match EdgeCount:
+				5:
+					if Points.has(Points[i] + Vector3(1,0,0)):
+						BuildingGrid.set_cell_item(Points[i],1,16)
+					elif Points.has(Points[i] + Vector3(-1,0,0)):
+						BuildingGrid.set_cell_item(Points[i],1,22)
+						print("PLACING ROTATED WALL")
+					else:
+						BuildingGrid.set_cell_item(Points[i],1)
+						print("PLACING NORMAL WALL")
+				8:
+					BuildingGrid.set_cell_item(Points[i],0)
+					pass
 
 func MoveCursor(_movement:Vector3):
 	BuildingCursorPosition = _movement

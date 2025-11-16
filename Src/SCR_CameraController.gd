@@ -34,7 +34,8 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_CONFINED
 	viewport = get_viewport()
-	viewport_size = get_viewport().size
+	viewport_size = viewport.get_visible_rect().size
+	print(viewport.name)
 	pass # Replace with function body.
 
 

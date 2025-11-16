@@ -1,7 +1,10 @@
-[gd_scene load_steps=23 format=3 uid="uid://cyxcjwc3tm3ad"]
+[gd_scene load_steps=19 format=3 uid="uid://cyxcjwc3tm3ad"]
 
+[ext_resource type="ArrayMesh" uid="uid://d1ychbpb5c1wg" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_Floor.res" id="1_j55jw"]
 [ext_resource type="Script" uid="uid://c5fo8y2mkh734" path="res://Src/SCR_CameraController.gd" id="1_y3unb"]
 [ext_resource type="Script" uid="uid://cer44ufqqysnj" path="res://Src/SCR_BuildingMananager.gd" id="2_cy1kc"]
+[ext_resource type="Texture2D" uid="uid://d15sugtlh8nby" path="res://icon.svg" id="2_wm8y7"]
+[ext_resource type="ArrayMesh" uid="uid://b3i6ama5j5uub" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_Wall.res" id="3_emfuj"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_y3unb"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -21,16 +24,22 @@ size = Vector2(14, 14)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_kkcb1"]
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_j55jw"]
-
 [sub_resource type="MeshLibrary" id="MeshLibrary_cy1kc"]
-item/0/name = "asd"
-item/0/mesh = SubResource("PlaneMesh_j55jw")
+item/0/name = "Floor"
+item/0/mesh = ExtResource("1_j55jw")
 item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
-item/0/mesh_cast_shadow = 1
+item/0/mesh_cast_shadow = 0
 item/0/shapes = []
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/0/navigation_layers = 1
+item/0/preview = ExtResource("2_wm8y7")
+item/1/name = "Wall"
+item/1/mesh = ExtResource("3_emfuj")
+item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/mesh_cast_shadow = 1
+item/1/shapes = []
+item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/navigation_layers = 1
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_cy1kc"]
 
@@ -55,27 +64,6 @@ albedo_color = Color(0, 0.443137, 1, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_emfuj"]
 material = SubResource("StandardMaterial3D_wm8y7")
 size = Vector3(0.3, 0.3, 10)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_emfuj"]
-albedo_color = Color(0, 1, 0, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_nxnwt"]
-material = SubResource("StandardMaterial3D_emfuj")
-size = Vector3(0.3, 10, 0.3)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nxnwt"]
-albedo_color = Color(1, 0, 0, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_6rgy0"]
-material = SubResource("StandardMaterial3D_nxnwt")
-size = Vector3(10, 0.3, 0.3)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6rgy0"]
-albedo_color = Color(0, 0, 1, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_prpd7"]
-material = SubResource("StandardMaterial3D_6rgy0")
-size = Vector3(10, 0.3, 0.3)
 
 [node name="RootGameplay" type="Node"]
 
@@ -110,9 +98,7 @@ mesh = SubResource("PlaneMesh_kkcb1")
 [node name="BuildingGrid" type="GridMap" parent="MAP"]
 mesh_library = SubResource("MeshLibrary_cy1kc")
 cell_size = Vector3(1, 1, 1)
-data = {
-"cells": PackedInt32Array(65509, 65524, 851968, 65509, 65525, 851968, 65510, 65525, 851968, 65510, 65526, 851968, 65511, 65527, 851968, 65512, 65528, 851968, 65512, 65529, 851968, 65513, 65529, 851968, 65513, 65530, 851968, 65514, 65530, 851968, 65514, 65531, 851968, 65515, 65531, 851968, 65516, 65533, 851968, 65516, 65534, 851968, 65517, 65535, 851968, 65517, 0, 851968, 65518, 1, 851968)
-}
+cell_center_y = false
 
 [node name="StaticBody3D" type="StaticBody3D" parent="MAP"]
 
@@ -126,7 +112,7 @@ transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 
 script = ExtResource("1_y3unb")
 CameraPositionRoot = NodePath("CameraPosRoot")
 CameraHolder = NodePath("CameraPosRoot/CameraHolder")
-Camera = NodePath("CameraPosRoot/CameraHolder/Node3D/Camera3D")
+Camera = NodePath("CameraPosRoot/CameraHolder/Node3D/RemoteTransform3D/Camera3D")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CONSTANT/CameraOrigin"]
 mesh = SubResource("SphereMesh_cy1kc")
@@ -137,17 +123,13 @@ mesh = SubResource("SphereMesh_cy1kc")
 
 [node name="Node3D" type="Node3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder"]
 
-[node name="Camera3D" type="Camera3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder/Node3D"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 10, 10)
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 11, 11)
+remote_path = NodePath("Camera3D")
 
-[node name="Control" type="Control" parent="CONSTANT"]
-visible = false
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="Camera3D" type="Camera3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder/Node3D/RemoteTransform3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 3.57628e-07, 0, 0, 1, 0, 0, 0)
+current = true
 
 [node name="BuilderManager" type="Node" parent="CONSTANT" node_paths=PackedStringArray("BuildingGrid", "Cursor", "PreviewBuildMesh")]
 script = ExtResource("2_cy1kc")
@@ -165,29 +147,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_cy1kc")
 material_override = SubResource("StandardMaterial3D_j55jw")
 cast_shadow = 0
 mesh = SubResource("BoxMesh_emfuj")
-
-[node name="SubViewportContainer" type="SubViewportContainer" parent="CONSTANT"]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="SubViewport" type="SubViewport" parent="CONSTANT/SubViewportContainer"]
-handle_input_locally = false
-size = Vector2i(40, 40)
-render_target_update_mode = 4
-
-[node name="MeshInstance3D#MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 6.10721, 0)
-mesh = SubResource("BoxMesh_nxnwt")
-skeleton = NodePath("../..")
-
-[node name="MeshInstance3D#MeshInstance3D3" type="MeshInstance3D" parent="MeshInstance3D#MeshInstance3D2"]
-mesh = SubResource("BoxMesh_6rgy0")
-skeleton = NodePath("../../..")
-
-[node name="MeshInstance3D#MeshInstance3D4" type="MeshInstance3D" parent="MeshInstance3D#MeshInstance3D2"]
-transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0)
-mesh = SubResource("BoxMesh_prpd7")
-skeleton = NodePath("../../..")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
