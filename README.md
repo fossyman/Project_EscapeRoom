@@ -21,10 +21,10 @@ Below are the most important files
 This folder contains all of the assets for the project (Please keep assets in their named locations)
 - __RAW_ASSETS__
 This is where all of the raw assets will go. These include:
-    - Blender's __.BLEND__ files.
-    - Photoshop's __.PSD__ files.
-    - Krita's __.KRA__ files.
-    - Audacity's __.AUP3__ files.
+	- Blender's __.BLEND__ files.
+	- Photoshop's __.PSD__ files.
+	- Krita's __.KRA__ files.
+	- Audacity's __.AUP3__ files.
 
 - __Scenes__
 This is where all of the scenes will be placed.
