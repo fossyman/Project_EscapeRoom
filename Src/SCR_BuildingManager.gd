@@ -117,7 +117,7 @@ func _process(delta: float) -> void:
 				8:
 					#BuildingGrid.set_cell_item(Points[i],0)
 					pass
-			Perform_Wall_Corner_Check_Step()
+		Perform_Wall_Corner_Check_Step()
 
 func MoveCursor(_movement:Vector3):
 	BuildingCursorPosition = _movement
@@ -148,32 +148,18 @@ func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 
 func Perform_Wall_Corner_Check_Step():
 	
+	var center1 = lerp(BuildCorners[0],BuildCorners[1],0.5)
+	var center2 = lerp(BuildCorners[2],BuildCorners[3],0.5)
+	var center3 = lerp(center1,center2,0.5)
 	for i in BuildCorners.size():
 		BuildingGrid.set_cell_item(BuildCorners[i],0)
 		
-	for i in BuildCorners.size()-1:
-		var Check1 = BuildCorners[i]
-		var Check2 = BuildCorners[i+1]
 		
-		print(Check1.direction_to(Check2).floor().z)
-
-#func Perform_Wall_Corner_Check_Step():
-	#
-	#for i in BuildCorners.size():
-		#BuildingGrid.set_cell_item(BuildCorners[i],0)
-		#
-	#for i in BuildCorners.size()-1:
-		#var Check1 = BuildCorners[i]
-		#var Check2 = BuildCorners[i+1]
-		#
-		#if Check1.z == Check2.z:
-			#for x in floor(Check1.distance_to(Check2)):
-				#BuildingGrid.set_cell_item(Check1+Vector3(x,0,0),1,16)
-				#print("WALL")
-		#elif Check1.x == Check2.x:
-			#for x in floor(Check1.distance_to(Check2)):
-				#BuildingGrid.set_cell_item(Check1+Vector3(0,0,x),1,22)
-				#print("WALL")
+	for i in BuildEdges.size():
+		if BuildEdges[i].dot(center3) > 0:
+			BuildingGrid.set_cell_item(BuildEdges[i],1,0)
+		else:
+			BuildingGrid.set_cell_item(BuildEdges[i],1,22)
 
 
 func DrawBuildRect(StartPoint:Vector3,EndPoint:Vector3):
