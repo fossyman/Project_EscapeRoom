@@ -20,6 +20,9 @@ var CurrentDragSpaces:Array[Vector3]
 
 var Points:Array[Vector3] = []
 
+var BuildCorners:Array[Vector3] = []
+var BuildEdges:Array[Vector3] = []
+
 var Labels:Array[Label3D]
 
 func _enter_tree() -> void:
@@ -39,7 +42,7 @@ func _process(delta: float) -> void:
 		if MousePos.distance_to(ClickPos) > DragDeadzone:
 			DragStart = ClickPos
 			DragEnd = MousePos
-			print("MAKING SQUARE BETWEEN " + str(DragStart) + " AND " + str(DragEnd))
+			#print("MAKING SQUARE BETWEEN " + str(DragStart) + " AND " + str(DragEnd))
 			DrawBuildRect(DragStart,DragEnd)
 	if Input.is_action_just_released("Lclick"):
 		var points = []
@@ -76,6 +79,8 @@ func _process(delta: float) -> void:
 			Labels.append(ye)
 			ye.global_position = Points[i]
 			
+			Perform_Wall_Corner_Check_Step()
+			
 			var EdgeCount = 0
 			var Edges = []
 			var FailedPositions = []
@@ -89,19 +94,28 @@ func _process(delta: float) -> void:
 			ye.text = str(EdgeCount)
 			ye.font_size = 100
 			ye.billboard = true
+			if BuildCorners.has(ye.global_position):
+				ye.modulate = Color.RED
 			
 			match EdgeCount:
-				5:
-					if Points.has(Points[i] + Vector3(1,0,0)):
-						BuildingGrid.set_cell_item(Points[i],1,16)
-					elif Points.has(Points[i] + Vector3(-1,0,0)):
-						BuildingGrid.set_cell_item(Points[i],1,22)
-						print("PLACING ROTATED WALL")
-					else:
-						BuildingGrid.set_cell_item(Points[i],1)
-						print("PLACING NORMAL WALL")
+				##CORNER
+				3,4,7:
+					BuildCorners.append(Points[i])
+					ye.modulate = Color.RED
+				5,6:
+					BuildEdges.append(Points[i])
+					ye.modulate = Color.GREEN
+					pass
+					#if Points.has(Points[i] + Vector3(1,0,0)):
+						#BuildingGrid.set_cell_item(Points[i],1,16)
+					#elif Points.has(Points[i] + Vector3(-1,0,0)):
+						#BuildingGrid.set_cell_item(Points[i],1,22)
+						##print("PLACING ROTATED WALL")
+					#else:
+						#BuildingGrid.set_cell_item(Points[i],1)
+						##print("PLACING NORMAL WALL")
 				8:
-					BuildingGrid.set_cell_item(Points[i],0)
+					#BuildingGrid.set_cell_item(Points[i],0)
 					pass
 
 func MoveCursor(_movement:Vector3):
@@ -130,6 +144,16 @@ func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 	else:
 		print("nonexistent")
 		return Vector3.ZERO
+
+func Perform_Wall_Corner_Check_Step():
+	for i in BuildCorners.size()-1:
+		var Check1 = BuildCorners[i]
+		var Check2 = BuildCorners[i+1]
+		var Check = (Check2 - Check1).normalized()
+		print(str(i) + "CHECKING BETWEEN "  + str(Check1) + " AND " + str(Check2))
+		print(Check1.x == Check2.x)
+	pass
+
 
 func DrawBuildRect(StartPoint:Vector3,EndPoint:Vector3):
 	var mesh = ImmediateMesh.new()
