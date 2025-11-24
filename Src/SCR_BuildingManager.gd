@@ -155,13 +155,25 @@ func Perform_Wall_Corner_Check_Step():
 		var Check1 = BuildCorners[i]
 		var Check2 = BuildCorners[i+1]
 		
-		if Check1.x == Check2.x:
-			print("X IS THE SAME!!!!!!!!!!!!!!!!!!!!!!")
-				
-		elif Check1.z == Check2.z:
-			print("Z IS THE SAME!!!!!!!!!!!!!!!!!!!!!!")
+		print(Check1.direction_to(Check2).floor().z)
 
-	pass
+#func Perform_Wall_Corner_Check_Step():
+	#
+	#for i in BuildCorners.size():
+		#BuildingGrid.set_cell_item(BuildCorners[i],0)
+		#
+	#for i in BuildCorners.size()-1:
+		#var Check1 = BuildCorners[i]
+		#var Check2 = BuildCorners[i+1]
+		#
+		#if Check1.z == Check2.z:
+			#for x in floor(Check1.distance_to(Check2)):
+				#BuildingGrid.set_cell_item(Check1+Vector3(x,0,0),1,16)
+				#print("WALL")
+		#elif Check1.x == Check2.x:
+			#for x in floor(Check1.distance_to(Check2)):
+				#BuildingGrid.set_cell_item(Check1+Vector3(0,0,x),1,22)
+				#print("WALL")
 
 
 func DrawBuildRect(StartPoint:Vector3,EndPoint:Vector3):
