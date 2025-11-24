@@ -2,7 +2,7 @@
 
 [ext_resource type="ArrayMesh" uid="uid://d1ychbpb5c1wg" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_Floor.res" id="1_j55jw"]
 [ext_resource type="Script" uid="uid://c5fo8y2mkh734" path="res://Src/SCR_CameraController.gd" id="1_y3unb"]
-[ext_resource type="Script" uid="uid://cer44ufqqysnj" path="res://Src/SCR_BuildingMananager.gd" id="2_cy1kc"]
+[ext_resource type="Script" uid="uid://cer44ufqqysnj" path="res://Src/SCR_BuildingManager.gd" id="2_cy1kc"]
 [ext_resource type="Texture2D" uid="uid://d15sugtlh8nby" path="res://icon.svg" id="2_wm8y7"]
 [ext_resource type="ArrayMesh" uid="uid://b3i6ama5j5uub" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_Wall.res" id="3_emfuj"]
 
