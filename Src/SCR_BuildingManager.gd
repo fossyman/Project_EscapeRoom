@@ -69,7 +69,9 @@ func _process(delta: float) -> void:
 		for i in Labels.size():
 			Labels[i].queue_free()
 		Labels.clear()
-		
+		BuildEdges.clear()
+		BuildCorners.clear()
+		BuildingGrid.clear()
 		for i in Points.size():
 			var CheckPositions = [Vector3(1,0,1),Vector3(0,0,1),Vector3(-1,0,1),
 								 Vector3(1,0,0),Vector3(0,0,0),Vector3(-1,0,0),
@@ -78,8 +80,6 @@ func _process(delta: float) -> void:
 			add_child(ye)
 			Labels.append(ye)
 			ye.global_position = Points[i]
-			
-			Perform_Wall_Corner_Check_Step()
 			
 			var EdgeCount = 0
 			var Edges = []
@@ -117,6 +117,7 @@ func _process(delta: float) -> void:
 				8:
 					#BuildingGrid.set_cell_item(Points[i],0)
 					pass
+			Perform_Wall_Corner_Check_Step()
 
 func MoveCursor(_movement:Vector3):
 	BuildingCursorPosition = _movement
@@ -146,12 +147,20 @@ func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 		return Vector3.ZERO
 
 func Perform_Wall_Corner_Check_Step():
+	
+	for i in BuildCorners.size():
+		BuildingGrid.set_cell_item(BuildCorners[i],0)
+		
 	for i in BuildCorners.size()-1:
 		var Check1 = BuildCorners[i]
 		var Check2 = BuildCorners[i+1]
-		var Check = (Check2 - Check1).normalized()
-		print(str(i) + "CHECKING BETWEEN "  + str(Check1) + " AND " + str(Check2))
-		print(Check1.x == Check2.x)
+		
+		if Check1.x == Check2.x:
+			print("X IS THE SAME!!!!!!!!!!!!!!!!!!!!!!")
+				
+		elif Check1.z == Check2.z:
+			print("Z IS THE SAME!!!!!!!!!!!!!!!!!!!!!!")
+
 	pass
 
 
