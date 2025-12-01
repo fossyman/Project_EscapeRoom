@@ -20,10 +20,13 @@ var CurrentDragSpaces:Array[Vector3]
 
 var Points:Array[Vector3] = []
 
-var BuildCorners:Array[Vector3] = []
 var BuildEdges:Array[Vector3] = []
 
 var Labels:Array[Label3D]
+
+static var CheckPositions = [Vector3(1,0,1),Vector3(0,0,1),Vector3(-1,0,1),
+							Vector3(1,0,0),Vector3(0,0,0),Vector3(-1,0,0),
+							Vector3(1,0,-1),Vector3(0,0,-1),Vector3(-1,0,-1)]
 
 func _enter_tree() -> void:
 	instance = self
@@ -55,6 +58,8 @@ func _process(delta: float) -> void:
 		var EndX = DragEnd.x if DragEnd.x > DragStart.x else DragStart.x
 		var EndZ = DragEnd.z if DragEnd.z > DragStart.z else DragStart.z
 		
+		var Corners:Array[Vector3] = [Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ),Vector3(StartX,0,EndZ),Vector3(EndZ,0,StartZ)]
+		
 		for X in range(StartX,EndX):
 			print("width " + str(X))
 			for Z in range(StartZ,EndZ):
@@ -70,12 +75,8 @@ func _process(delta: float) -> void:
 			Labels[i].queue_free()
 		Labels.clear()
 		BuildEdges.clear()
-		BuildCorners.clear()
 		BuildingGrid.clear()
 		for i in Points.size():
-			var CheckPositions = [Vector3(1,0,1),Vector3(0,0,1),Vector3(-1,0,1),
-								 Vector3(1,0,0),Vector3(0,0,0),Vector3(-1,0,0),
-								 Vector3(1,0,-1),Vector3(0,0,-1),Vector3(-1,0,-1)]
 			var ye = Label3D.new()
 			add_child(ye)
 			Labels.append(ye)
@@ -83,28 +84,88 @@ func _process(delta: float) -> void:
 			
 			var EdgeCount = 0
 			var Edges = []
-			var FailedPositions = []
+			
+			var PrimaryEdge:int = 0 # 0=UP,1=RIGHT,2=DOWN,3=LEFT
+			var EdgeCheck:Array[Vector3]
+			var CornerCheck:Array[Vector3]
+			
 			for x in CheckPositions.size():
 				if Points.has(Points[i] + CheckPositions[x]) && Points[i] + CheckPositions[x] != Points[i]:
 					Edges.append(Points[i] + CheckPositions[x])
+
 					EdgeCount += 1
 				else:
-					FailedPositions.append(CheckPositions[x])
-					
-			ye.text = str(EdgeCount)
-			ye.font_size = 100
-			ye.billboard = true
-			if BuildCorners.has(ye.global_position):
-				ye.modulate = Color.RED
-			
+					if x == 1 or x == 3 or x == 5 or x == 7:
+						EdgeCheck.append(CheckPositions[x])
+					elif x == 0 or x == 2 or x == 6 or x == 8:
+						CornerCheck.append(CheckPositions[x])
+
 			match EdgeCount:
 				##CORNER
 				3,4,7:
-					BuildCorners.append(Points[i])
-					ye.modulate = Color.RED
+					match CheckBorderingGrid(Points[i]):
+						Vector3(-1.0,0.0,-1.0):
+							ye.modulate = Color.YELLOW
+							print("YELLOW IS " + str(EdgeCount))
+							BuildingGrid.set_cell_item(Points[i],0,16)
+							pass
+						Vector3(1.0,0.0,-1.0):
+							ye.modulate = Color.MAGENTA
+							print("MAGENTA IS " + str(EdgeCount))
+							BuildingGrid.set_cell_item(Points[i],0,0)
+							pass
+						Vector3(1.0,0.0,1.0):
+							ye.modulate = Color.MAROON
+							print("MAROON IS " + str(EdgeCount))
+							BuildingGrid.set_cell_item(Points[i],0,22)
+							pass
+						Vector3(-1.0,0.0,1.0):
+							ye.modulate = Color.AQUA
+							print("AQUA IS " + str(EdgeCount))
+							BuildingGrid.set_cell_item(Points[i],0,10)
+							pass
+						_:
+							print("INVERSE IS " + str(CheckInverseBorderingGrid(Points[i])))
+							match CheckInverseBorderingGrid(Points[i]):
+								Vector3(0.0,0.0,-1.0):
+									ye.modulate = Color.YELLOW
+									print("YELLOW IS " + str(EdgeCount))
+									BuildingGrid.set_cell_item(Points[i],0,16)
+								pass
+								Vector3(-1.0,0.0,-1.0):
+									ye.modulate = Color.MAGENTA
+									print("MAGENTA IS " + str(EdgeCount))
+									BuildingGrid.set_cell_item(Points[i],0,0)
+								pass
+								Vector3(0.0,0.0,-1.0):
+									ye.modulate = Color.MAROON
+									print("MAROON IS " + str(EdgeCount))
+									BuildingGrid.set_cell_item(Points[i],0,22)
+								pass
+								Vector3(1.0,0.0,1.0):
+									ye.modulate = Color.AQUA
+									print("AQUA IS " + str(EdgeCount))
+									BuildingGrid.set_cell_item(Points[i],0,10)
+								pass
 				5,6:
 					BuildEdges.append(Points[i])
-					ye.modulate = Color.GREEN
+					match GetPrimaryWallDirection(EdgeCheck):
+						Vector3.LEFT:
+							ye.modulate = Color.GREEN
+							BuildingGrid.set_cell_item(Points[i],1,16)
+							pass
+						Vector3.RIGHT:
+							ye.modulate = Color.PURPLE
+							BuildingGrid.set_cell_item(Points[i],1,16)
+							pass
+						Vector3.FORWARD:
+							ye.modulate = Color.PINK
+							BuildingGrid.set_cell_item(Points[i],1,0)
+							pass
+						Vector3.BACK:
+							ye.modulate = Color.ORANGE
+							BuildingGrid.set_cell_item(Points[i],1,0)
+							pass
 					pass
 					#if Points.has(Points[i] + Vector3(1,0,0)):
 						#BuildingGrid.set_cell_item(Points[i],1,16)
@@ -117,8 +178,40 @@ func _process(delta: float) -> void:
 				8:
 					#BuildingGrid.set_cell_item(Points[i],0)
 					pass
-			Perform_Wall_Corner_Check_Step()
+			
+			ye.text = str(EdgeCount)
+			ye.font_size = 100
+			ye.billboard = true
+			
+			
+func GetPrimaryWallDirection(_EdgeTable:Array[Vector3]):
+	print("Primary value is: " + str(_EdgeTable.max()))
+	return _EdgeTable.max()
 
+func CheckBorderingGrid(_position:Vector3) -> Vector3:
+	var EmptyPoints:Array[Vector3]
+	var val:Vector3
+	var avg:Vector3
+	for i in CheckPositions.size():
+		if Points.has(_position + CheckPositions[i]):
+			EmptyPoints.append( (CheckPositions[i]) )
+			
+	for i in EmptyPoints.size():
+		val += EmptyPoints[i]
+		
+	avg = val / EmptyPoints.size()
+	print("BORDERS FOR " + str(_position) + " ARE THE FOLLOWING...")
+	return avg.round()
+
+func CheckInverseBorderingGrid(_position:Vector3) -> Vector3:
+	var EmptyPoint:Vector3
+	var val:Vector3
+	var avg:Vector3
+	for i in CheckPositions.size():
+		if Points.has(_position + CheckPositions[i]):
+			EmptyPoint = _position + CheckPositions[i]
+	return EmptyPoint.normalized().round()
+	
 func MoveCursor(_movement:Vector3):
 	BuildingCursorPosition = _movement
 	Cursor.global_position = BuildingCursorPosition
@@ -145,36 +238,6 @@ func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 	else:
 		print("nonexistent")
 		return Vector3.ZERO
-
-func Perform_Wall_Corner_Check_Step():
-	
-	for i in BuildCorners.size():
-		BuildingGrid.set_cell_item(BuildCorners[i],0)
-		
-	for i in BuildCorners.size()-1:
-		var Check1 = BuildCorners[i]
-		var Check2 = BuildCorners[i+1]
-		
-		print(Check1.direction_to(Check2).floor().z)
-
-#func Perform_Wall_Corner_Check_Step():
-	#
-	#for i in BuildCorners.size():
-		#BuildingGrid.set_cell_item(BuildCorners[i],0)
-		#
-	#for i in BuildCorners.size()-1:
-		#var Check1 = BuildCorners[i]
-		#var Check2 = BuildCorners[i+1]
-		#
-		#if Check1.z == Check2.z:
-			#for x in floor(Check1.distance_to(Check2)):
-				#BuildingGrid.set_cell_item(Check1+Vector3(x,0,0),1,16)
-				#print("WALL")
-		#elif Check1.x == Check2.x:
-			#for x in floor(Check1.distance_to(Check2)):
-				#BuildingGrid.set_cell_item(Check1+Vector3(0,0,x),1,22)
-				#print("WALL")
-
 
 func DrawBuildRect(StartPoint:Vector3,EndPoint:Vector3):
 	var mesh = ImmediateMesh.new()

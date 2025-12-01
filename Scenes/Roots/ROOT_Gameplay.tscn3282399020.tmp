@@ -1,6 +1,5 @@
 [gd_scene load_steps=19 format=3 uid="uid://cyxcjwc3tm3ad"]
 
-[ext_resource type="ArrayMesh" uid="uid://o8lfga7431s0" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_CORNER.res" id="1_emfuj"]
 [ext_resource type="Script" uid="uid://c5fo8y2mkh734" path="res://Src/SCR_CameraController.gd" id="1_y3unb"]
 [ext_resource type="Script" uid="uid://cer44ufqqysnj" path="res://Src/SCR_BuildingManager.gd" id="2_cy1kc"]
 [ext_resource type="Texture2D" uid="uid://d15sugtlh8nby" path="res://icon.svg" id="2_wm8y7"]
@@ -24,10 +23,12 @@ size = Vector2(14, 14)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_kkcb1"]
 
+[sub_resource type="BoxMesh" id="BoxMesh_wm8y7"]
+
 [sub_resource type="MeshLibrary" id="MeshLibrary_cy1kc"]
 item/0/name = "Floor"
-item/0/mesh = ExtResource("1_emfuj")
-item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/mesh = SubResource("BoxMesh_wm8y7")
+item/0/mesh_transform = Transform3D(0.5, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 0.5, 0.5)
 item/0/mesh_cast_shadow = 0
 item/0/shapes = []
 item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
@@ -96,7 +97,6 @@ transform = Transform3D(-5.73206e-15, -1.31134e-07, -1, 1, -4.37114e-08, 0, -4.3
 mesh = SubResource("PlaneMesh_kkcb1")
 
 [node name="BuildingGrid" type="GridMap" parent="MAP"]
-visible = false
 mesh_library = SubResource("MeshLibrary_cy1kc")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
