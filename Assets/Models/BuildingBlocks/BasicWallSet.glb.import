@@ -42,6 +42,14 @@ _subresources={
 "save_to_file/enabled": true,
 "save_to_file/path": "res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_Wall.res"
 },
+"BasicWallSet_Cube_018": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_CORNER.res"
+},
 "BasicWallSet_Plane": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
