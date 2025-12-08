@@ -69,7 +69,6 @@ size = Vector3(0.3, 0.3, 10)
 
 [node name="BuilderManager" type="Node" parent="." node_paths=PackedStringArray("BuildingGrid", "Cursor", "PreviewBuildMesh")]
 script = ExtResource("2_cy1kc")
-CornerColors = true
 BuildingGrid = NodePath("../MAP/BuildingGrid")
 Cursor = NodePath("../CONSTANT/Cursor")
 PreviewBuildMesh = NodePath("../CONSTANT/MeshInstance3D")
@@ -103,6 +102,7 @@ transform = Transform3D(-5.73206e-15, -1.31134e-07, -1, 1, -4.37114e-08, 0, -4.3
 mesh = SubResource("PlaneMesh_kkcb1")
 
 [node name="BuildingGrid" type="GridMap" parent="MAP"]
+visible = false
 mesh_library = SubResource("MeshLibrary_cy1kc")
 cell_size = Vector3(1, 1, 1)
 cell_center_x = false
