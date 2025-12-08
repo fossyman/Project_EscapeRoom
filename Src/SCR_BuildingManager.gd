@@ -1,6 +1,11 @@
 extends Node
 class_name BuildingManager
 
+var SelectedTool:int = 0
+
+@export var BuildMat:Material
+@export var DestroyMat:Material
+@export var BuildSizeLabel:Label3D
 @export var EdgeColors:bool=false
 @export var CornerColors:bool=false
 @export var InnerCornerColors:bool=false
@@ -36,6 +41,16 @@ func _enter_tree() -> void:
 	instance = self
 
 func _process(delta: float) -> void:
+	
+	if Input.is_key_pressed(KEY_1):
+		SelectedTool = 0
+		PreviewBuildMesh.material_override = BuildMat
+		print(SelectedTool)
+	if Input.is_key_pressed(KEY_2):
+		SelectedTool = 1
+		PreviewBuildMesh.material_override = DestroyMat
+		print(SelectedTool)
+	
 	if !GLOBALS.CanInteract:
 		return
 		
@@ -45,37 +60,58 @@ func _process(delta: float) -> void:
 		var MousePos = mouse_position(true)
 		if Input.is_action_just_pressed("Lclick"):
 			ClickPos = MousePos
-
 		if MousePos.distance_to(ClickPos) > DragDeadzone:
 			DragStart = ClickPos
 			DragEnd = MousePos
+			PreviewBuildMesh.visible = true
 			#print("MAKING SQUARE BETWEEN " + str(DragStart) + " AND " + str(DragEnd))
 			DrawBuildRect(DragStart,DragEnd)
+	BuildSizeLabel.text = str((DragEnd - DragStart).x) + ", " + str((DragEnd - DragStart).z)
 	if Input.is_action_just_released("Lclick"):
-		var points = []
-		if DragEnd == DragStart:
-			return
 		
-		var StartX = (DragStart.x if DragStart.x < DragEnd.x else DragEnd.x) - 0
-		var StartZ = (DragStart.z if DragStart.z < DragEnd.z else DragEnd.z) - 0
+		var StartX = (DragStart.x if DragStart.x < DragEnd.x else DragEnd.x)
+		var StartZ = (DragStart.z if DragStart.z < DragEnd.z else DragEnd.z)
 		
 		var EndX = (DragEnd.x if DragEnd.x > DragStart.x else DragStart.x) + 1
 		var EndZ = (DragEnd.z if DragEnd.z > DragStart.z else DragStart.z) + 1
-		
-		if EndX - StartX < 3.0 ||  EndZ - StartZ < 3.0 :
+		match(SelectedTool):
+			0:
+				BuildSelectedSection(Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
+				UpdateBuiltArea()
+			1:
+				for X in range(StartX+1,EndX-1):
+					print("width " + str(X))
+					for Z in range(StartZ+1,EndZ-1):
+						print("height " + str(Z))
+						Points.erase(Vector3(X,0,Z))
+				UpdateBuiltArea()
+		PreviewBuildMesh.visible = false
+
+
+func BuildSelectedSection(StartCorner:Vector3,EndCorner:Vector3):
+		print("BUILDING")
+		var points = []
+		if DragEnd == DragStart:
 			return
-		
-		for X in range(StartX,EndX):
+			
+		###TODO:FIX DRAG MINIMUM TO ALLOW BOTH VALUES POSITIVE AND NEGATIVE
+		#var DragDistance = StartCorner.distance_to(EndCorner)
+		#if DragDistance.x < 3.0:
+			#return
+			
+		for X in range(StartCorner.x,EndCorner.x):
 			print("width " + str(X))
-			for Z in range(StartZ,EndZ):
+			for Z in range(StartCorner.z,EndCorner.z):
 				print("height " + str(Z))
 				points.append(Vector3(X,0,Z))
 		print(points.size())
 		
 		Points.append_array(points)
-		for i in points.size():
-			pass
-		
+
+		UpdateBuiltArea()
+			
+func UpdateBuiltArea():
+
 		for i in Labels.size():
 			Labels[i].queue_free()
 		Labels.clear()
@@ -144,7 +180,7 @@ func _process(delta: float) -> void:
 								Vector3(-0.6,0.0,-0.2):
 									if CornerColors:
 										ye.modulate = Color.DEEP_PINK
-									print("YELLOW IS " + str(EdgeCount))
+									print("DEEP_PINK IS " + str(EdgeCount))
 									BuildingGrid.set_cell_item(Points[i],0,16)
 								pass
 								Vector3(0.6,0.0,0.2):
@@ -187,27 +223,61 @@ func _process(delta: float) -> void:
 								pass
 				5,6:
 					BuildEdges.append(Points[i])
-					match GetPrimaryWallDirection(EdgeCheck):
-						Vector3.LEFT:
-							if EdgeColors:
-								ye.modulate = Color.GREEN
-							BuildingGrid.set_cell_item(Points[i],1,16)
-							pass
-						Vector3.RIGHT:
-							if EdgeColors:
-								ye.modulate = Color.PURPLE
-							BuildingGrid.set_cell_item(Points[i],1,16)
-							pass
-						Vector3.FORWARD:
-							if EdgeColors:
-								ye.modulate = Color.PINK
-							BuildingGrid.set_cell_item(Points[i],1,0)
-							pass
-						Vector3.BACK:
-							if EdgeColors:
-								ye.modulate = Color.ORANGE
-							BuildingGrid.set_cell_item(Points[i],1,0)
-							pass
+					var EdgesDirection = GetPrimaryWallDirection(EdgeCheck)
+					var CurrentEdgeCount:int = EdgeCheck.size()
+					match CurrentEdgeCount:
+						1:
+							match EdgesDirection:
+								Vector3.LEFT:
+									if EdgeColors:
+										ye.modulate = Color.GREEN
+									BuildingGrid.set_cell_item(Points[i],1,16)
+									pass
+								Vector3.RIGHT:
+									if EdgeColors:
+										ye.modulate = Color.PURPLE
+									BuildingGrid.set_cell_item(Points[i],1,16)
+									pass
+								Vector3.FORWARD:
+									if EdgeColors:
+										ye.modulate = Color.PINK
+									BuildingGrid.set_cell_item(Points[i],1,0)
+									pass
+								Vector3.BACK:
+									if EdgeColors:
+										ye.modulate = Color.ORANGE
+									BuildingGrid.set_cell_item(Points[i],1,0)
+									pass
+						2:
+							print(str(EdgeCheck.size())+" EDGES!!!!!!!!!!!!!!!!!!")
+							var sum:Vector3
+							var avg:Vector3
+							for y in EdgeCheck.size():
+								print(str(EdgeCheck[y])+" EDGES SIDE!!!!!!!!!!!!!!!!!!")
+								sum+=EdgeCheck[y]
+							avg = sum/EdgeCheck.size()
+							print(str(avg)+" EDGES AVG!!!!!!!!!!!!!!!!!!")
+							match avg:
+								Vector3(0.5,0.0,0.5):
+									if EdgeColors:
+										ye.modulate = Color.GREEN
+									BuildingGrid.set_cell_item(Points[i],0,16)
+									pass
+								Vector3(0.5,0.0,-0.5):
+									if EdgeColors:
+										ye.modulate = Color.PURPLE
+									BuildingGrid.set_cell_item(Points[i],0,10)
+									pass
+								Vector3(-0.5,0.0,0.5):
+									if EdgeColors:
+										ye.modulate = Color.PINK
+									BuildingGrid.set_cell_item(Points[i],0,0)
+									pass
+								Vector3(-0.5,0.0,-0.5):
+									if EdgeColors:
+										ye.modulate = Color.ORANGE
+									BuildingGrid.set_cell_item(Points[i],0,22)
+									pass
 				7:
 					print(CheckBorderingGrid(Points[i]))
 					match(CheckBorderingGrid(Points[i],true)):
@@ -248,12 +318,11 @@ func _process(delta: float) -> void:
 							ye.modulate = Color.PURPLE
 							BuildingGrid.set_cell_item(Points[i],1,0)
 				8:
-					#BuildingGrid.set_cell_item(Points[i],0)
+					BuildingGrid.set_cell_item(Points[i],2)
 					pass
-			ye.text = str(EdgeCount)
-			ye.font_size = 100
+			ye.text = str(EdgeCount)+"\n"+str(ye.global_position)
+			ye.font_size = 32
 			ye.billboard = true
-			
 			
 func GetPrimaryWallDirection(_EdgeTable:Array[Vector3]):
 	print("Primary value is: " + str(_EdgeTable.max()))
