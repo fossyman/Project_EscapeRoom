@@ -1,5 +1,5 @@
 extends Node
-class_name BuildingManager
+class_name BuildingManagerOLD
 
 var SelectedTool:int = 0
 
@@ -12,7 +12,7 @@ var SelectedTool:int = 0
 
 @export var BuildingGrid:GridMap
 
-static var instance:BuildingManager
+static var instance:BuildingManagerOLD
 
 @export var Cursor:Node3D
 var BuildingCursorPosition:Vector3

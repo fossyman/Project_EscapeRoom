@@ -25,7 +25,7 @@ var DragValue:Vector2
 
 var delta:float
 
-var Movespeed:float = 0.3
+@export var Movespeed:float = 0.3
 
 func _enter_tree() -> void:
 	instance = self
@@ -42,7 +42,8 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	delta = _delta
-	MoveCam()
+	if get_window().has_focus():
+		MoveCam()
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
@@ -56,8 +57,8 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		if Input.is_action_pressed("RClick"):
 			DragValue = (event.relative * Movespeed * 0.1)
-			TargetPosition += ( global_basis.x * -DragValue.x)
-			TargetPosition += ( global_basis.z * -DragValue.y )
+			TargetPosition += ( global_basis.x * -DragValue.x) * delta
+			TargetPosition += ( global_basis.z * -DragValue.y ) * delta
 			print(DragValue)
 		
 
@@ -69,25 +70,27 @@ func MoveCam():
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if direction:
-		TargetPosition += direction * Movespeed
+		TargetPosition += direction * Movespeed * delta
 	
 	var local_mouse_pos = viewport.get_mouse_position()
 	if local_mouse_pos.x < threshold:
 		#TargetPosition.z -= step
 		#TargetPosition.x -= step
-		TargetPosition -= Camera.global_basis.x * Movespeed
+		TargetPosition -= Camera.global_basis.x * Movespeed * delta
 	elif local_mouse_pos.x >= viewport_size.x - threshold:
 		#TargetPosition.z += step
 		#TargetPosition.x += step
-		TargetPosition += Camera.global_basis.x * step
+		TargetPosition += Camera.global_basis.x * Movespeed * delta
 	if local_mouse_pos.y < threshold:
 		#TargetPosition.x += step
 		#TargetPosition.z -= step
-		TargetPosition -= global_basis.z * Movespeed
+		TargetPosition -= global_basis.z * Movespeed * delta
 	elif local_mouse_pos.y >= viewport_size.y - threshold:
 		#TargetPosition.x -= step
 		#TargetPosition.z += step
-		TargetPosition += global_basis.z * Movespeed
+		TargetPosition += global_basis.z * Movespeed * delta
+	
+	TargetPosition = TargetPosition.clamp(Vector3.ZERO,Vector3(100,1,100))
 	global_position = lerp(global_position, TargetPosition, LerpSpeed * delta)
 	
 	rotation.y = lerp_angle(rotation.y,deg_to_rad(TargetRotation.y),LerpSpeed* delta)

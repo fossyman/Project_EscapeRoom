@@ -14,12 +14,18 @@ var ViewPort:Viewport
 @export var FPSText:RichTextLabel
 @export var SystemInfoText:RichTextLabel
 
+@export var CreateRoomButton:Button
+@export var DeselectRoomButton:Button
+@export var FinalizeRoomButton:Button
+@export var DeleteRoomButton:Button
+
 func _enter_tree() -> void:
 	instance = self
 	ToggleDebugMenu()
 func _ready() -> void:
 	ViewPort = get_tree().root.get_viewport()
 	SystemInfoText.text = "Operating System: " + OS.get_name() + "\n" + "GPU: " + RenderingServer.get_video_adapter_name() + "\n" + "CPU: " + OS.get_processor_name() + "\n" + "Motherboard: " + OS.get_model_name()
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if IsDebugVisible:
