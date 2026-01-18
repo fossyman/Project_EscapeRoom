@@ -1,9 +1,18 @@
 extends Node
-class_name BuildingManager
+class_name BuildingManagerOLD
+
+var SelectedTool:int = 0
+
+@export var BuildMat:Material
+@export var DestroyMat:Material
+@export var BuildSizeLabel:Label3D
+@export var EdgeColors:bool=false
+@export var CornerColors:bool=false
+@export var InnerCornerColors:bool=false
 
 @export var BuildingGrid:GridMap
 
-static var instance:BuildingManager
+static var instance:BuildingManagerOLD
 
 @export var Cursor:Node3D
 var BuildingCursorPosition:Vector3
@@ -32,6 +41,16 @@ func _enter_tree() -> void:
 	instance = self
 
 func _process(delta: float) -> void:
+	
+	if Input.is_key_pressed(KEY_1):
+		SelectedTool = 0
+		PreviewBuildMesh.material_override = BuildMat
+		print(SelectedTool)
+	if Input.is_key_pressed(KEY_2):
+		SelectedTool = 1
+		PreviewBuildMesh.material_override = DestroyMat
+		print(SelectedTool)
+	
 	if !GLOBALS.CanInteract:
 		return
 		
@@ -41,36 +60,58 @@ func _process(delta: float) -> void:
 		var MousePos = mouse_position(true)
 		if Input.is_action_just_pressed("Lclick"):
 			ClickPos = MousePos
-
 		if MousePos.distance_to(ClickPos) > DragDeadzone:
 			DragStart = ClickPos
 			DragEnd = MousePos
+			PreviewBuildMesh.visible = true
 			#print("MAKING SQUARE BETWEEN " + str(DragStart) + " AND " + str(DragEnd))
 			DrawBuildRect(DragStart,DragEnd)
+	BuildSizeLabel.text = str((DragEnd - DragStart).x) + ", " + str((DragEnd - DragStart).z)
 	if Input.is_action_just_released("Lclick"):
+		
+		var StartX = (DragStart.x if DragStart.x < DragEnd.x else DragEnd.x)
+		var StartZ = (DragStart.z if DragStart.z < DragEnd.z else DragEnd.z)
+		
+		var EndX = (DragEnd.x if DragEnd.x > DragStart.x else DragStart.x) + 1
+		var EndZ = (DragEnd.z if DragEnd.z > DragStart.z else DragStart.z) + 1
+		match(SelectedTool):
+			0:
+				BuildSelectedSection(Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
+				UpdateBuiltArea()
+			1:
+				for X in range(StartX+1,EndX-1):
+					print("width " + str(X))
+					for Z in range(StartZ+1,EndZ-1):
+						print("height " + str(Z))
+						Points.erase(Vector3(X,0,Z))
+				UpdateBuiltArea()
+		PreviewBuildMesh.visible = false
+
+
+func BuildSelectedSection(StartCorner:Vector3,EndCorner:Vector3):
+		print("BUILDING")
 		var points = []
 		if DragEnd == DragStart:
 			return
-		
-		var StartX = DragStart.x if DragStart.x < DragEnd.x else DragEnd.x
-		var StartZ = DragStart.z if DragStart.z < DragEnd.z else DragEnd.z
-		
-		var EndX = DragEnd.x if DragEnd.x > DragStart.x else DragStart.x
-		var EndZ = DragEnd.z if DragEnd.z > DragStart.z else DragStart.z
-		
-		var Corners:Array[Vector3] = [Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ),Vector3(StartX,0,EndZ),Vector3(EndZ,0,StartZ)]
-		
-		for X in range(StartX,EndX):
+			
+		###TODO:FIX DRAG MINIMUM TO ALLOW BOTH VALUES POSITIVE AND NEGATIVE
+		#var DragDistance = StartCorner.distance_to(EndCorner)
+		#if DragDistance.x < 3.0:
+			#return
+			
+		for X in range(StartCorner.x,EndCorner.x):
 			print("width " + str(X))
-			for Z in range(StartZ,EndZ):
+			for Z in range(StartCorner.z,EndCorner.z):
 				print("height " + str(Z))
 				points.append(Vector3(X,0,Z))
 		print(points.size())
 		
 		Points.append_array(points)
-		for i in points.size():
-			pass
-		
+
+		UpdateBuiltArea()
+			
+func UpdateBuiltArea():
+
 		for i in Labels.size():
 			Labels[i].queue_free()
 		Labels.clear()
@@ -101,94 +142,193 @@ func _process(delta: float) -> void:
 						CornerCheck.append(CheckPositions[x])
 
 			match EdgeCount:
-				##CORNER
-				3,4,7:
+				#CORNER
+				3:
 					match CheckBorderingGrid(Points[i]):
 						Vector3(-1.0,0.0,-1.0):
-							ye.modulate = Color.YELLOW
+							if CornerColors:
+								ye.modulate = Color.YELLOW
 							print("YELLOW IS " + str(EdgeCount))
 							BuildingGrid.set_cell_item(Points[i],0,16)
 							pass
 						Vector3(1.0,0.0,-1.0):
-							ye.modulate = Color.MAGENTA
+							if CornerColors:
+								ye.modulate = Color.MAGENTA
 							print("MAGENTA IS " + str(EdgeCount))
 							BuildingGrid.set_cell_item(Points[i],0,0)
 							pass
 						Vector3(1.0,0.0,1.0):
-							ye.modulate = Color.MAROON
+							if CornerColors:
+								ye.modulate = Color.MAROON
 							print("MAROON IS " + str(EdgeCount))
 							BuildingGrid.set_cell_item(Points[i],0,22)
 							pass
 						Vector3(-1.0,0.0,1.0):
-							ye.modulate = Color.AQUA
+							if CornerColors:
+								ye.modulate = Color.AQUA
 							print("AQUA IS " + str(EdgeCount))
 							BuildingGrid.set_cell_item(Points[i],0,10)
 							pass
-						_:
-							print("INVERSE IS " + str(CheckInverseBorderingGrid(Points[i])))
-							match CheckInverseBorderingGrid(Points[i]):
-								Vector3(0.0,0.0,-1.0):
-									ye.modulate = Color.YELLOW
+				4:
+							match CheckBorderingGridCorners(Points[i]):
+								Vector3(-0.6,0.0,0.2):
+									if CornerColors:
+										ye.modulate = Color.YELLOW
 									print("YELLOW IS " + str(EdgeCount))
+									BuildingGrid.set_cell_item(Points[i],0,10)
+								pass
+								Vector3(-0.6,0.0,-0.2):
+									if CornerColors:
+										ye.modulate = Color.DEEP_PINK
+									print("DEEP_PINK IS " + str(EdgeCount))
 									BuildingGrid.set_cell_item(Points[i],0,16)
 								pass
-								Vector3(-1.0,0.0,-1.0):
-									ye.modulate = Color.MAGENTA
-									print("MAGENTA IS " + str(EdgeCount))
-									BuildingGrid.set_cell_item(Points[i],0,0)
-								pass
-								Vector3(0.0,0.0,-1.0):
-									ye.modulate = Color.MAROON
-									print("MAROON IS " + str(EdgeCount))
+								Vector3(0.6,0.0,0.2):
+									if CornerColors:
+										ye.modulate = Color.AQUA
+									print("AQUA IS " + str(EdgeCount))
 									BuildingGrid.set_cell_item(Points[i],0,22)
 								pass
-								Vector3(1.0,0.0,1.0):
-									ye.modulate = Color.AQUA
+								Vector3(0.6,0.0,-0.2):
+									if CornerColors:
+										ye.modulate = Color.CRIMSON
+									print("AQUA IS " + str(EdgeCount))
+									BuildingGrid.set_cell_item(Points[i],0,0)
+								pass
+								Vector3(0.2,0.0,0.6):
+									if CornerColors:
+										ye.modulate = Color.RED
+									print("AQUA IS " + str(EdgeCount))
+									BuildingGrid.set_cell_item(Points[i],0,22)
+								pass
+								Vector3(-0.2,0.0,0.6):
+									if CornerColors:
+										ye.modulate = Color.CORNFLOWER_BLUE
 									print("AQUA IS " + str(EdgeCount))
 									BuildingGrid.set_cell_item(Points[i],0,10)
 								pass
+								Vector3(-0.2,0.0,-0.6):
+									if CornerColors:
+										ye.modulate = Color.DARK_BLUE
+										print("BLUE IS " + str(Vector3(0.0,0.0,-1.0)))
+									print("AQUA IS " + str(EdgeCount))
+									BuildingGrid.set_cell_item(Points[i],0,16)
+								pass
+								Vector3(0.2,0.0,-0.6):
+									if CornerColors:
+										ye.modulate = Color.ORANGE
+										print("BLUE IS " + str(Vector3(0.0,0.0,-1.0)))
+									print("AQUA IS " + str(EdgeCount))
+									BuildingGrid.set_cell_item(Points[i],0,0)
+								pass
 				5,6:
 					BuildEdges.append(Points[i])
-					match GetPrimaryWallDirection(EdgeCheck):
+					var EdgesDirection = GetPrimaryWallDirection(EdgeCheck)
+					var CurrentEdgeCount:int = EdgeCheck.size()
+					match CurrentEdgeCount:
+						1:
+							match EdgesDirection:
+								Vector3.LEFT:
+									if EdgeColors:
+										ye.modulate = Color.GREEN
+									BuildingGrid.set_cell_item(Points[i],1,16)
+									pass
+								Vector3.RIGHT:
+									if EdgeColors:
+										ye.modulate = Color.PURPLE
+									BuildingGrid.set_cell_item(Points[i],1,16)
+									pass
+								Vector3.FORWARD:
+									if EdgeColors:
+										ye.modulate = Color.PINK
+									BuildingGrid.set_cell_item(Points[i],1,0)
+									pass
+								Vector3.BACK:
+									if EdgeColors:
+										ye.modulate = Color.ORANGE
+									BuildingGrid.set_cell_item(Points[i],1,0)
+									pass
+						2:
+							print(str(EdgeCheck.size())+" EDGES!!!!!!!!!!!!!!!!!!")
+							var sum:Vector3
+							var avg:Vector3
+							for y in EdgeCheck.size():
+								print(str(EdgeCheck[y])+" EDGES SIDE!!!!!!!!!!!!!!!!!!")
+								sum+=EdgeCheck[y]
+							avg = sum/EdgeCheck.size()
+							print(str(avg)+" EDGES AVG!!!!!!!!!!!!!!!!!!")
+							match avg:
+								Vector3(0.5,0.0,0.5):
+									if EdgeColors:
+										ye.modulate = Color.GREEN
+									BuildingGrid.set_cell_item(Points[i],0,16)
+									pass
+								Vector3(0.5,0.0,-0.5):
+									if EdgeColors:
+										ye.modulate = Color.PURPLE
+									BuildingGrid.set_cell_item(Points[i],0,10)
+									pass
+								Vector3(-0.5,0.0,0.5):
+									if EdgeColors:
+										ye.modulate = Color.PINK
+									BuildingGrid.set_cell_item(Points[i],0,0)
+									pass
+								Vector3(-0.5,0.0,-0.5):
+									if EdgeColors:
+										ye.modulate = Color.ORANGE
+									BuildingGrid.set_cell_item(Points[i],0,22)
+									pass
+				7:
+					print(CheckBorderingGrid(Points[i]))
+					match(CheckBorderingGrid(Points[i],true)):
+						Vector3(-1.0,0.0,-1.0):
+							if InnerCornerColors:
+								ye.modulate = Color.YELLOW
+							print("YELLOW IS " + str(EdgeCount))
+							BuildingGrid.set_cell_item(Points[i],0,22)
+							pass
+						Vector3(1.0,0.0,-1.0):
+							if InnerCornerColors:
+								ye.modulate = Color.MAGENTA
+							print("MAGENTA IS " + str(EdgeCount))
+							BuildingGrid.set_cell_item(Points[i],0,10)
+							pass
+						Vector3(1.0,0.0,1.0):
+							if InnerCornerColors:
+								ye.modulate = Color.MAROON
+							print("MAROON IS " + str(EdgeCount))
+							BuildingGrid.set_cell_item(Points[i],0,16)
+							pass
+						Vector3(-1.0,0.0,1.0):
+							if InnerCornerColors:
+								ye.modulate = Color.AQUA
+							print("AQUA IS " + str(EdgeCount))
+							BuildingGrid.set_cell_item(Points[i],0,0)
+							pass
 						Vector3.LEFT:
-							ye.modulate = Color.GREEN
-							BuildingGrid.set_cell_item(Points[i],1,16)
-							pass
+							ye.modulate = Color.BLACK
+							BuildingGrid.set_cell_item(Points[i],1,22)
 						Vector3.RIGHT:
-							ye.modulate = Color.PURPLE
-							BuildingGrid.set_cell_item(Points[i],1,16)
-							pass
+							ye.modulate = Color.BLACK
+							BuildingGrid.set_cell_item(Points[i],1,22)
 						Vector3.FORWARD:
-							ye.modulate = Color.PINK
+							ye.modulate = Color.PURPLE
 							BuildingGrid.set_cell_item(Points[i],1,0)
-							pass
 						Vector3.BACK:
-							ye.modulate = Color.ORANGE
+							ye.modulate = Color.PURPLE
 							BuildingGrid.set_cell_item(Points[i],1,0)
-							pass
-					pass
-					#if Points.has(Points[i] + Vector3(1,0,0)):
-						#BuildingGrid.set_cell_item(Points[i],1,16)
-					#elif Points.has(Points[i] + Vector3(-1,0,0)):
-						#BuildingGrid.set_cell_item(Points[i],1,22)
-						##print("PLACING ROTATED WALL")
-					#else:
-						#BuildingGrid.set_cell_item(Points[i],1)
-						##print("PLACING NORMAL WALL")
 				8:
-					#BuildingGrid.set_cell_item(Points[i],0)
+					BuildingGrid.set_cell_item(Points[i],2)
 					pass
-			
-			ye.text = str(EdgeCount)
-			ye.font_size = 100
+			ye.text = str(EdgeCount)+"\n"+str(ye.global_position)
+			ye.font_size = 32
 			ye.billboard = true
-			
 			
 func GetPrimaryWallDirection(_EdgeTable:Array[Vector3]):
 	print("Primary value is: " + str(_EdgeTable.max()))
 	return _EdgeTable.max()
 
-func CheckBorderingGrid(_position:Vector3) -> Vector3:
+func CheckBorderingGrid(_position:Vector3,CornerFix:bool = false) -> Vector3:
 	var EmptyPoints:Array[Vector3]
 	var val:Vector3
 	var avg:Vector3
@@ -200,17 +340,28 @@ func CheckBorderingGrid(_position:Vector3) -> Vector3:
 		val += EmptyPoints[i]
 		
 	avg = val / EmptyPoints.size()
-	print("BORDERS FOR " + str(_position) + " ARE THE FOLLOWING...")
+	print("BORDERS FOR " + str(_position) + " ARE THE FOLLOWING..." + str((avg*10).round()))
+	if CornerFix:
+		return (avg*10).round()
 	return avg.round()
 
-func CheckInverseBorderingGrid(_position:Vector3) -> Vector3:
-	var EmptyPoint:Vector3
+func CheckBorderingGridCorners(_position:Vector3) -> Vector3:
 	var val:Vector3
 	var avg:Vector3
+	var FoundCorners:Array[Vector3]
+	
+	var dir:Vector3
+	
 	for i in CheckPositions.size():
 		if Points.has(_position + CheckPositions[i]):
-			EmptyPoint = _position + CheckPositions[i]
-	return EmptyPoint.normalized().round()
+			FoundCorners.append(CheckPositions[i])
+
+	
+	var sum = FoundCorners.reduce(func(acc, num): return acc + num)
+	var average = sum / FoundCorners.size()
+	
+	print("DIRECTION " + str(average))
+	return average
 	
 func MoveCursor(_movement:Vector3):
 	BuildingCursorPosition = _movement
@@ -239,50 +390,50 @@ func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 		print("nonexistent")
 		return Vector3.ZERO
 
-func DrawBuildRect(StartPoint:Vector3,EndPoint:Vector3):
+func DrawBuildRect(StartPoint:Vector3=Vector3.ZERO,EndPoint:Vector3=Vector3.ZERO,StartPointMod:Vector3=Vector3.ZERO,EndPointMod:Vector3=Vector3.ZERO):
 	var mesh = ImmediateMesh.new()
 	mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
 	####R SIDE
 	mesh.surface_set_color(Color.RED)
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragEnd.x,0,DragStart.z))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,0,StartPoint.z))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
 	mesh.surface_set_color(Color.GREEN)
-	mesh.surface_add_vertex(Vector3(DragEnd.x,1,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragEnd.x,0,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,StartPoint.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
 	mesh.surface_set_color(Color.WHITE)
 	
 	####L SIDE
 	mesh.surface_set_color(Color.PURPLE)
-	mesh.surface_add_vertex(Vector3(DragEnd.x,0,DragEnd.z))
-	mesh.surface_add_vertex(Vector3(DragEnd.x,1,DragEnd.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,DragEnd.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,0,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
 	mesh.surface_set_color(Color.ORANGE)
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragEnd.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,DragEnd.z))
-	mesh.surface_add_vertex(Vector3(DragEnd.x,1,DragEnd.z))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,1,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
 	mesh.surface_set_color(Color.WHITE)
 	
 	####B SIDE
 	mesh.surface_set_color(Color.YELLOW)
-	mesh.surface_add_vertex(Vector3(DragEnd.x,0,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragEnd.x,1,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragEnd.x,1,DragEnd.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,0,DragStart.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,DragStart.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
 	mesh.surface_set_color(Color.BLUE)
-	mesh.surface_add_vertex(Vector3(DragEnd.x,1,DragEnd.z))
-	mesh.surface_add_vertex(Vector3(DragEnd.x,0,DragEnd.z))
-	mesh.surface_add_vertex(Vector3(DragEnd.x,0,DragStart.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,0,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,0,DragStart.z))
 	
 	####F SIDE
 	mesh.surface_set_color(Color.AQUA)
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,DragEnd.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragEnd.z))
+	mesh.surface_add_vertex(Vector3(DragStart.x,0,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(DragStart.x,1,EndPoint.z))
 	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
 	mesh.surface_set_color(Color.CRIMSON)
 	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
 	mesh.surface_add_vertex(Vector3(DragStart.x,0,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,DragEnd.z))
+	mesh.surface_add_vertex(Vector3(DragStart.x,0,EndPoint.z))
 
 	mesh.surface_set_color(Color.WHITE)
 	
@@ -295,12 +446,13 @@ func DrawBuildRect(StartPoint:Vector3,EndPoint:Vector3):
 	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
 	
 	mesh.surface_set_uv(Vector2(1, 0))
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,1,DragStart.z))
 	mesh.surface_set_uv(Vector2(0, 1))
-	mesh.surface_add_vertex(Vector3(DragEnd.x,1,DragEnd.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
 	mesh.surface_set_uv(Vector2(1, 1))
-	mesh.surface_add_vertex(Vector3(DragEnd.x,1,DragStart.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,DragStart.z))
 
 	
 	mesh.surface_end()
 	PreviewBuildMesh.mesh = mesh
+	

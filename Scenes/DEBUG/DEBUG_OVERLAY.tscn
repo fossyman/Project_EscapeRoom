@@ -37,7 +37,7 @@ albedo_color = Color(1, 0, 0, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dh5ho"]
 albedo_color = Color(0, 1, 0, 1)
 
-[node name="DEBUG TOOLS" type="Control" node_paths=PackedStringArray("Tabs", "Gyro", "FPSText", "SystemInfoText")]
+[node name="DEBUG TOOLS" type="Control" node_paths=PackedStringArray("Tabs", "Gyro", "FPSText", "SystemInfoText", "CreateRoomButton", "FinalizeRoomButton", "DeleteRoomButton")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -45,10 +45,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_vn3bp")
-Tabs = [NodePath("TAB_Views"), NodePath("TAB_System"), NodePath("TAB_Tools")]
+Tabs = [NodePath("TAB_Views"), NodePath("TAB_System"), NodePath("TAB_Tools"), NodePath("TAB_TestFunctions")]
 Gyro = NodePath("3D GYRO")
 FPSText = NodePath("TAB_System/FPS COUNTER")
 SystemInfoText = NodePath("TAB_System/SYSTEM INFO")
+CreateRoomButton = NodePath("TAB_TestFunctions/VBoxContainer/CreateRoomButton")
+FinalizeRoomButton = NodePath("TAB_TestFunctions/VBoxContainer/Finalize Room")
+DeleteRoomButton = NodePath("TAB_TestFunctions/VBoxContainer/Delete Selected Room2")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 1
@@ -73,13 +76,15 @@ layout_mode = 0
 offset_right = 574.0
 offset_bottom = 59.0
 current_tab = 0
-tab_count = 3
+tab_count = 4
 tab_0/title = "Views"
 tab_1/title = "System"
 tab_1/tooltip = "Shows system details"
 tab_2/title = "Tools"
+tab_3/title = "Test Functions"
 
 [node name="TAB_Views" type="Panel" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -104,6 +109,7 @@ item_2/text = "Overdraw"
 item_3/text = "Normals "
 
 [node name="TAB_System" type="Panel" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_top = 0.082
@@ -169,6 +175,53 @@ scroll_active = false
 [node name="CheckButton4" type="CheckButton" parent="TAB_Tools/VBoxContainer"]
 layout_mode = 2
 text = "Visualise NPC travel paths"
+
+[node name="TAB_TestFunctions" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = -1
+offset_top = 59.0
+offset_right = 338.0
+offset_bottom = 596.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TAB_TestFunctions"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="TAB_TestFunctions/VBoxContainer"]
+custom_minimum_size = Vector2(0, 23.935)
+layout_mode = 2
+bbcode_enabled = true
+text = "[b]Room-building Tests
+"
+fit_content = true
+scroll_active = false
+
+[node name="CreateRoomButton" type="Button" parent="TAB_TestFunctions/VBoxContainer"]
+layout_mode = 2
+text = "Create New Room"
+
+[node name="Finalize Room" type="Button" parent="TAB_TestFunctions/VBoxContainer"]
+layout_mode = 2
+text = "Finalize Room"
+
+[node name="Save Selected Room3" type="Button" parent="TAB_TestFunctions/VBoxContainer"]
+layout_mode = 2
+text = "SAVE ROOM LAYOUT"
+
+[node name="Load Room" type="Button" parent="TAB_TestFunctions/VBoxContainer"]
+layout_mode = 2
+text = "LOAD ROOM LAYOUT"
+
+[node name="Delete Selected Room2" type="Button" parent="TAB_TestFunctions/VBoxContainer"]
+layout_mode = 2
+text = "Destroy Selected Room"
 
 [node name="3D GYRO" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 2.74, 1.21, -4.666)

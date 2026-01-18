@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://bb3ww4mqy77ye"
-path="res://.godot/imported/BasicWallSet.glb-fc6b553d4d1e738ccd9d6605772674ca.scn"
+uid="uid://bfy4d2kt6ttsp"
+path="res://.godot/imported/BasicWallSet.dae-f6cd5b883a71e1f37518b78bf1404522.scn"
 
 [deps]
 
-source_file="res://Assets/Models/BuildingBlocks/BasicWallSet.glb"
-dest_files=["res://.godot/imported/BasicWallSet.glb-fc6b553d4d1e738ccd9d6605772674ca.scn"]
+source_file="res://Assets/Models/BuildingBlocks/BasicWallSet.dae"
+dest_files=["res://.godot/imported/BasicWallSet.dae-f6cd5b883a71e1f37518b78bf1404522.scn"]
 
 [params]
 
@@ -26,7 +26,7 @@ meshes/light_baking=1
 meshes/lightmap_texel_size=0.2
 meshes/force_disable_compression=false
 skins/use_named_skins=true
-animation/import=true
+animation/import=false
 animation/fps=30
 animation/trimming=false
 animation/remove_immutable_tracks=true
@@ -34,15 +34,23 @@ animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
 "meshes": {
-"BasicWallSet_Cube": {
+"Floor": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_Wall.res"
+"save_to_file/path": "res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_FLOOR.res"
 },
-"BasicWallSet_Cube_018": {
+"InnerCorner": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "uid://ciyjkuhm7o5w8"
+},
+"OuterCorner": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
@@ -50,15 +58,26 @@ _subresources={
 "save_to_file/enabled": true,
 "save_to_file/path": "res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_CORNER.res"
 },
-"BasicWallSet_Plane": {
+"Wall": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_Floor.res"
+"save_to_file/path": "res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_WALL.res"
+},
+"Wall.001": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_DOORWAY.res"
+}
+},
+"nodes": {
+"PATH:AnimationPlayer": {
+"import/skip_import": true
 }
 }
 }
-gltf/naming_version=1
-gltf/embedded_image_handling=1
