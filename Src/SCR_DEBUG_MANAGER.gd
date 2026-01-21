@@ -19,6 +19,9 @@ var ViewPort:Viewport
 @export var FinalizeRoomButton:Button
 @export var DeleteRoomButton:Button
 
+@export var SpawnNPCButton:Button
+@export var TestNPC:PackedScene
+
 var _GameCamera:Camera3D
 @export var CameraHolder:Node3D
 
@@ -72,3 +75,9 @@ func OnDebugTabPressed(tab: int) -> void:
 		Tabs[i].visible = false
 	Tabs[tab].visible = true
 	pass # Replace with function body.
+
+func OnSpawnNPCButtonPressed():
+	var _spawn = TestNPC.instantiate()
+	GLOBALS.CURRENTROOT.add_child(_spawn)
+	_spawn.global_position = GLOBALS.CURRENTROOT.PlayerCursor.global_position
+	pass

@@ -1,0 +1,42 @@
+[gd_scene load_steps=7 format=3 uid="uid://dcnfbc7ofhjyc"]
+
+[ext_resource type="Script" uid="uid://lmbm33fm1ovc" path="res://Src/SCR_BasicAI.gd" id="1_htmd5"]
+[ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_b3f24"]
+
+[sub_resource type="Resource" id="Resource_b4u8d"]
+script = ExtResource("2_b3f24")
+Intelligence = 10
+Perception = 10
+ProblemSolving = 10
+Clumsy = 0
+metadata/_custom_type_script = "uid://b66mtekj02xc"
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_c3et4"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_c3et4"]
+radial_segments = 4
+rings = 1
+is_hemisphere = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_htmd5"]
+radial_segments = 4
+rings = 1
+
+[node name="BasicAi" type="CharacterBody3D" node_paths=PackedStringArray("Nav")]
+script = ExtResource("1_htmd5")
+Nav = NodePath("NavigationAgent3D")
+CharacterStatistics = SubResource("Resource_b4u8d")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.531351, 0)
+shape = SubResource("SphereShape3D_c3et4")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_c3et4")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("SphereMesh_htmd5")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+avoidance_enabled = true

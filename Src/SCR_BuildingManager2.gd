@@ -42,6 +42,8 @@ var OverlappingBuildPoints:Array[Vector3] = []
 
 var PERMANENTPLACEMENTS:Array[Vector3] = []
 
+var PlacedProps:Array[PropScene]=[]
+
 var Labels:Array[Label3D]
 
 static var CheckPositions = [Vector3(1,0,1),Vector3(0,0,1),Vector3(-1,0,1),
@@ -51,6 +53,8 @@ static var CheckPositions = [Vector3(1,0,1),Vector3(0,0,1),Vector3(-1,0,1),
 @export_category("PROP")
 @export var PropGrid:Node3D
 @export var SelectedProp:RES_PropData
+
+@export var Chunksize = 64
 
 var BuildThread:Thread
 
@@ -133,6 +137,7 @@ func _process(delta: float) -> void:
 				PropGrid.add_child(_NewProp)
 				_NewProp.position = mouse_position(true)
 				_NewProp.rotation_degrees = CellRotationToEuler(GetAverageWallRotationIndex(_NewProp.position,true))
+				PlacedProps.append(_NewProp)
 		#endregion
 
 func BuildSelectedSection(StartCorner:Vector3,EndCorner:Vector3):
@@ -168,9 +173,13 @@ func BuildSelectedSection(StartCorner:Vector3,EndCorner:Vector3):
 
 	if NewPoints.is_empty():
 		return
+	var ChunkCounter:int = 0
 	for i in OverlappingBuildPoints.size():
 		UpdateGridSquare(OverlappingBuildPoints[i])
-		#await get_tree().process_frame
+		ChunkCounter +=1
+		if ChunkCounter >= Chunksize:
+			ChunkCounter = 0
+			await get_tree().process_frame
 		
 	OverlappingBuildPoints.clear()
 	
@@ -449,6 +458,7 @@ func CreateNewRoom():
 func FinalizeRoom():
 	CurrentlyEditingRoom.RoomSquares = BuildingPoints
 	CurrentlyEditingRoom.RoomArea = AABB(CurrentlyEditingRoom.RoomSquares[0],CurrentlyEditingRoom.RoomSquares[CurrentlyEditingRoom.RoomSquares.size()-1])
+	CurrentlyEditingRoom.PlacedProps = PlacedProps
 	var average = Vector3.ZERO
 	for i in CurrentlyEditingRoom.RoomSquares.size():
 		average += CurrentlyEditingRoom.RoomSquares[i]
