@@ -2,12 +2,15 @@ extends Node
 class_name BuildingManager
 static var instance:BuildingManager
 
-var SelectedTool:int = 0
 
+enum BUILDTOOLS{FOUNDATION,PROP}
+var SelectedTool:BUILDTOOLS = 0
 
+@export_category("FOUNDATION")
 @export var BuildMat:Material
 @export var DestroyMat:Material
 @export var BuildSizeLabel:Label3D
+@export var ShowLabels:bool=false
 @export var EdgeColors:bool=false
 @export var CornerColors:bool=false
 @export var InnerCornerColors:bool=false
@@ -19,6 +22,7 @@ var SelectedTool:int = 0
 @export var CurrentlyEditingRoom:RoomResource = null
 
 @export var Cursor:Node3D
+@export var OverlapTestingArea:Area3D
 var BuildingCursorPosition:Vector3
 
 var ClickPos:Vector3
@@ -38,11 +42,21 @@ var OverlappingBuildPoints:Array[Vector3] = []
 
 var PERMANENTPLACEMENTS:Array[Vector3] = []
 
+var PlacedProps:Array[PropScene]=[]
+
 var Labels:Array[Label3D]
 
 static var CheckPositions = [Vector3(1,0,1),Vector3(0,0,1),Vector3(-1,0,1),
 							Vector3(1,0,0),Vector3(0,0,0),Vector3(-1,0,0),
 							Vector3(1,0,-1),Vector3(0,0,-1),Vector3(-1,0,-1)]
+
+@export_category("PROP")
+@export var PropGrid:Node3D
+@export var SelectedProp:RES_PropData
+
+@export var Chunksize = 64
+
+var BuildThread:Thread
 
 func _enter_tree() -> void:
 	instance = self
@@ -55,13 +69,13 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	
 	if Input.is_key_pressed(KEY_1):
-		SelectedTool = 0
+		SelectedTool = BUILDTOOLS.FOUNDATION
 		PreviewBuildMesh.material_override = BuildMat
 	if Input.is_key_pressed(KEY_2):
-		SelectedTool = 1
+		SelectedTool = BUILDTOOLS.PROP
 		PreviewBuildMesh.material_override = DestroyMat
 	if Input.is_key_pressed(KEY_3):
-		SelectedTool = 2
+		SelectedTool = 99
 		PreviewBuildMesh.material_override = DestroyMat
 	if Input.is_action_just_pressed("DEBUG_REFRESHBUILD"):
 		DEBUG_REFRESHBUILD()
@@ -72,42 +86,59 @@ func _process(delta: float) -> void:
 	MoveCursor(mouse_position(true))
 	
 	
-	
-	if Input.is_action_pressed("Lclick"):
-		var MousePos = mouse_position(true)
-		if Input.is_action_just_pressed("Lclick"):
-			ClickPos = MousePos
-			BuildConnector(ClickPos)
-		if MousePos.distance_to(ClickPos) > DragDeadzone:
-			DragStart = ClickPos
-			DragEnd = MousePos
-			PreviewBuildMesh.visible = true
-			#print("MAKING SQUARE BETWEEN " + str(DragStart) + " AND " + str(DragEnd))
-			DrawBuildRect(DragStart,DragEnd)
-	BuildSizeLabel.text = str((DragEnd - DragStart).x) + ", " + str((DragEnd - DragStart).z)
-	if Input.is_action_just_released("Lclick"):
-		if !CurrentlyEditingRoom:
-			CurrentlyEditingRoom = RoomResource.new()
-		
-		var StartX = (DragStart.x if DragStart.x < DragEnd.x else DragEnd.x)
-		var StartZ = (DragStart.z if DragStart.z < DragEnd.z else DragEnd.z)
-		
-		var EndX = (DragEnd.x if DragEnd.x > DragStart.x else DragStart.x) + 1
-		var EndZ = (DragEnd.z if DragEnd.z > DragStart.z else DragStart.z) + 1
-		match(SelectedTool):
-			0:
-				BuildSelectedSection(Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
-			1:
-				for X in range(StartX+1,EndX-1):
-					for Z in range(StartZ+1,EndZ-1):
-						EraseSelection(Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
-			2:
-				var points:Array[Vector3]
-				for X in range(StartX+1,EndX-1):
-					for Z in range(StartZ+1,EndZ-1):
-						points.append(Vector3(X,0,Z))
-		PreviewBuildMesh.visible = false
-
+	match SelectedTool:
+		#region FOUNDATION
+		BUILDTOOLS.FOUNDATION:
+			if Input.is_action_pressed("Lclick"):
+				var MousePos = mouse_position(true)
+				if Input.is_action_just_pressed("Lclick"):
+					ClickPos = MousePos
+					BuildConnector(ClickPos)
+				if MousePos.distance_to(ClickPos) > DragDeadzone:
+					DragStart = ClickPos
+					DragEnd = MousePos
+					PreviewBuildMesh.visible = true
+					##print("MAKING SQUARE BETWEEN " + str(DragStart) + " AND " + str(DragEnd))
+					DrawBuildRect(DragStart,DragEnd)
+			BuildSizeLabel.text = str((DragEnd - DragStart).x) + ", " + str((DragEnd - DragStart).z)
+			if Input.is_action_just_released("Lclick"):
+				if !CurrentlyEditingRoom:
+					CurrentlyEditingRoom = RoomResource.new()
+				
+				var StartX = (DragStart.x if DragStart.x < DragEnd.x else DragEnd.x)
+				var StartZ = (DragStart.z if DragStart.z < DragEnd.z else DragEnd.z)
+				
+				var EndX = (DragEnd.x if DragEnd.x > DragStart.x else DragStart.x) + 1
+				var EndZ = (DragEnd.z if DragEnd.z > DragStart.z else DragStart.z) + 1
+				match(SelectedTool):
+					0:
+						#BuildThread = Thread.new()
+						#BuildThread.start(BuildSelectedSection.bind(Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ)))
+						BuildSelectedSection(Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
+					1:
+						for X in range(StartX+1,EndX-1):
+							for Z in range(StartZ+1,EndZ-1):
+								EraseSelection(Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
+					2:
+						var points:Array[Vector3]
+						for X in range(StartX+1,EndX-1):
+							for Z in range(StartZ+1,EndZ-1):
+								points.append(Vector3(X,0,Z))
+					_:
+						return
+				PreviewBuildMesh.visible = false
+			#endregion
+		#region PROP
+		BUILDTOOLS.PROP:
+			if Input.is_action_just_pressed("Lclick"):
+				if OverlapTestingArea.has_overlapping_areas():
+					return
+				var _NewProp = SelectedProp._Scene.instantiate() as Node3D
+				PropGrid.add_child(_NewProp)
+				_NewProp.position = mouse_position(true)
+				_NewProp.rotation_degrees = CellRotationToEuler(GetAverageWallRotationIndex(_NewProp.position,true))
+				PlacedProps.append(_NewProp)
+		#endregion
 
 func BuildSelectedSection(StartCorner:Vector3,EndCorner:Vector3):
 	push_warning(StartCorner)
@@ -142,9 +173,13 @@ func BuildSelectedSection(StartCorner:Vector3,EndCorner:Vector3):
 
 	if NewPoints.is_empty():
 		return
+	var ChunkCounter:int = 0
 	for i in OverlappingBuildPoints.size():
 		UpdateGridSquare(OverlappingBuildPoints[i])
-		await get_tree().process_frame
+		ChunkCounter +=1
+		if ChunkCounter >= Chunksize:
+			ChunkCounter = 0
+			await get_tree().process_frame
 		
 	OverlappingBuildPoints.clear()
 	
@@ -174,8 +209,8 @@ func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
 
 	
 	for x in CheckPositions.size():
-		if BuildingPoints.has(_gridsquare + (CheckPositions[x])) && (_gridsquare + CheckPositions[x]) != _gridsquare:
-			print("HAS: " + str(CheckPositions[x]))
+		if (BuildingPoints.has(_gridsquare + (CheckPositions[x])) ) && (_gridsquare + CheckPositions[x]) != _gridsquare:
+			#print("HAS: " + str(CheckPositions[x]))
 			EdgeCount+=1
 
 
@@ -185,13 +220,13 @@ func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
 			CornerCheck.append((CheckPositions[x]))
 	
 	var check = CheckBorderingGridCorners(_gridsquare)
-	print("CHECK VALUE:: " + str(check))
-	print("EDGECHECK " + str(EdgeCheck.size()))
-	print("CORNERCHECK " + str(CornerCheck.size()))
+	#print("CHECK VALUE:: " + str(check))
+	#print("EDGECHECK " + str(EdgeCheck.size()))
+	#print("CORNERCHECK " + str(CornerCheck.size()))
 	match EdgeCount:
 		#CORNER
 		3:
-			print("CORNER")
+			#print("CORNER")
 			var ye = CheckBorderingGridAverage(_gridsquare,false)
 			Dir = ye
 			var noAVG = GetAverageWallRotationIndex(_gridsquare,true)
@@ -211,10 +246,10 @@ func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
 				1:
 					BuildingGrid.set_cell_item(_gridsquare,1,no)
 				4:
-					print("::EDGECOUNT:: " + str(EdgeCount))
+					#print("::EDGECOUNT:: " + str(EdgeCount))
 					match EdgeCount:
 						5:
-							print("5's NORMAL CHECK:: at " + str(check) + " " + str(noAVG))
+							#print("5's NORMAL CHECK:: at " + str(check) + " " + str(noAVG))
 							match check:
 								Vector3(Vector3.FORWARD*0.5),Vector3(Vector3.LEFT*0.5),Vector3(Vector3.RIGHT*0.5),Vector3(Vector3.BACK*0.5):
 									BuildingGrid.set_cell_item(_gridsquare,1,noAVG)
@@ -224,7 +259,8 @@ func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
 						6:
 							BuildingGrid.set_cell_item(_gridsquare,1,noAVG)
 						_:
-							print("SHOULD BE SOMETHING HERE AT")
+							#print("SHOULD BE SOMETHING HERE AT")
+							pass
 				_:
 					pass
 		8:
@@ -232,31 +268,31 @@ func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
 		7:
 			var check2 = CheckBorderingGridCorners(_gridsquare,false)
 			var CurrentEdgeCount:int = EdgeCheck.size()
-			printerr(str(CurrentEdgeCount) + " 1VS1 " + str(check2))
+			#printerr(str(CurrentEdgeCount) + " 1VS1 " + str(check2))
 		
 			var no = GetAverageWallRotationIndex(_gridsquare,false,Vector3.ZERO,7)
 			var noAVG = GetAverageWallRotationIndex(_gridsquare,true,Vector3.ZERO,7)
 
 			match check:
 				Vector3(Vector3.FORWARD),Vector3(Vector3.LEFT),Vector3(Vector3.RIGHT),Vector3(Vector3.BACK),Vector3(0,0,0.1):
-					print("attempting to determine :: " + str(CheckBorderingGridAverage(_gridsquare,true)))
+					#print("attempting to determine :: " + str(CheckBorderingGridAverage(_gridsquare,true)))
 
 					BuildingGrid.set_cell_item(_gridsquare,1,noAVG)
-					print("WOAH" + str(noAVG))
+					#print("WOAH" + str(noAVG))
 				_:
-					print("AVERAGE RETURN FOR 7 IS :: " + str(noAVG))
+					#print("AVERAGE RETURN FOR 7 IS :: " + str(noAVG))
 					BuildingGrid.set_cell_item(_gridsquare,3,noAVG)
-					print("NOAH" + str(noAVG))
-
-	var lab = Label3D.new()
-	BuildingGrid.add_child(lab)
-	Labels.append(lab)
-	lab.no_depth_test = true
-	lab.modulate = LabelColor
-	lab.global_position = _gridsquare + Vector3.UP
-	lab.text = str(EdgeCount)+"\n"+str(CheckBorderingGridCorners(_gridsquare))+"\n"+str(CheckBorderingGridCorners(_gridsquare,true))
-	lab.font_size = 32
-	lab.billboard = true
+					#print("NOAH" + str(noAVG))
+	if ShowLabels:
+		var lab = Label3D.new()
+		BuildingGrid.add_child(lab)
+		Labels.append(lab)
+		lab.no_depth_test = true
+		lab.modulate = LabelColor
+		lab.global_position = _gridsquare + Vector3.UP
+		lab.text = str(EdgeCount)+"\n"+str(CheckBorderingGridCorners(_gridsquare))+"\n"+str(CheckBorderingGridCorners(_gridsquare,true))
+		lab.font_size = 32
+		lab.billboard = true
 			
 #func OverlapChecks():
 	#for i in OverlappingBuildPoints.size():
@@ -288,24 +324,24 @@ func CheckBorderingGridCorners(_position:Vector3,_snap:bool = true) -> Vector3:
 	var dir:Vector3
 	
 	for i in CheckPositions.size():
-		if BuildingPoints.has(_position + CheckPositions[i]) or OccupiedGridSquares.has(_position + CheckPositions[i]):
+		if BuildingPoints.has(_position + CheckPositions[i]) and !PERMANENTPLACEMENTS.has(_position + CheckPositions[i]):
 			FoundCorners.append(CheckPositions[i])
 
 	if FoundCorners.is_empty():
-		print("NO CORNERS FOUND")
+		#print("NO CORNERS FOUND")
 		return Vector3.ZERO
 		
 	var sum = FoundCorners.reduce(func(acc, num): return acc + num)
 	var average:Vector3 = sum / FoundCorners.size()*1
 	
 	
-	print("RETURNING CORNER VALUE OF :: " + str(average))
+	#print("RETURNING CORNER VALUE OF :: " + str(average))
 	return average.snappedf(0.1) if _snap else average
 	
 func MoveCursor(_movement:Vector3):
 	BuildingCursorPosition = _movement
 	Cursor.global_position = BuildingCursorPosition
-	#print(Cursor.global_position)
+	##print(Cursor.global_position)
 	pass
 
 func mouse_position(_SnapToGrid:bool = false) -> Vector3:
@@ -422,19 +458,22 @@ func CreateNewRoom():
 func FinalizeRoom():
 	CurrentlyEditingRoom.RoomSquares = BuildingPoints
 	CurrentlyEditingRoom.RoomArea = AABB(CurrentlyEditingRoom.RoomSquares[0],CurrentlyEditingRoom.RoomSquares[CurrentlyEditingRoom.RoomSquares.size()-1])
+	CurrentlyEditingRoom.PlacedProps = PlacedProps
 	var average = Vector3.ZERO
 	for i in CurrentlyEditingRoom.RoomSquares.size():
 		average += CurrentlyEditingRoom.RoomSquares[i]
 	average /= CurrentlyEditingRoom.RoomSquares.size()
 	
-	var RoomLabel = Label3D.new()
-	add_child(RoomLabel)
-	RoomLabel.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	RoomLabel.outline_size = 100
-	RoomLabel.text = "ROOM"
-	RoomLabel.position = average + (Vector3.UP*2)
-	RoomLabel.font_size = 100
-	RoomLabel.modulate = Color.ORANGE
+	if ShowLabels:
+		var RoomLabel = Label3D.new()
+		add_child(RoomLabel)
+		RoomLabel.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		RoomLabel.outline_size = 100
+		RoomLabel.text = "ROOM"
+		RoomLabel.position = average + (Vector3.UP*2)
+		RoomLabel.font_size = 100
+		RoomLabel.modulate = Color.ORANGE
+	
 	Rooms.append(CurrentlyEditingRoom)
 	CurrentlyEditingRoom = null
 	OccupiedGridSquares.clear()
@@ -448,7 +487,7 @@ func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offse
 	if CornerFix:
 		match CornerChecking:
 			Vector3(-1,0,-1),Vector3(Vector3.FORWARD),Vector3(1,0,-1),Vector3(Vector3.LEFT),Vector3(Vector3.RIGHT),Vector3(Vector3(-1,0,1)),Vector3(Vector3.BACK),Vector3(1,0,1):
-				print("KORNA " + str(CornerChecking))
+				#print("KORNA " + str(CornerChecking))
 				match checking:
 					Vector3(-1,0,-1):
 						return 22
@@ -472,7 +511,7 @@ func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offse
 						return 10
 					
 			_:
-				print("OTHA KORNA " + str(CornerChecking))
+				#print("OTHA KORNA " + str(CornerChecking))
 				match CornerChecking:
 					
 					Vector3(-0.5,0,0.5):
@@ -499,10 +538,10 @@ func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offse
 						return 22
 						
 					Vector3(-0.1, 0.0, -0.1):
-						print("RETURNING 7S")
+						#print("RETURNING 7S")
 						return 22
 					Vector3(0.1, 0.0, 0.1):
-						print("RETURNING 7S")
+						#print("RETURNING 7S")
 						return 16
 					
 					Vector3(-0.5,0,0):
@@ -513,31 +552,31 @@ func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offse
 						return 10
 						
 					Vector3(0.1, 0.0, -0.1):
-						print("RETURNING 7S")
+						#print("RETURNING 7S")
 						return 10
 					Vector3(0.0, 0.0, 0.1):
-						print("RETURNING 7S")
+						#print("RETURNING 7S")
 						return 10
 					
 					##4
 					Vector3(0.6, 0.0, 0.2):
-						print("RETURNING 7S")
+						#print("RETURNING 7S")
 						return 22
 					Vector3(-0.6, 0.0, -0.2):
-						print("RETURNING 7S")
+						#print("RETURNING 7S")
 						return 16
 					Vector3(-0.6, 0.0, 0.2):
-						print("RETURNING 7S")
+						#print("RETURNING 7S")
 						return 10
 					Vector3(-0.2, 0.0, -0.6):
-						print("RETURNING 7S")
+						#print("RETURNING 7S")
 						return 16
 					Vector3(-0.2, 0.0, 0.6):
-						print("RETURNING 7S")
+						#print("RETURNING 7S")
 						return 10
 					
 	else:
-		print("FINAL KORNAS " + str(checking))
+		#print("FINAL KORNAS " + str(checking))
 		match checking:
 			Vector3.FORWARD:
 				return 0
@@ -548,13 +587,30 @@ func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offse
 			Vector3.RIGHT:
 				return 22
 		if intcheck == 7:
-			print("OH MY GOODNESS ITS 7" + str(CornerChecking))
+			#print("OH MY GOODNESS ITS 7" + str(CornerChecking))
 			match CornerChecking:
 				pass
 	return 0
-	
+
+func CellRotationToEuler(_value:int) -> Vector3:
+	#print("CHECKING ::" + str(_value))
+	match _value:
+		0:
+			return Vector3(0,0,0)
+		10:
+			return Vector3(0,180,0)
+		16:
+			return Vector3(0,90,0)
+		22:
+			return Vector3(0,255,0)
+		_:
+			return Vector3(0,0,0)
+	pass
 
 func BuildConnector(_doorpos:Vector3):
 	if BuildingPoints.has(_doorpos):
 		var ye:int = GetAverageWallRotationIndex(_doorpos,true)
 		BuildingGrid.set_cell_item(_doorpos,4,ye)
+
+func _exit_tree() -> void:
+	BuildThread.wait_to_finish()
