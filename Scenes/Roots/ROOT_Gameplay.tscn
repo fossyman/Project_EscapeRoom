@@ -1,10 +1,12 @@
-[gd_scene load_steps=26 format=3 uid="uid://cyxcjwc3tm3ad"]
+[gd_scene load_steps=32 format=3 uid="uid://cyxcjwc3tm3ad"]
 
 [ext_resource type="Script" uid="uid://ctdndmvo88rec" path="res://Src/SCR_BuildingManager2.gd" id="1_6rgy0"]
 [ext_resource type="ArrayMesh" uid="uid://dx4egntrxmrj" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_CORNER.res" id="1_emfuj"]
 [ext_resource type="Script" uid="uid://6werddmho83b" path="res://Src/SCR_Gamemanager.gd" id="1_prpd7"]
 [ext_resource type="Script" uid="uid://c5fo8y2mkh734" path="res://Src/SCR_CameraController.gd" id="1_y3unb"]
 [ext_resource type="Texture2D" uid="uid://d15sugtlh8nby" path="res://icon.svg" id="2_wm8y7"]
+[ext_resource type="Script" uid="uid://kla5tnx7veom" path="res://Src/SCR_PropButton.gd" id="3_qgogq"]
+[ext_resource type="Resource" uid="uid://d4m52qy8lmy6j" path="res://Assets/Resources/PropData/Pirate Props/PROPDATA_PIRATE_CUTLASS.tres" id="4_tq3kg"]
 [ext_resource type="ArrayMesh" uid="uid://ckcbxpp44rr7a" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_WALL.res" id="5_1caoe"]
 [ext_resource type="ArrayMesh" uid="uid://rd3i7lmgeqhf" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_FLOOR.res" id="6_nitf2"]
 [ext_resource type="Material" uid="uid://bgxc0n0u8y8b0" path="res://Assets/Material/MAT_BuildOverlay.tres" id="6_nxnwt"]
@@ -19,6 +21,8 @@ albedo_color = Color(0.231373, 0.317647, 1, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ewih0"]
 shading_mode = 0
 albedo_color = Color(1, 0.192157, 0.207843, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tq3kg"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_y3unb"]
 sky_top_color = Color(0.183972, 0.22652, 0.285693, 1)
@@ -85,6 +89,24 @@ center_offset = Vector3(0, 0, -0.001)
 
 [sub_resource type="SphereMesh" id="SphereMesh_cy1kc"]
 
+[sub_resource type="Gradient" id="Gradient_tq3kg"]
+offsets = PackedFloat32Array(0.0327869, 0.117486, 0.163934)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_mmves"]
+gradient = SubResource("Gradient_tq3kg")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xvs0j"]
+transparency = 1
+shading_mode = 0
+albedo_texture = SubResource("GradientTexture2D_mmves")
+texture_filter = 1
+texture_repeat = false
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_2h1dl"]
+
 [sub_resource type="SphereMesh" id="SphereMesh_j55jw"]
 radial_segments = 4
 rings = 1
@@ -92,19 +114,34 @@ rings = 1
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cy1kc"]
 albedo_color = Color(1, 0, 0, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wm8y7"]
-albedo_color = Color(0, 0.443137, 1, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_emfuj"]
-material = SubResource("StandardMaterial3D_wm8y7")
-size = Vector3(0.3, 0.3, 10)
+[sub_resource type="SphereShape3D" id="SphereShape3D_tq3kg"]
 
 [node name="RootGameplay" type="Node"]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="MousePositionDebug" type="RichTextLabel" parent="Control"]
+layout_mode = 0
+offset_right = 584.0
+offset_bottom = 146.0
+
+[node name="ShouldMoveDebug" type="RichTextLabel" parent="Control"]
+layout_mode = 0
+offset_top = 187.0
+offset_right = 584.0
+offset_bottom = 333.0
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("1_prpd7")
 
-[node name="BuilderManager" type="Node" parent="." node_paths=PackedStringArray("BuildSizeLabel", "BuildingGrid", "Cursor", "PreviewBuildMesh")]
+[node name="BuilderManager" type="Node" parent="." node_paths=PackedStringArray("BuildSizeLabel", "BuildingGrid", "Cursor", "OverlapTestingArea", "PreviewBuildMesh", "PropGrid")]
 script = ExtResource("1_6rgy0")
 BuildMat = SubResource("StandardMaterial3D_prpd7")
 DestroyMat = SubResource("StandardMaterial3D_ewih0")
@@ -114,7 +151,136 @@ CornerColors = true
 InnerCornerColors = true
 BuildingGrid = NodePath("../MAP/BuildingGrid")
 Cursor = NodePath("../CONSTANT/Cursor")
+OverlapTestingArea = NodePath("../CONSTANT/Cursor/OverlapCheckingArea")
 PreviewBuildMesh = NodePath("../CONSTANT/PREVIEW")
+PropGrid = NodePath("../MAP/PropContainer")
+SelectedProp = ExtResource("4_tq3kg")
+
+[node name="Control" type="Control" parent="BuilderManager"]
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 83.0
+grow_horizontal = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BuilderManager/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Button" type="Button" parent="BuilderManager/Control/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("3_qgogq")
+Propdata = ExtResource("4_tq3kg")
+
+[node name="Control2" type="Control" parent="BuilderManager"]
+layout_mode = 3
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -403.0
+offset_top = -284.0
+offset_bottom = 285.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="BuilderManager/Control2"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="BuilderManager/Control2"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 70.0
+grow_horizontal = 2
+text = "PROP NAME"
+
+[node name="Panel2" type="Button" parent="BuilderManager/Control2"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 21.0
+offset_top = -112.0
+offset_right = 112.0
+offset_bottom = -21.0
+grow_vertical = 0
+theme_override_styles/hover = SubResource("StyleBoxFlat_tq3kg")
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="BuilderManager/Control2/Panel2"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -66.0
+offset_bottom = -12.0
+grow_horizontal = 2
+text = "CONTAINS"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Panel3" type="Button" parent="BuilderManager/Control2"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -45.5
+offset_top = -112.0
+offset_right = 45.5
+offset_bottom = -21.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="RichTextLabel3" type="RichTextLabel" parent="BuilderManager/Control2/Panel3"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -66.0
+offset_bottom = -12.0
+grow_horizontal = 2
+text = "USED ON"
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="Panel4" type="Button" parent="BuilderManager/Control2"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -114.0
+offset_top = -112.0
+offset_right = -23.0
+offset_bottom = -21.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="RichTextLabel4" type="RichTextLabel" parent="BuilderManager/Control2/Panel4"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = -66.0
+offset_bottom = -12.0
+grow_horizontal = 2
+text = "UNLOCKS"
+horizontal_alignment = 1
+vertical_alignment = 2
 
 [node name="MAP" type="Node" parent="."]
 
@@ -134,6 +300,8 @@ cell_center_z = false
 data = {
 "cells": PackedInt32Array(20, 10, 2, 21, 10, 2, 22, 10, 2, 22, 11, 2, 22, 12, 2, 22, 13, 2, 22, 14, 2, 21, 14, 2, 21, 13, 2, 20, 12, 1048578, 20, 11, 2, 21, 11, 2, 21, 12, 2, 21, 15, 1, 22, 15, 1, 23, 15, 1048576, 23, 13, 2, 24, 13, 2, 24, 12, 2, 23, 12, 2, 23, 11, 2, 24, 11, 2, 23, 14, 1441795, 20, 14, 1048578, 20, 13, 1048578, 19, 13, 1048578, 19, 14, 1048578, 18, 14, 1048578, 17, 14, 1048578, 18, 13, 1048578, 19, 12, 1048578, 18, 12, 1048578, 17, 12, 1048578, 17, 13, 1048578, 16, 15, 0, 20, 15, 1, 19, 15, 1, 18, 15, 1, 17, 15, 1, 16, 14, 1441793, 16, 13, 1441793, 16, 12, 1441793, 27, 8, 1048577, 27, 9, 1048577, 27, 10, 1048577, 27, 11, 1048577, 27, 12, 1048577, 28, 13, 655361, 29, 13, 655361, 30, 13, 655361, 31, 13, 655361, 32, 13, 655361, 33, 13, 655361, 27, 13, 3, 9, 11, 655361, 8, 11, 655361, 7, 11, 655364, 6, 11, 655361, 6, 10, 1, 7, 10, 4, 8, 10, 1, 9, 10, 1)
 }
+
+[node name="PropContainer" type="Node3D" parent="MAP"]
 
 [node name="StaticBody3D" type="StaticBody3D" parent="MAP"]
 
@@ -155,6 +323,7 @@ Camera = NodePath("CameraPosRoot/CameraHolder/Node3D/Camera3D")
 Movespeed = 30.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CONSTANT/CameraOrigin"]
+visible = false
 mesh = SubResource("SphereMesh_cy1kc")
 
 [node name="CameraPosRoot" type="Node3D" parent="CONSTANT/CameraOrigin"]
@@ -169,7 +338,13 @@ remote_path = NodePath("../Camera3D")
 
 [node name="Camera3D" type="Camera3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder/Node3D"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 11, 11)
+cull_mask = 1023
 current = true
+
+[node name="Decal" type="MeshInstance3D" parent="CONSTANT/CameraOrigin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+material_override = SubResource("StandardMaterial3D_xvs0j")
+mesh = SubResource("PlaneMesh_2h1dl")
 
 [node name="Cursor" type="Node3D" parent="CONSTANT"]
 
@@ -177,10 +352,14 @@ current = true
 mesh = SubResource("SphereMesh_j55jw")
 surface_material_override/0 = SubResource("StandardMaterial3D_cy1kc")
 
+[node name="OverlapCheckingArea" type="Area3D" parent="CONSTANT/Cursor"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CONSTANT/Cursor/OverlapCheckingArea"]
+shape = SubResource("SphereShape3D_tq3kg")
+
 [node name="PREVIEW" type="MeshInstance3D" parent="CONSTANT"]
 material_override = ExtResource("6_nxnwt")
 cast_shadow = 0
-mesh = SubResource("BoxMesh_emfuj")
 
 [node name="BuildSizeLabel" type="Label3D" parent="CONSTANT"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.83775, 0)
@@ -190,22 +369,3 @@ no_depth_test = true
 text = "0,10"
 font = ExtResource("8_prpd7")
 font_size = 97
-
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="MousePositionDebug" type="RichTextLabel" parent="Control"]
-layout_mode = 0
-offset_right = 584.0
-offset_bottom = 146.0
-
-[node name="ShouldMoveDebug" type="RichTextLabel" parent="Control"]
-layout_mode = 0
-offset_top = 187.0
-offset_right = 584.0
-offset_bottom = 333.0

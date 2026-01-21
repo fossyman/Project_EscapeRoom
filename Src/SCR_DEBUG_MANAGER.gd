@@ -19,17 +19,21 @@ var ViewPort:Viewport
 @export var FinalizeRoomButton:Button
 @export var DeleteRoomButton:Button
 
+var _GameCamera:Camera3D
+@export var CameraHolder:Node3D
+
 func _enter_tree() -> void:
 	instance = self
 	ToggleDebugMenu()
 func _ready() -> void:
 	ViewPort = get_tree().root.get_viewport()
 	SystemInfoText.text = "Operating System: " + OS.get_name() + "\n" + "GPU: " + RenderingServer.get_video_adapter_name() + "\n" + "CPU: " + OS.get_processor_name() + "\n" + "Motherboard: " + OS.get_model_name()
-	
+	_GameCamera = get_viewport().get_camera_3d()
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if IsDebugVisible:
 		FPSText.text = "FPS: " + str(Engine.get_frames_per_second())
+		CameraHolder.rotation.y = _GameCamera.global_rotation.y
 		
 	if Input.is_action_just_pressed("DEBUG_TOGGLE"):
 		IsDebugVisible = !IsDebugVisible

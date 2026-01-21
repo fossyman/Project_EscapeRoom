@@ -13,7 +13,7 @@ var TargetRotation:Vector3 = Vector3(0,-45,0)
 var viewport_size = Vector2(1280,720)
 var viewport:Viewport
 
-var CurrentScroll:float = 0.0
+var CurrentScroll:float = 1.0
 var RotateTween:Tween
 
 @export var DragDeadzone:float = 1.0
@@ -49,10 +49,10 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			CurrentScroll += 1.0
-			CurrentScroll = clamp(CurrentScroll,-1.0,3.0)
+			CurrentScroll = clamp(CurrentScroll,1.0,5.0)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			CurrentScroll += -1.0
-			CurrentScroll = clamp(CurrentScroll,-1.0,3.0)
+			CurrentScroll = clamp(CurrentScroll,1.0,5.0)
 			
 	if event is InputEventMouseMotion:
 		if Input.is_action_pressed("RClick"):
@@ -63,14 +63,14 @@ func _input(event: InputEvent) -> void:
 		
 
 func MoveCam():
-	CameraHolder.position = lerp(CameraHolder.position,Vector3(0,-CurrentScroll*1.5,-CurrentScroll* 0.5),LerpSpeed*delta)
+	CameraHolder.position = lerp(CameraHolder.position,Vector3(0,-CurrentScroll / 0.6,-CurrentScroll / 0.9),LerpSpeed*delta)
 	
-	CameraHolder.rotation_degrees.x = lerp(CameraHolder.rotation_degrees.x,-CurrentScroll * 8, LerpSpeed * delta)
+	CameraHolder.rotation_degrees.x = lerp(CameraHolder.rotation_degrees.x,-CurrentScroll / 0.5, LerpSpeed * delta)
 	
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if direction:
-		TargetPosition += direction * Movespeed * delta
+		TargetPosition += direction * (Movespeed / CurrentScroll) * delta
 	
 	var local_mouse_pos = viewport.get_mouse_position()
 	if local_mouse_pos.x < threshold:
