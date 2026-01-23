@@ -149,19 +149,18 @@ offset_bottom = 333.0
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("1_prpd7")
 
-[node name="BuilderManager" type="Node" parent="." node_paths=PackedStringArray("BuildSizeLabel", "BuildingGrid", "Cursor", "OverlapTestingArea", "PreviewBuildMesh", "PropGrid")]
+[node name="BuilderManager" type="Node" parent="." node_paths=PackedStringArray("BuildSizeLabel", "BuildingGrid", "Cursor", "CursorMesh", "OverlapTestingArea", "PreviewBuildMesh", "PropGrid")]
 script = ExtResource("1_6rgy0")
 BuildMat = SubResource("StandardMaterial3D_prpd7")
 DestroyMat = SubResource("StandardMaterial3D_ewih0")
 BuildSizeLabel = NodePath("../CONSTANT/BuildSizeLabel")
-ShowLabels = null
 EdgeColors = true
 CornerColors = true
 InnerCornerColors = true
 BuildingGrid = NodePath("../MAP/NavigationRegion3D/BuildingGrid")
 Cursor = NodePath("../CONSTANT/Cursor")
+CursorMesh = NodePath("../CONSTANT/Cursor/CursorMesh")
 OverlapTestingArea = NodePath("../CONSTANT/Cursor/OverlapCheckingArea")
-DragDeadzone = null
 PreviewBuildMesh = NodePath("../CONSTANT/PREVIEW")
 PropGrid = NodePath("../MAP/PropContainer")
 SelectedProp = ExtResource("4_tq3kg")
@@ -363,7 +362,7 @@ mesh = SubResource("PlaneMesh_2h1dl")
 
 [node name="Cursor" type="Node3D" parent="CONSTANT"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CONSTANT/Cursor"]
+[node name="CursorMesh" type="MeshInstance3D" parent="CONSTANT/Cursor"]
 mesh = SubResource("SphereMesh_j55jw")
 surface_material_override/0 = SubResource("StandardMaterial3D_cy1kc")
 

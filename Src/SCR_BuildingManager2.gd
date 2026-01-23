@@ -22,6 +22,7 @@ var SelectedTool:BUILDTOOLS = 0
 @export var CurrentlyEditingRoom:RoomResource = null
 
 @export var Cursor:Node3D
+@export var CursorMesh:MeshInstance3D
 @export var OverlapTestingArea:Area3D
 var BuildingCursorPosition:Vector3
 
@@ -73,6 +74,7 @@ func _process(delta: float) -> void:
 		PreviewBuildMesh.material_override = BuildMat
 	if Input.is_key_pressed(KEY_2):
 		SelectedTool = BUILDTOOLS.PROP
+		CursorMesh.mesh = SelectedProp._PreviewMesh
 		PreviewBuildMesh.material_override = DestroyMat
 	if Input.is_key_pressed(KEY_3):
 		SelectedTool = 99
@@ -364,72 +366,7 @@ func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 	else:
 		return Vector3.ZERO
 
-func DrawBuildRect(StartPoint:Vector3=Vector3.ZERO,EndPoint:Vector3=Vector3.ZERO,StartPointMod:Vector3=Vector3.ZERO,EndPointMod:Vector3=Vector3.ZERO):
-	var mesh = ImmediateMesh.new()
-	mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
-	####R SIDE
-	mesh.surface_set_color(Color.RED)
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
-	mesh.surface_set_color(Color.GREEN)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_set_color(Color.WHITE)
-	
-	####L SIDE
-	mesh.surface_set_color(Color.PURPLE)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
-	mesh.surface_set_color(Color.ORANGE)
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_set_color(Color.WHITE)
-	
-	####B SIDE
-	mesh.surface_set_color(Color.YELLOW)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,DragStart.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,DragStart.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_set_color(Color.BLUE)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,DragStart.z))
-	
-	####F SIDE
-	mesh.surface_set_color(Color.AQUA)
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
-	mesh.surface_set_color(Color.CRIMSON)
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,EndPoint.z))
 
-	mesh.surface_set_color(Color.WHITE)
-	
-	####TOP
-	mesh.surface_set_uv(Vector2(0, 1))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_set_uv(Vector2(1, 0))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,EndPoint.z))
-	mesh.surface_set_uv(Vector2(0, 0))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	
-	mesh.surface_set_uv(Vector2(1, 0))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,DragStart.z))
-	mesh.surface_set_uv(Vector2(0, 1))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_set_uv(Vector2(1, 1))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,DragStart.z))
-
-	
-	mesh.surface_end()
-	PreviewBuildMesh.mesh = mesh
-	
 func EdgeCheckPoint(_point:Vector3,_array:Array[Vector3]) -> int:
 	var count:int
 	for x in CheckPositions.size():
@@ -458,7 +395,8 @@ func CreateNewRoom():
 func FinalizeRoom():
 	CurrentlyEditingRoom.RoomSquares = BuildingPoints
 	CurrentlyEditingRoom.RoomArea = AABB(CurrentlyEditingRoom.RoomSquares[0],CurrentlyEditingRoom.RoomSquares[CurrentlyEditingRoom.RoomSquares.size()-1])
-	CurrentlyEditingRoom.PlacedProps = PlacedProps
+	CurrentlyEditingRoom.PlacedProps.append_array(PlacedProps)
+	
 	var average = Vector3.ZERO
 	for i in CurrentlyEditingRoom.RoomSquares.size():
 		average += CurrentlyEditingRoom.RoomSquares[i]
@@ -480,6 +418,7 @@ func FinalizeRoom():
 	OccupiedGridSquares.append_array(BuildingPoints)
 	PERMANENTPLACEMENTS.append_array(OccupiedGridSquares)
 	BuildingPoints.clear()
+	PlacedProps.clear()
 
 func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offset:Vector3 = Vector3.ZERO,intcheck:int = -1) -> int:
 	var checking:Vector3 = CheckBorderingGridAverage(_position,CornerFix) + _offset
@@ -612,5 +551,69 @@ func BuildConnector(_doorpos:Vector3):
 		var ye:int = GetAverageWallRotationIndex(_doorpos,true)
 		BuildingGrid.set_cell_item(_doorpos,4,ye)
 
-func _exit_tree() -> void:
-	BuildThread.wait_to_finish()
+func DrawBuildRect(StartPoint:Vector3=Vector3.ZERO,EndPoint:Vector3=Vector3.ZERO,StartPointMod:Vector3=Vector3.ZERO,EndPointMod:Vector3=Vector3.ZERO):
+	var mesh = ImmediateMesh.new()
+	mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
+	####R SIDE
+	mesh.surface_set_color(Color.RED)
+	mesh.surface_add_vertex(Vector3(StartPoint.x,0,StartPoint.z))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
+	mesh.surface_set_color(Color.GREEN)
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,StartPoint.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
+	mesh.surface_set_color(Color.WHITE)
+	
+	####L SIDE
+	mesh.surface_set_color(Color.PURPLE)
+	mesh.surface_add_vertex(Vector3(EndPoint.x,0,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
+	mesh.surface_set_color(Color.ORANGE)
+	mesh.surface_add_vertex(Vector3(StartPoint.x,1,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
+	mesh.surface_set_color(Color.WHITE)
+	
+	####B SIDE
+	mesh.surface_set_color(Color.YELLOW)
+	mesh.surface_add_vertex(Vector3(EndPoint.x,0,DragStart.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,DragStart.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
+	mesh.surface_set_color(Color.BLUE)
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,0,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,0,DragStart.z))
+	
+	####F SIDE
+	mesh.surface_set_color(Color.AQUA)
+	mesh.surface_add_vertex(Vector3(DragStart.x,0,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(DragStart.x,1,EndPoint.z))
+	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
+	mesh.surface_set_color(Color.CRIMSON)
+	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
+	mesh.surface_add_vertex(Vector3(DragStart.x,0,DragStart.z))
+	mesh.surface_add_vertex(Vector3(DragStart.x,0,EndPoint.z))
+
+	mesh.surface_set_color(Color.WHITE)
+	
+	####TOP
+	mesh.surface_set_uv(Vector2(0, 1))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
+	mesh.surface_set_uv(Vector2(1, 0))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,1,EndPoint.z))
+	mesh.surface_set_uv(Vector2(0, 0))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
+	
+	mesh.surface_set_uv(Vector2(1, 0))
+	mesh.surface_add_vertex(Vector3(StartPoint.x,1,DragStart.z))
+	mesh.surface_set_uv(Vector2(0, 1))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
+	mesh.surface_set_uv(Vector2(1, 1))
+	mesh.surface_add_vertex(Vector3(EndPoint.x,1,DragStart.z))
+
+	
+	mesh.surface_end()
+	PreviewBuildMesh.mesh = mesh
+	
