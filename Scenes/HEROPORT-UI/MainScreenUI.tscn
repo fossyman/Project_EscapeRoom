@@ -7,8 +7,8 @@
 [node name="phone" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 1012.0
-offset_right = 1052.0
+offset_left = 1008.0
+offset_right = 1048.0
 offset_bottom = 40.0
 
 [node name="ColorRect" type="ColorRect" parent="phone"]
