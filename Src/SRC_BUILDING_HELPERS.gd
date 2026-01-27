@@ -5,12 +5,12 @@ static var CheckPositions = [Vector3(1,0,1),Vector3(0,0,1),Vector3(-1,0,1),
 							Vector3(1,0,0),Vector3(0,0,0),Vector3(-1,0,0),
 							Vector3(1,0,-1),Vector3(0,0,-1),Vector3(-1,0,-1)]
 
-func CheckBorderingGridAverage(_position:Vector3,CornerFix:bool = false) -> Vector3:
+static func CheckBorderingGridAverage(_points:Array[Vector3], _position:Vector3,CornerFix:bool = false) -> Vector3:
 	var EmptyPoints:Array[Vector3]
 	var val:Vector3
 	var avg:Vector3
 	for i in CheckPositions.size():
-		if BuildingPoints.has(_position + CheckPositions[i]):
+		if _points.has(_position + CheckPositions[i]):
 			EmptyPoints.append( (CheckPositions[i]) )
 			
 	for i in EmptyPoints.size():
@@ -22,7 +22,7 @@ func CheckBorderingGridAverage(_position:Vector3,CornerFix:bool = false) -> Vect
 	return avg.round()
 	
 
-func CheckBorderingGridCorners(_position:Vector3,_snap:bool = true) -> Vector3:
+func CheckBorderingGridCorners(_points:Array[Vector3],_position:Vector3,_snap:bool = true) -> Vector3:
 	var val:Vector3
 	var avg:Vector3
 	var FoundCorners:Array[Vector3]
@@ -30,7 +30,7 @@ func CheckBorderingGridCorners(_position:Vector3,_snap:bool = true) -> Vector3:
 	var dir:Vector3
 	
 	for i in CheckPositions.size():
-		if BuildingPoints.has(_position + CheckPositions[i]) and !PERMANENTPLACEMENTS.has(_position + CheckPositions[i]):
+		if _points.has(_position + CheckPositions[i]) and !PERMANENTPLACEMENTS.has(_position + CheckPositions[i]):
 			FoundCorners.append(CheckPositions[i])
 
 	if FoundCorners.is_empty():

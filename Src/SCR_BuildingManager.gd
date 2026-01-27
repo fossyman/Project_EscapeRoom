@@ -1,17 +1,10 @@
 extends Node
-class_name FoundationManager
-static var instance:FoundationManager
+class_name BuildManager
+static var instance = self
 
-@export_category("FOUNDATION")
-@export var BuildMat:Material
-@export var DestroyMat:Material
-@export var BuildSizeLabel:Label3D
-@export var ShowLabels:bool=false
-@export var EdgeColors:bool=false
-@export var CornerColors:bool=false
-@export var InnerCornerColors:bool=false
-
-@export var BuildingGrid:GridMap
+static var CheckPositions = [Vector3(1,0,1),Vector3(0,0,1),Vector3(-1,0,1),
+							Vector3(1,0,0),Vector3(0,0,0),Vector3(-1,0,0),
+							Vector3(1,0,-1),Vector3(0,0,-1),Vector3(-1,0,-1)]
 
 @export var Cursor:Node3D
 @export var CursorMesh:MeshInstance3D
@@ -19,11 +12,12 @@ static var instance:FoundationManager
 var BuildingCursorPosition:Vector3
 
 var ClickPos:Vector3
+
 @export var DragDeadzone:float = 1.0
 var DragStart:Vector3
 var DragEnd:Vector3
 
-@export var PreviewBuildMesh:MeshInstance3D
+@export var BuildingGrid:GridMap
 
 var SelectedSpaces:Array[Vector3]
 var CurrentDragSpaces:Array[Vector3]
@@ -35,116 +29,102 @@ var OverlappingBuildPoints:Array[Vector3] = []
 
 var PERMANENTPLACEMENTS:Array[Vector3] = []
 
-var Labels:Array[Label3D]
-
-static var CheckPositions = [Vector3(1,0,1),Vector3(0,0,1),Vector3(-1,0,1),
-							Vector3(1,0,0),Vector3(0,0,0),Vector3(-1,0,0),
-							Vector3(1,0,-1),Vector3(0,0,-1),Vector3(-1,0,-1)]
-
-@export_category("PROP")
-@export var PropGrid:Node3D
-@export var SelectedProp:RES_PropData
-
-@export var Chunksize = 64
-
-var BuildThread:Thread
-
+# Called when the node enters the scene tree for the first time.
 func _enter_tree() -> void:
 	instance = self
-
-func _ready() -> void:
-	DEBUGTOOLS.instance.FinalizeRoomButton.connect("pressed",FinalizeRoom)
-	DEBUGTOOLS.instance.CreateRoomButton.connect("pressed",GameManager.instance.CreateNewRoom)
-
+	pass # Replace with function body.
 
 func _process(delta: float) -> void:
-
-	if Input.is_action_just_pressed("DEBUG_REFRESHBUILD"):
-		DEBUG_REFRESHBUILD()
-		
 	if !GLOBALS.CanInteract:
 		return
-		
-	MoveCursor(mouse_position(true))
 
-	if Input.is_action_pressed("Lclick"):
-		var MousePos = mouse_position(true)
-		if Input.is_action_just_pressed("Lclick"):
-			ClickPos = MousePos
-			BuildConnector(ClickPos)
-		if MousePos.distance_to(ClickPos) > DragDeadzone:
-			DragStart = ClickPos
-			DragEnd = MousePos
-			PreviewBuildMesh.visible = true
-			##print("MAKING SQUARE BETWEEN " + str(DragStart) + " AND " + str(DragEnd))
-			DrawBuildRect(DragStart,DragEnd)
-	BuildSizeLabel.text = str((DragEnd - DragStart).x) + ", " + str((DragEnd - DragStart).z)
-	if Input.is_action_just_released("Lclick"):
-		if !GameManager.instance.CurrentRoom:
-			GameManager.instance.CurrentRoom = RoomResource.new()
-		
-		var StartX = (DragStart.x if DragStart.x < DragEnd.x else DragEnd.x)
-		var StartZ = (DragStart.z if DragStart.z < DragEnd.z else DragEnd.z)
-		
-		var EndX = (DragEnd.x if DragEnd.x > DragStart.x else DragStart.x) + 1
-		var EndZ = (DragEnd.z if DragEnd.z > DragStart.z else DragStart.z) + 1
-		BuildSelectedSection(Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
-		PreviewBuildMesh.visible = false
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		MoveCursor(mouse_position(true))
 
-func BuildSelectedSection(StartCorner:Vector3,EndCorner:Vector3):
-	push_warning(StartCorner)
-	if (StartCorner.x < 0 or StartCorner.z < 0) or (EndCorner.x < 0 or EndCorner.z < 0):
-		return
-		
-	for d in Labels.size():
-		Labels[d].queue_free()
-	Labels.clear()
+func mouse_position(_SnapToGrid:bool = false) -> Vector3:
+	#Created with help from https://www.reddit.com/r/godot/comments/xd7lcx/how_to_turn_mouse_coordinates_in_world/
+	#And https://docs.godotengine.org/en/stable/tutorials/physics/ray-casting.html
 	
-	if DragEnd == DragStart:
-		return
-		
-	var NewPoints:Array[Vector3]
-	var Borders:Array[Vector3]
-	var _border:int = 1
+	var Cam = CameraController.instance.Camera
+	var mouse_position:Vector2 = Cam.get_viewport().get_mouse_position()
+	var from:Vector3 = Cam.global_position
+	var to:Vector3 = Cam.project_position(mouse_position,1000)
+	var State = PhysicsRayQueryParameters3D.create(from,to)
+	var space_state = get_tree().root.world_3d.direct_space_state
+	var result = space_state.intersect_ray(State)
+	if result:
+		#result.collider #gets object
+		#result.position #gets position
+		if _SnapToGrid:
+			return snapped(result.position,BuildingGrid.cell_size)
+		return result.position
+	else:
+		return Vector3.ZERO
+
+
+func MoveCursor(_movement:Vector3):
+	BuildingCursorPosition = _movement
+	Cursor.global_position = BuildingCursorPosition
+	##print(Cursor.global_position)
+	pass
+
+func FinalizeRoom():
+	GameManager.instance.FinalizeRoom(BuildingPoints)
+	var ye = CollisionShape3D.new()
+	add_child(ye)
+	BuildingGrid.mesh
+	OccupiedGridSquares.clear()
+	OccupiedGridSquares.append_array(BuildingPoints)
+	PERMANENTPLACEMENTS.append_array(OccupiedGridSquares)
+	BuildingPoints.clear()
+
+func EdgeCheckPoint(_point:Vector3,_array:Array[Vector3]) -> int:
+	var count:int
+	for x in CheckPositions.size():
+		if _array.has(_point + CheckPositions[x]) && _point + CheckPositions[x] != _point:
+			count += 1
+	return count
 	
-	for BX in range(StartCorner.x - _border,EndCorner.x + _border):
-		for BZ in range(StartCorner.z - _border,EndCorner.z + _border):
-			if BX in range(StartCorner.x,EndCorner.x) and BZ in range(StartCorner.z,EndCorner.z) and !BuildingPoints.has(Vector3(BX,0,BZ)):
-				if !PERMANENTPLACEMENTS.has(Vector3(BX,0,BZ)):
-					NewPoints.append(Vector3(BX,0,BZ))
-			if !OverlappingBuildPoints.has(Vector3(BX,0,BZ)):
-				OverlappingBuildPoints.append(Vector3(BX,0,BZ))
-
-	for i in NewPoints.size():
-		if OccupiedGridSquares.has(NewPoints[i]):
-			continue
-		OccupiedGridSquares.append(NewPoints[i])
-		if !BuildingPoints.has(NewPoints[i]):
-			BuildingPoints.append_array(NewPoints)
-
-	if NewPoints.is_empty():
-		return
-	var ChunkCounter:int = 0
-	for i in OverlappingBuildPoints.size():
-		UpdateGridSquare(OverlappingBuildPoints[i])
-		ChunkCounter +=1
-		if ChunkCounter >= Chunksize:
-			ChunkCounter = 0
-			await get_tree().process_frame
+func CheckBorderingGridAverage(_position:Vector3,CornerFix:bool = false) -> Vector3:
+	var EmptyPoints:Array[Vector3]
+	var val:Vector3
+	var avg:Vector3
+	for i in CheckPositions.size():
+		if BuildingPoints.has(_position + CheckPositions[i]):
+			EmptyPoints.append( (CheckPositions[i]) )
+			
+	for i in EmptyPoints.size():
+		val += EmptyPoints[i]
 		
-	OverlappingBuildPoints.clear()
+	avg = val / EmptyPoints.size()
+	if CornerFix:
+		return (avg*5).round()
+	return avg.round()
 	
-func EraseSelection(_start:Vector3,_end:Vector3):
-	var removals:Array[Vector3]
-	for X in range(_start.x,_end.x):
-		for Z in range(_start.z,_end.z):
-			BuildingPoints.erase(Vector3(X,0,Z))
-			removals.append(Vector3(X,0,Z))
-	for i in removals.size():
-		BuildingGrid.set_cell_item(removals[i],GridMap.INVALID_CELL_ITEM)
-		await get_tree().process_frame
-	DEBUG_REFRESHBUILD()
 
+func CheckBorderingGridCorners(_position:Vector3,_snap:bool = true) -> Vector3:
+	var val:Vector3
+	var avg:Vector3
+	var FoundCorners:Array[Vector3]
+	
+	var dir:Vector3
+	
+	for i in CheckPositions.size():
+		if BuildingPoints.has(_position + CheckPositions[i]) and !PERMANENTPLACEMENTS.has(_position + CheckPositions[i]):
+			FoundCorners.append(CheckPositions[i])
+
+	if FoundCorners.is_empty():
+		#print("NO CORNERS FOUND")
+		return Vector3.ZERO
+		
+	var sum = FoundCorners.reduce(func(acc, num): return acc + num)
+	var average:Vector3 = sum / FoundCorners.size()*1
+	
+	
+	#print("RETURNING CORNER VALUE OF :: " + str(average))
+	return average.snappedf(0.1) if _snap else average
+	
 func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
 	var LabelColor:Color = Color.WHITE
 	var Dir
@@ -234,118 +214,16 @@ func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
 					#print("AVERAGE RETURN FOR 7 IS :: " + str(noAVG))
 					BuildingGrid.set_cell_item(_gridsquare,3,noAVG)
 					#print("NOAH" + str(noAVG))
-	if ShowLabels:
-		var lab = Label3D.new()
-		BuildingGrid.add_child(lab)
-		Labels.append(lab)
-		lab.no_depth_test = true
-		lab.modulate = LabelColor
-		lab.global_position = _gridsquare + Vector3.UP
-		lab.text = str(EdgeCount)+"\n"+str(CheckBorderingGridCorners(_gridsquare))+"\n"+str(CheckBorderingGridCorners(_gridsquare,true))
-		lab.font_size = 32
-		lab.billboard = true
-			
-#func OverlapChecks():
-	#for i in OverlappingBuildPoints.size():
-		#if BuildingPoints.has(OverlappingBuildPoints[i]):
-			#
-
-func CheckBorderingGridAverage(_position:Vector3,CornerFix:bool = false) -> Vector3:
-	var EmptyPoints:Array[Vector3]
-	var val:Vector3
-	var avg:Vector3
-	for i in CheckPositions.size():
-		if BuildingPoints.has(_position + CheckPositions[i]):
-			EmptyPoints.append( (CheckPositions[i]) )
-			
-	for i in EmptyPoints.size():
-		val += EmptyPoints[i]
-		
-	avg = val / EmptyPoints.size()
-	if CornerFix:
-		return (avg*5).round()
-	return avg.round()
-	
-
-func CheckBorderingGridCorners(_position:Vector3,_snap:bool = true) -> Vector3:
-	var val:Vector3
-	var avg:Vector3
-	var FoundCorners:Array[Vector3]
-	
-	var dir:Vector3
-	
-	for i in CheckPositions.size():
-		if BuildingPoints.has(_position + CheckPositions[i]) and !PERMANENTPLACEMENTS.has(_position + CheckPositions[i]):
-			FoundCorners.append(CheckPositions[i])
-
-	if FoundCorners.is_empty():
-		#print("NO CORNERS FOUND")
-		return Vector3.ZERO
-		
-	var sum = FoundCorners.reduce(func(acc, num): return acc + num)
-	var average:Vector3 = sum / FoundCorners.size()*1
-	
-	
-	#print("RETURNING CORNER VALUE OF :: " + str(average))
-	return average.snappedf(0.1) if _snap else average
-	
-func MoveCursor(_movement:Vector3):
-	BuildingCursorPosition = _movement
-	Cursor.global_position = BuildingCursorPosition
-	##print(Cursor.global_position)
-	pass
-
-func mouse_position(_SnapToGrid:bool = false) -> Vector3:
-	#Created with help from https://www.reddit.com/r/godot/comments/xd7lcx/how_to_turn_mouse_coordinates_in_world/
-	#And https://docs.godotengine.org/en/stable/tutorials/physics/ray-casting.html
-	
-	var Cam = CameraController.instance.Camera
-	var mouse_position:Vector2 = Cam.get_viewport().get_mouse_position()
-	var from:Vector3 = Cam.global_position
-	var to:Vector3 = Cam.project_position(mouse_position,1000)
-	var State = PhysicsRayQueryParameters3D.create(from,to)
-	var space_state = get_tree().root.world_3d.direct_space_state
-	var result = space_state.intersect_ray(State)
-	if result:
-		#result.collider #gets object
-		#result.position #gets position
-		if _SnapToGrid:
-			return snapped(result.position,BuildingGrid.cell_size)
-		return result.position
-	else:
-		return Vector3.ZERO
-
-
-func EdgeCheckPoint(_point:Vector3,_array:Array[Vector3]) -> int:
-	var count:int
-	for x in CheckPositions.size():
-		if _array.has(_point + CheckPositions[x]) && _point + CheckPositions[x] != _point:
-			count += 1
-	return count
-
-
-func DEBUG_REFRESHBUILD():
-	for i in Labels.size():
-		Labels[i].queue_free()
-	Labels.clear()
-	for i in BuildingPoints.size():
-		UpdateGridSquare(BuildingPoints[i])
-
-
-func DeleteRoom():
-	pass
-func DeselectRoom():
-	pass
-
-func FinalizeRoom():
-	GameManager.instance.FinalizeRoom(BuildingPoints)
-	var ye = CollisionShape3D.new()
-	add_child(ye)
-	BuildingGrid.mesh
-	OccupiedGridSquares.clear()
-	OccupiedGridSquares.append_array(BuildingPoints)
-	PERMANENTPLACEMENTS.append_array(OccupiedGridSquares)
-	BuildingPoints.clear()
+	#if ShowLabels:
+		#var lab = Label3D.new()
+		#BuildingGrid.add_child(lab)
+		#Labels.append(lab)
+		#lab.no_depth_test = true
+		#lab.modulate = LabelColor
+		#lab.global_position = _gridsquare + Vector3.UP
+		#lab.text = str(EdgeCount)+"\n"+str(CheckBorderingGridCorners(_gridsquare))+"\n"+str(CheckBorderingGridCorners(_gridsquare,true))
+		#lab.font_size = 32
+		#lab.billboard = true
 
 func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offset:Vector3 = Vector3.ZERO,intcheck:int = -1) -> int:
 	var checking:Vector3 = CheckBorderingGridAverage(_position,CornerFix) + _offset
@@ -457,75 +335,3 @@ func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offse
 			match CornerChecking:
 				pass
 	return 0
-
-func BuildConnector(_doorpos:Vector3):
-	if BuildingPoints.has(_doorpos):
-		var ye:int = GetAverageWallRotationIndex(_doorpos,true)
-		BuildingGrid.set_cell_item(_doorpos,4,ye)
-
-func DrawBuildRect(StartPoint:Vector3=Vector3.ZERO,EndPoint:Vector3=Vector3.ZERO,StartPointMod:Vector3=Vector3.ZERO,EndPointMod:Vector3=Vector3.ZERO):
-	var mesh = ImmediateMesh.new()
-	mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
-	####R SIDE
-	mesh.surface_set_color(Color.RED)
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
-	mesh.surface_set_color(Color.GREEN)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_set_color(Color.WHITE)
-	
-	####L SIDE
-	mesh.surface_set_color(Color.PURPLE)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
-	mesh.surface_set_color(Color.ORANGE)
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_set_color(Color.WHITE)
-	
-	####B SIDE
-	mesh.surface_set_color(Color.YELLOW)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,DragStart.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,DragStart.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_set_color(Color.BLUE)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,DragStart.z))
-	
-	####F SIDE
-	mesh.surface_set_color(Color.AQUA)
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
-	mesh.surface_set_color(Color.CRIMSON)
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,EndPoint.z))
-
-	mesh.surface_set_color(Color.WHITE)
-	
-	####TOP
-	mesh.surface_set_uv(Vector2(0, 1))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_set_uv(Vector2(1, 0))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,EndPoint.z))
-	mesh.surface_set_uv(Vector2(0, 0))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	
-	mesh.surface_set_uv(Vector2(1, 0))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,DragStart.z))
-	mesh.surface_set_uv(Vector2(0, 1))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_set_uv(Vector2(1, 1))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,DragStart.z))
-
-	
-	mesh.surface_end()
-	PreviewBuildMesh.mesh = mesh
-	

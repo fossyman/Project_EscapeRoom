@@ -1,13 +1,13 @@
 [gd_scene load_steps=33 format=3 uid="uid://cyxcjwc3tm3ad"]
 
-[ext_resource type="Script" uid="uid://ctdndmvo88rec" path="res://Src/SCR_BuildingManager.gd" id="1_6rgy0"]
+[ext_resource type="Script" uid="uid://dg6gnwypj1hnh" path="res://Src/SCR_BuildingManager.gd" id="1_6rgy0"]
 [ext_resource type="ArrayMesh" uid="uid://dx4egntrxmrj" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_CORNER.res" id="1_emfuj"]
 [ext_resource type="Script" uid="uid://6werddmho83b" path="res://Src/SCR_Gamemanager.gd" id="1_prpd7"]
 [ext_resource type="Script" uid="uid://cbdd4svn71jhx" path="res://Src/SCR_RootManager.gd" id="1_xvs0j"]
 [ext_resource type="Script" uid="uid://c5fo8y2mkh734" path="res://Src/SCR_CameraController.gd" id="1_y3unb"]
 [ext_resource type="Texture2D" uid="uid://d15sugtlh8nby" path="res://icon.svg" id="2_wm8y7"]
+[ext_resource type="Script" uid="uid://cer44ufqqysnj" path="res://Src/SCR_FoundationManager.gd" id="3_xvs0j"]
 [ext_resource type="Script" uid="uid://ddw60ywmkiov1" path="res://Src/SCR_PropPlacementManager.gd" id="4_mmves"]
-[ext_resource type="Resource" uid="uid://d4m52qy8lmy6j" path="res://Assets/Resources/PropData/Pirate Props/PROPDATA_PIRATE_CUTLASS.tres" id="4_tq3kg"]
 [ext_resource type="ArrayMesh" uid="uid://ckcbxpp44rr7a" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_WALL.res" id="5_1caoe"]
 [ext_resource type="ArrayMesh" uid="uid://rd3i7lmgeqhf" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_FLOOR.res" id="6_nitf2"]
 [ext_resource type="Material" uid="uid://bgxc0n0u8y8b0" path="res://Assets/Material/MAT_BuildOverlay.tres" id="6_nxnwt"]
@@ -123,28 +123,27 @@ albedo_color = Color(1, 0, 0, 1)
 script = ExtResource("1_xvs0j")
 PlayerCursor = NodePath("CONSTANT/CameraOrigin/Decal")
 
-[node name="TOOLS" type="Node" parent="."]
-
-[node name="FoundationManager" type="Node" parent="TOOLS" node_paths=PackedStringArray("BuildSizeLabel", "BuildingGrid", "Cursor", "CursorMesh", "OverlapTestingArea", "PreviewBuildMesh", "PropGrid")]
+[node name="TOOLS" type="Node" parent="." node_paths=PackedStringArray("Cursor", "CursorMesh", "OverlapTestingArea", "BuildingGrid")]
 script = ExtResource("1_6rgy0")
+Cursor = NodePath("../CONSTANT/Cursor")
+CursorMesh = NodePath("../CONSTANT/Cursor/CursorMesh")
+OverlapTestingArea = NodePath("../CONSTANT/Cursor/OverlapCheckingArea")
+BuildingGrid = NodePath("../MAP/NavigationRegion3D/BuildingGrid")
+
+[node name="FoundationManager" type="Node" parent="TOOLS" node_paths=PackedStringArray("BuildSizeLabel", "PreviewBuildMesh")]
+script = ExtResource("3_xvs0j")
 BuildMat = SubResource("StandardMaterial3D_prpd7")
 DestroyMat = SubResource("StandardMaterial3D_ewih0")
 BuildSizeLabel = NodePath("../../CONSTANT/BuildSizeLabel")
 EdgeColors = true
 CornerColors = true
 InnerCornerColors = true
-BuildingGrid = NodePath("../../MAP/NavigationRegion3D/BuildingGrid")
-Cursor = NodePath("../../CONSTANT/Cursor")
-CursorMesh = NodePath("../../CONSTANT/Cursor/CursorMesh")
-OverlapTestingArea = NodePath("../../CONSTANT/Cursor/OverlapCheckingArea")
 PreviewBuildMesh = NodePath("../../CONSTANT/PREVIEW")
-PropGrid = NodePath("../../MAP/PropContainer")
-SelectedProp = ExtResource("4_tq3kg")
 
 [node name="PropPlacer" type="Node" parent="TOOLS"]
 script = ExtResource("4_mmves")
 
-[node name="Control" type="Control" parent="."]
+[node name="Control" type="Control" parent="TOOLS"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -153,16 +152,18 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="MousePositionDebug" type="RichTextLabel" parent="Control"]
+[node name="Button" type="Button" parent="TOOLS/Control"]
 layout_mode = 0
-offset_right = 584.0
-offset_bottom = 146.0
+offset_right = 195.0
+offset_bottom = 59.0
+text = "Foundation"
 
-[node name="ShouldMoveDebug" type="RichTextLabel" parent="Control"]
+[node name="Button2" type="Button" parent="TOOLS/Control"]
 layout_mode = 0
-offset_top = 187.0
-offset_right = 584.0
-offset_bottom = 333.0
+offset_left = 195.0
+offset_right = 390.0
+offset_bottom = 59.0
+text = "Props"
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("1_prpd7")
