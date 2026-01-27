@@ -1,0 +1,126 @@
+[gd_scene load_steps=2 format=3 uid="uid://by5wxvdmg3kwo"]
+
+[ext_resource type="Theme" uid="uid://bt7l7xttp5w74" path="res://Assets/UI/UI Button theme.tres" id="1_ulqjo"]
+
+[node name="MainScreenUi" type="Node2D"]
+
+[node name="phone" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 1012.0
+offset_right = 1052.0
+offset_bottom = 40.0
+
+[node name="ColorRect" type="ColorRect" parent="phone"]
+offset_top = -3.0
+offset_right = 266.0
+offset_bottom = 719.0
+color = Color(0.0195622, 0.0173592, 0.0153612, 1)
+
+[node name="ColorRect2" type="ColorRect" parent="phone"]
+offset_left = 21.0
+offset_top = 14.0
+offset_right = 240.0
+offset_bottom = 166.0
+color = Color(0.584314, 0.905882, 0, 0.27451)
+
+[node name="ColorRect3" type="ColorRect" parent="phone"]
+offset_left = 21.0
+offset_top = 176.0
+offset_right = 240.0
+offset_bottom = 635.0
+
+[node name="Phone display" type="VBoxContainer" parent="phone"]
+offset_left = 35.0
+offset_top = 238.0
+offset_right = 215.0
+offset_bottom = 613.0
+theme = ExtResource("1_ulqjo")
+theme_override_constants/separation = 20
+
+[node name="GridContainer" type="GridContainer" parent="phone/Phone display"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 15
+columns = 3
+
+[node name="Button" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button2" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button3" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button4" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button5" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button6" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button7" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button8" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button9" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button10" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button11" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button12" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button13" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button14" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button15" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button16" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button17" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button18" type="Button" parent="phone/Phone display/GridContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Phone header" type="VBoxContainer" parent="phone"]
+offset_right = 266.0
+offset_bottom = 185.0
+theme = ExtResource("1_ulqjo")
+
+[node name="Infograph" type="RichTextLabel" parent="phone/Phone header"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
