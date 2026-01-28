@@ -84,6 +84,51 @@ layout_mode = 2
 [node name="Mainbar" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_top = 681.0
-offset_right = 40.0
-offset_bottom = 721.0
+offset_top = 669.0
+offset_right = 542.0
+offset_bottom = 718.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Mainbar"]
+layout_mode = 2
+offset_left = 121.0
+offset_top = 4.0
+offset_right = 175.0
+offset_bottom = 26.0
+text = "TIME"
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Mainbar"]
+layout_mode = 0
+offset_right = 452.0
+offset_bottom = 50.0
+theme_override_constants/separation = 10
+
+[node name="Button" type="Button" parent="Mainbar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button2" type="Button" parent="Mainbar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="Mainbar/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="Mainbar/HBoxContainer"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="Button4" type="Button" parent="Mainbar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button5" type="Button" parent="Mainbar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Button6" type="Button" parent="Mainbar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
