@@ -154,18 +154,3 @@ func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offse
 			match CornerChecking:
 				pass
 	return 0
-
-func CellRotationToEuler(_value:int) -> Vector3:
-	#print("CHECKING ::" + str(_value))
-	match _value:
-		0:
-			return Vector3(0,0,0)
-		10:
-			return Vector3(0,180,0)
-		16:
-			return Vector3(0,90,0)
-		22:
-			return Vector3(0,255,0)
-		_:
-			return Vector3(0,0,0)
-	pass

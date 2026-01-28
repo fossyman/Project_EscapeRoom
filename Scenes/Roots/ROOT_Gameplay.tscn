@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://cyxcjwc3tm3ad"]
+[gd_scene load_steps=37 format=3 uid="uid://cyxcjwc3tm3ad"]
 
 [ext_resource type="Script" uid="uid://dg6gnwypj1hnh" path="res://Src/SCR_BuildingManager.gd" id="1_6rgy0"]
 [ext_resource type="ArrayMesh" uid="uid://dx4egntrxmrj" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_CORNER.res" id="1_emfuj"]
@@ -9,11 +9,14 @@
 [ext_resource type="Script" uid="uid://cer44ufqqysnj" path="res://Src/SCR_FoundationManager.gd" id="3_xvs0j"]
 [ext_resource type="Script" uid="uid://ddw60ywmkiov1" path="res://Src/SCR_PropPlacementManager.gd" id="4_mmves"]
 [ext_resource type="ArrayMesh" uid="uid://ckcbxpp44rr7a" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_WALL.res" id="5_1caoe"]
+[ext_resource type="Script" uid="uid://kla5tnx7veom" path="res://Src/SCR_PropButton.gd" id="5_2h1dl"]
 [ext_resource type="ArrayMesh" uid="uid://rd3i7lmgeqhf" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_FLOOR.res" id="6_nitf2"]
 [ext_resource type="Material" uid="uid://bgxc0n0u8y8b0" path="res://Assets/Material/MAT_BuildOverlay.tres" id="6_nxnwt"]
+[ext_resource type="Resource" uid="uid://d4m52qy8lmy6j" path="res://Assets/Resources/PropData/Pirate Props/PROPDATA_PIRATE_CUTLASS.tres" id="6_vq4w1"]
 [ext_resource type="ArrayMesh" uid="uid://ciyjkuhm7o5w8" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_INNERCORNER.res" id="7_1caoe"]
 [ext_resource type="ArrayMesh" uid="uid://dv3lbluh686kw" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_DOORWAY.res" id="8_nitf2"]
 [ext_resource type="FontFile" uid="uid://bs530y4locaf0" path="res://Assets/Fonts/ARURaisonneSimplified-DemiBold.otf" id="8_prpd7"]
+[ext_resource type="PackedScene" uid="uid://24mkaup72sp6" path="res://Assets/Models/Escape room enviornment.glb" id="17_vq4w1"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_prpd7"]
 shading_mode = 0
@@ -22,27 +25,6 @@ albedo_color = Color(0.231373, 0.317647, 1, 1)
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ewih0"]
 shading_mode = 0
 albedo_color = Color(1, 0.192157, 0.207843, 1)
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_y3unb"]
-sky_top_color = Color(0.183972, 0.22652, 0.285693, 1)
-sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-ground_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
-
-[sub_resource type="Sky" id="Sky_cy1kc"]
-sky_material = SubResource("ProceduralSkyMaterial_y3unb")
-
-[sub_resource type="Environment" id="Environment_j55jw"]
-background_mode = 1
-sky = SubResource("Sky_cy1kc")
-ambient_light_source = 3
-reflected_light_source = 2
-glow_enabled = true
-
-[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_cy1kc"]
-
-[sub_resource type="NavigationMesh" id="NavigationMesh_mmves"]
-vertices = PackedVector3Array(0.5, 0.5, 10.5, 5, 0.25, 10.5, 5.25, 0.25, 9.25, 8.25, 0.25, 9.25, 8.5, 0.25, 0.5, 0.5, 0.25, 0.5, 10, 0.25, 9.5, 10, 0.25, 11.25, 15.25, 0.25, 11.5, 16, 0.25, 11, 16, 0.25, 0.5, 23.75, 0.5, 13.25, 24, 0.25, 13.75, 26.25, 0.25, 13.25, 26.25, 0.25, 7.25, 16.75, 0.5, 14.25, 22.25, 0.5, 14.25, 22.5, 0.5, 13.25, 16.75, 0.25, 11.25, 27, 0.25, 0.5, 27, 0.25, 7, 26.5, 0.25, 13.75, 23.5, 0.25, 15.75, 99.5, 0.25, 0.5, 33.75, 0.25, 12.25, 34, 0.25, 13.5, 5.25, 0.25, 11.75, 9.75, 0.25, 11.75, 15.5, 0.25, 15.75, 27.75, 0.25, 7.25, 0.5, 0.25, 99.5, 99.5, 0.25, 99.5, 27.75, 0.25, 12.25)
-polygons = [PackedInt32Array(0, 2, 1), PackedInt32Array(4, 3, 2), PackedInt32Array(0, 5, 2), PackedInt32Array(2, 5, 4), PackedInt32Array(8, 7, 6), PackedInt32Array(8, 6, 9), PackedInt32Array(9, 6, 10), PackedInt32Array(10, 6, 4), PackedInt32Array(6, 3, 4), PackedInt32Array(12, 11, 13), PackedInt32Array(13, 11, 14), PackedInt32Array(16, 15, 17), PackedInt32Array(17, 15, 18), PackedInt32Array(18, 9, 14), PackedInt32Array(14, 9, 19), PackedInt32Array(19, 9, 10), PackedInt32Array(17, 18, 11), PackedInt32Array(11, 18, 14), PackedInt32Array(19, 20, 14), PackedInt32Array(13, 21, 12), PackedInt32Array(12, 21, 22), PackedInt32Array(25, 24, 23), PackedInt32Array(0, 1, 26), PackedInt32Array(7, 8, 27), PackedInt32Array(27, 8, 28), PackedInt32Array(29, 20, 19), PackedInt32Array(25, 23, 22), PackedInt32Array(22, 23, 31), PackedInt32Array(22, 31, 30), PackedInt32Array(24, 32, 29), PackedInt32Array(25, 22, 21), PackedInt32Array(26, 27, 28), PackedInt32Array(29, 19, 24), PackedInt32Array(24, 19, 23), PackedInt32Array(26, 28, 0), PackedInt32Array(0, 28, 30), PackedInt32Array(30, 28, 22)]
 
 [sub_resource type="MeshLibrary" id="MeshLibrary_cy1kc"]
 item/0/name = "Corner"
@@ -82,6 +64,23 @@ item/4/shapes = []
 item/4/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 item/4/navigation_layers = 1
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vq4w1"]
+
+[sub_resource type="Sky" id="Sky_s8imx"]
+sky_material = SubResource("ProceduralSkyMaterial_vq4w1")
+
+[sub_resource type="Environment" id="Environment_j55jw"]
+background_mode = 2
+sky = SubResource("Sky_s8imx")
+ambient_light_source = 3
+reflected_light_source = 2
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_cy1kc"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_mmves"]
+vertices = PackedVector3Array(0.5, 0.5, 10.5, 5, 0.25, 10.5, 5.25, 0.25, 9.25, 8.25, 0.25, 9.25, 8.5, 0.25, 0.5, 0.5, 0.25, 0.5, 10, 0.25, 9.5, 10, 0.25, 11.25, 15.25, 0.25, 11.5, 16, 0.25, 11, 16, 0.25, 0.5, 23.75, 0.5, 13.25, 24, 0.25, 13.75, 26.25, 0.25, 13.25, 26.25, 0.25, 7.25, 16.75, 0.5, 14.25, 22.25, 0.5, 14.25, 22.5, 0.5, 13.25, 16.75, 0.25, 11.25, 27, 0.25, 0.5, 27, 0.25, 7, 26.5, 0.25, 13.75, 23.5, 0.25, 15.75, 99.5, 0.25, 0.5, 33.75, 0.25, 12.25, 34, 0.25, 13.5, 5.25, 0.25, 11.75, 9.75, 0.25, 11.75, 15.5, 0.25, 15.75, 27.75, 0.25, 7.25, 0.5, 0.25, 99.5, 99.5, 0.25, 99.5, 27.75, 0.25, 12.25)
+polygons = [PackedInt32Array(0, 2, 1), PackedInt32Array(4, 3, 2), PackedInt32Array(0, 5, 2), PackedInt32Array(2, 5, 4), PackedInt32Array(8, 7, 6), PackedInt32Array(8, 6, 9), PackedInt32Array(9, 6, 10), PackedInt32Array(10, 6, 4), PackedInt32Array(6, 3, 4), PackedInt32Array(12, 11, 13), PackedInt32Array(13, 11, 14), PackedInt32Array(16, 15, 17), PackedInt32Array(17, 15, 18), PackedInt32Array(18, 9, 14), PackedInt32Array(14, 9, 19), PackedInt32Array(19, 9, 10), PackedInt32Array(17, 18, 11), PackedInt32Array(11, 18, 14), PackedInt32Array(19, 20, 14), PackedInt32Array(13, 21, 12), PackedInt32Array(12, 21, 22), PackedInt32Array(25, 24, 23), PackedInt32Array(0, 1, 26), PackedInt32Array(7, 8, 27), PackedInt32Array(27, 8, 28), PackedInt32Array(29, 20, 19), PackedInt32Array(25, 23, 22), PackedInt32Array(22, 23, 31), PackedInt32Array(22, 31, 30), PackedInt32Array(24, 32, 29), PackedInt32Array(25, 22, 21), PackedInt32Array(26, 27, 28), PackedInt32Array(29, 19, 24), PackedInt32Array(24, 19, 23), PackedInt32Array(26, 28, 0), PackedInt32Array(0, 28, 30), PackedInt32Array(30, 28, 22)]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1caoe"]
 albedo_color = Color(0.518, 0.74, 0.518, 1)
 
@@ -119,18 +118,30 @@ albedo_color = Color(1, 0, 0, 1)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_tq3kg"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vq4w1"]
+proximity_fade_distance = 35.71
+distance_fade_min_distance = 37.6
+distance_fade_max_distance = 50.0
+
 [node name="RootGameplay" type="Node" node_paths=PackedStringArray("PlayerCursor")]
 script = ExtResource("1_xvs0j")
 PlayerCursor = NodePath("CONSTANT/CameraOrigin/Decal")
 
-[node name="TOOLS" type="Node" parent="." node_paths=PackedStringArray("Cursor", "CursorMesh", "OverlapTestingArea", "BuildingGrid")]
+[node name="TOOLS" type="Node" parent="." node_paths=PackedStringArray("Cursor", "CursorMesh", "OverlapTestingArea", "BuildingGrid", "RoomParent", "FoundationTool", "PropTool", "PropToolUI", "BuildRequirementsLabel", "FinalizeRoomButton")]
 script = ExtResource("1_6rgy0")
 Cursor = NodePath("../CONSTANT/Cursor")
 CursorMesh = NodePath("../CONSTANT/Cursor/CursorMesh")
 OverlapTestingArea = NodePath("../CONSTANT/Cursor/OverlapCheckingArea")
 BuildingGrid = NodePath("../MAP/NavigationRegion3D/BuildingGrid")
+RoomParent = NodePath("../MAP/NavigationRegion3D/RoomParent")
+FoundationTool = NodePath("FoundationManager")
+PropTool = NodePath("PropPlacer")
+PropToolUI = NodePath("Control/PropUI")
+BuildRequirementsLabel = NodePath("Control/FoundationUI/RichTextLabel")
+FinalizeRoomButton = NodePath("Control/FoundationUI/Button")
 
 [node name="FoundationManager" type="Node" parent="TOOLS" node_paths=PackedStringArray("BuildSizeLabel", "PreviewBuildMesh")]
+process_mode = 4
 script = ExtResource("3_xvs0j")
 BuildMat = SubResource("StandardMaterial3D_prpd7")
 DestroyMat = SubResource("StandardMaterial3D_ewih0")
@@ -139,8 +150,10 @@ EdgeColors = true
 CornerColors = true
 InnerCornerColors = true
 PreviewBuildMesh = NodePath("../../CONSTANT/PREVIEW")
+FoundationMeshArray = SubResource("MeshLibrary_cy1kc")
 
 [node name="PropPlacer" type="Node" parent="TOOLS"]
+process_mode = 4
 script = ExtResource("4_mmves")
 
 [node name="Control" type="Control" parent="TOOLS"]
@@ -152,18 +165,208 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="Button" type="Button" parent="TOOLS/Control"]
+[node name="FoundationButton" type="Button" parent="TOOLS/Control"]
 layout_mode = 0
 offset_right = 195.0
 offset_bottom = 59.0
 text = "Foundation"
 
-[node name="Button2" type="Button" parent="TOOLS/Control"]
+[node name="PropButton" type="Button" parent="TOOLS/Control"]
 layout_mode = 0
 offset_left = 195.0
 offset_right = 390.0
 offset_bottom = 59.0
 text = "Props"
+
+[node name="FoundationUI" type="Panel" parent="TOOLS/Control"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -216.0
+offset_right = 325.0
+grow_vertical = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="TOOLS/Control/FoundationUI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.69
+offset_bottom = -0.0400085
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "[b]Requirements[/b]
+[color=red]Minimum space: 3x3
+[color=red]Doorway placed"
+
+[node name="Button" type="Button" parent="TOOLS/Control/FoundationUI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.69
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -0.0400085
+grow_vertical = 0
+disabled = true
+text = "FINALISE ROOM"
+
+[node name="PropUI" type="Panel" parent="TOOLS/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.759
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.479919
+offset_top = 56.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="GridContainer" type="GridContainer" parent="TOOLS/Control/PropUI"]
+layout_direction = 3
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 131.0
+grow_horizontal = 2
+grow_vertical = 2
+columns = 3
+
+[node name="Button" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button2" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button3" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button4" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button5" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button6" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button7" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button8" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button9" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button10" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button11" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TOOLS/Control/PropUI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.139
+offset_bottom = 7.91999
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TOOLS/Control/PropUI/ScrollContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST
+CATEGORY"
+
+[node name="Button2" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST
+CATEGORY"
+
+[node name="Button3" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST
+CATEGORY"
+
+[node name="Button4" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST
+CATEGORY"
+
+[node name="Button5" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST
+CATEGORY"
+
+[node name="Button6" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST
+CATEGORY"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="TOOLS/Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -325.0
+offset_bottom = 36.0
+grow_horizontal = 0
+text = "£0.99"
+horizontal_alignment = 2
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("1_prpd7")
@@ -203,6 +406,8 @@ transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 50, 0,
 mesh = SubResource("QuadMesh_1caoe")
 skeleton = NodePath("../..")
 
+[node name="RoomParent" type="Node3D" parent="MAP/NavigationRegion3D"]
+
 [node name="CONSTANT" type="Node" parent="."]
 
 [node name="CameraOrigin" type="Node3D" parent="CONSTANT" node_paths=PackedStringArray("CameraPositionRoot", "CameraHolder", "Camera")]
@@ -211,6 +416,7 @@ script = ExtResource("1_y3unb")
 CameraPositionRoot = NodePath("CameraPosRoot")
 CameraHolder = NodePath("CameraPosRoot/CameraHolder")
 Camera = NodePath("CameraPosRoot/CameraHolder/Node3D/Camera3D")
+ScrollClamp = Vector2(1, 5)
 Movespeed = 30.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CONSTANT/CameraOrigin"]
@@ -260,3 +466,24 @@ no_depth_test = true
 text = "0,10"
 font = ExtResource("8_prpd7")
 font_size = 97
+
+[node name="Escape room enviornment" parent="." instance=ExtResource("17_vq4w1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, 50)
+
+[node name="Cube" parent="Escape room enviornment" index="0"]
+surface_material_override/0 = SubResource("StandardMaterial3D_vq4w1")
+
+[node name="Cube_002" parent="Escape room enviornment" index="1"]
+surface_material_override/0 = SubResource("StandardMaterial3D_vq4w1")
+
+[node name="Cube_004" parent="Escape room enviornment" index="2"]
+surface_material_override/0 = SubResource("StandardMaterial3D_vq4w1")
+
+[node name="Cube_001" parent="Escape room enviornment" index="12"]
+surface_material_override/0 = SubResource("StandardMaterial3D_vq4w1")
+
+[connection signal="pressed" from="TOOLS/Control/FoundationButton" to="TOOLS" method="ChangeSelectedTool" binds= [0]]
+[connection signal="pressed" from="TOOLS/Control/PropButton" to="TOOLS" method="ChangeSelectedTool" binds= [1]]
+[connection signal="pressed" from="TOOLS/Control/FoundationUI/Button" to="TOOLS" method="FinalizeRoom"]
+
+[editable path="Escape room enviornment"]

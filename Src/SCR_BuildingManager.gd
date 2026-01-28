@@ -18,6 +18,12 @@ var DragStart:Vector3
 var DragEnd:Vector3
 
 @export var BuildingGrid:GridMap
+@export var RoomParent:Node3D
+
+@export var FoundationTool:FoundationManager
+@export var FoundationToolUI:Control
+@export var PropTool:PropPlacer
+@export var PropToolUI:Control
 
 var SelectedSpaces:Array[Vector3]
 var CurrentDragSpaces:Array[Vector3]
@@ -29,18 +35,74 @@ var OverlappingBuildPoints:Array[Vector3] = []
 
 var PERMANENTPLACEMENTS:Array[Vector3] = []
 
+enum SELECTEDTOOL {FOUNDATION,PROP,PUZZLE}
+var SelectedTool:SELECTEDTOOL = SELECTEDTOOL.FOUNDATION
+
+var MinimumSizeReached:bool = false
+var DoorwayPlaced:bool = false
+
+@export var BuildRequirementsLabel:RichTextLabel
+@export var BuildRequirementsText:String
+@export var FinalizeRoomButton:Button
+
+var Rooms:Array[RoomResource]
+
+var CurrentRoom:RoomResource = RoomResource.new()
+var CurrentRoomScene:RoomScene
+
+
 # Called when the node enters the scene tree for the first time.
 func _enter_tree() -> void:
 	instance = self
 	pass # Replace with function body.
 
+func _ready() -> void:
+	FoundationTool.FoundationPlaced.connect(UpdateRequirementsPanel)
+	FoundationTool.DoorwayPlaced.connect(UpdateRequirementsPanel)
+	CreateNewRoom()
+
 func _process(delta: float) -> void:
 	if !GLOBALS.CanInteract:
 		return
+	match (SelectedTool):
+		SELECTEDTOOL.FOUNDATION:
+			pass
+		SELECTEDTOOL.PROP:
+			pass
+		SELECTEDTOOL.PUZZLE:
+			pass
+	MoveCursor(mouse_position(true))
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
-		MoveCursor(mouse_position(true))
+func UpdateRequirementsPanel():
+	MinimumSizeReached = BuildingPoints.size() >= 8
+	DoorwayPlaced = CurrentRoom.HasDoor
+		
+	FinalizeRoomButton.disabled = (MinimumSizeReached and !DoorwayPlaced)
+		
+	var MinSizeColor = "green" if MinimumSizeReached else "red"
+	var DoorwayColor = "green" if DoorwayPlaced else "red"
+	BuildRequirementsLabel.text = "[b]Requirements[/b]\n" + "[color=" + str(MinSizeColor) + "]" + str("Minimum build size: 3x3\n") + "[color=" + str(DoorwayColor) + "]" + str("Door Placed\n")
+
+func ChangeSelectedTool(_tool:SELECTEDTOOL):
+	SelectedTool = _tool
+	FoundationTool.process_mode = Node.PROCESS_MODE_DISABLED
+	PropTool.process_mode = Node.PROCESS_MODE_DISABLED
+	if FoundationToolUI:
+		FoundationToolUI.visible = false
+	PropToolUI.visible = false
+	match (SelectedTool):
+		SELECTEDTOOL.FOUNDATION:
+			FoundationTool.process_mode = Node.PROCESS_MODE_INHERIT
+			if FoundationToolUI:
+				FoundationToolUI.visible = true
+			UpdateRequirementsPanel()
+			pass
+		SELECTEDTOOL.PROP:
+			PropTool.process_mode = Node.PROCESS_MODE_INHERIT
+			PropToolUI.visible = true
+			pass
+		SELECTEDTOOL.PUZZLE:
+			pass
 
 func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 	#Created with help from https://www.reddit.com/r/godot/comments/xd7lcx/how_to_turn_mouse_coordinates_in_world/
@@ -62,22 +124,37 @@ func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 	else:
 		return Vector3.ZERO
 
+func CreateNewRoom():
+	CurrentRoom = RoomResource.new()
+	var NewRoom:RoomScene = RoomScene.new()
+	CurrentRoomScene = NewRoom
+	RoomParent.add_child(NewRoom,true)
+	pass
+	
+func FinalizeRoom():
+	CurrentRoom.RoomSquares.append_array(BuildingPoints)
+	CurrentRoom.RoomArea = AABB(CurrentRoom.RoomSquares[0],CurrentRoom.RoomSquares[CurrentRoom.RoomSquares.size()-1])
+	
+	var average = Vector3.ZERO
+	for i in CurrentRoom.RoomSquares.size():
+		average += CurrentRoom.RoomSquares[i]
+	average /= CurrentRoom.RoomSquares.size()
+	
+	Rooms.append(CurrentRoom)
+	CurrentRoom = null
+	
+	var ye = CollisionShape3D.new()
+	add_child(ye)
+	OccupiedGridSquares.clear()
+	OccupiedGridSquares.append_array(BuildingPoints)
+	PERMANENTPLACEMENTS.append_array(OccupiedGridSquares)
+	BuildingPoints.clear()
 
 func MoveCursor(_movement:Vector3):
 	BuildingCursorPosition = _movement
 	Cursor.global_position = BuildingCursorPosition
 	##print(Cursor.global_position)
 	pass
-
-func FinalizeRoom():
-	GameManager.instance.FinalizeRoom(BuildingPoints)
-	var ye = CollisionShape3D.new()
-	add_child(ye)
-	BuildingGrid.mesh
-	OccupiedGridSquares.clear()
-	OccupiedGridSquares.append_array(BuildingPoints)
-	PERMANENTPLACEMENTS.append_array(OccupiedGridSquares)
-	BuildingPoints.clear()
 
 func EdgeCheckPoint(_point:Vector3,_array:Array[Vector3]) -> int:
 	var count:int
@@ -335,3 +412,18 @@ func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offse
 			match CornerChecking:
 				pass
 	return 0
+
+func CellRotationToEuler(_value:int) -> Vector3:
+	#print("CHECKING ::" + str(_value))
+	match _value:
+		0:
+			return Vector3(0,0,0)
+		10:
+			return Vector3(0,180,0)
+		16:
+			return Vector3(0,90,0)
+		22:
+			return Vector3(0,255,0)
+		_:
+			return Vector3(0,0,0)
+	pass

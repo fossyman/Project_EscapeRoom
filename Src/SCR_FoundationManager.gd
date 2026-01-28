@@ -17,12 +17,13 @@ var Labels:Array[Label3D]
 
 @export var Chunksize = 64
 
+@export var FoundationMeshArray:MeshLibrary
+
+signal FoundationPlaced
+signal DoorwayPlaced
+
 func _enter_tree() -> void:
 	instance = self
-
-func _ready() -> void:
-	DEBUGTOOLS.instance.CreateRoomButton.connect("pressed",GameManager.instance.CreateNewRoom)
-
 
 func _unhandled_input(event: InputEvent) -> void:
 	
@@ -42,8 +43,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			DrawBuildRect(BuildManager.instance.DragStart,BuildManager.instance.DragEnd)
 	BuildSizeLabel.text = str((BuildManager.instance.DragEnd - BuildManager.instance.DragStart).x) + ", " + str((BuildManager.instance.DragEnd - BuildManager.instance.DragStart).z)
 	if Input.is_action_just_released("Lclick"):
-		if !GameManager.instance.CurrentRoom:
-			GameManager.instance.CurrentRoom = RoomResource.new()
+		if !BuildManager.instance.CurrentRoom:
+			BuildManager.instance.CurrentRoom = RoomResource.new()
 		
 		var StartX = (BuildManager.instance.DragStart.x if BuildManager.instance.DragStart.x < BuildManager.instance.DragEnd.x else BuildManager.instance.DragEnd.x)
 		var StartZ = (BuildManager.instance.DragStart.z if BuildManager.instance.DragStart.z < BuildManager.instance.DragEnd.z else BuildManager.instance.DragEnd.z)
@@ -95,11 +96,14 @@ func BuildSelectedSection(StartCorner:Vector3,EndCorner:Vector3):
 			await get_tree().process_frame
 		
 	BuildManager.instance.OverlappingBuildPoints.clear()
+	FoundationPlaced.emit()
 
 func BuildConnector(_doorpos:Vector3):
 	if BuildManager.instance.BuildingPoints.has(_doorpos):
 		var ye:int = BuildManager.instance.GetAverageWallRotationIndex(_doorpos,true)
 		BuildManager.instance.BuildingGrid.set_cell_item(_doorpos,4,ye)
+		BuildManager.instance.CurrentRoom.HasDoor = true
+		DoorwayPlaced.emit()
 
 func DrawBuildRect(StartPoint:Vector3=Vector3.ZERO,EndPoint:Vector3=Vector3.ZERO,StartPointMod:Vector3=Vector3.ZERO,EndPointMod:Vector3=Vector3.ZERO):
 	var mesh = ImmediateMesh.new()

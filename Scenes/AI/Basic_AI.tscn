@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dcnfbc7ofhjyc"]
+[gd_scene load_steps=8 format=3 uid="uid://dcnfbc7ofhjyc"]
 
 [ext_resource type="Script" uid="uid://lmbm33fm1ovc" path="res://Src/SCR_BasicAI.gd" id="1_htmd5"]
 [ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_b3f24"]
+[ext_resource type="Texture2D" uid="uid://ckdq61v4pxqfh" path="res://Assets/Untitled.png" id="3_b4u8d"]
 
 [sub_resource type="Resource" id="Resource_b4u8d"]
 script = ExtResource("2_b3f24")
@@ -22,10 +23,14 @@ is_hemisphere = true
 radial_segments = 4
 rings = 1
 
-[node name="BasicAi" type="CharacterBody3D" node_paths=PackedStringArray("Nav")]
+[node name="BasicAi" type="CharacterBody3D" node_paths=PackedStringArray("Nav", "CharacterMesh", "ReactionSpeechBubble", "ReactionLabel")]
 script = ExtResource("1_htmd5")
 Nav = NodePath("NavigationAgent3D")
+CharacterMesh = NodePath("MeshInstance3D")
 CharacterStatistics = SubResource("Resource_b4u8d")
+ReactionSpeechBubble = NodePath("Sprite3D")
+ReactionLabel = NodePath("Sprite3D/Label3D")
+Reactions = Array[String](["😁", "🔍", "😡", "😮"])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.531351, 0)
@@ -34,9 +39,29 @@ shape = SubResource("SphereShape3D_c3et4")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_c3et4")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 mesh = SubResource("SphereMesh_htmd5")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1.6447)
+mesh = SubResource("SphereMesh_htmd5")
+skeleton = NodePath("../..")
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
 avoidance_enabled = true
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 2.21159, 0)
+visible = false
+billboard = 2
+double_sided = false
+render_priority = -2
+texture = ExtResource("3_b4u8d")
+
+[node name="Label3D" type="Label3D" parent="Sprite3D"]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0.3216, 0)
+pixel_size = 0.0179
+billboard = 2
+double_sided = false
