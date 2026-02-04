@@ -40,7 +40,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			BuildManager.instance.DragEnd = MousePos
 			PreviewBuildMesh.visible = true
 			##print("MAKING SQUARE BETWEEN " + str(DragStart) + " AND " + str(DragEnd))
-			DrawBuildRect(BuildManager.instance.DragStart,BuildManager.instance.DragEnd)
+			BuildVisualiser.DrawBuildRect(PreviewBuildMesh,BuildManager.instance.DragStart,BuildManager.instance.DragEnd)
+
 	BuildSizeLabel.text = str((BuildManager.instance.DragEnd - BuildManager.instance.DragStart).x) + ", " + str((BuildManager.instance.DragEnd - BuildManager.instance.DragStart).z)
 	if Input.is_action_just_released("Lclick"):
 		if !BuildManager.instance.CurrentRoom:
@@ -104,70 +105,3 @@ func BuildConnector(_doorpos:Vector3):
 		BuildManager.instance.BuildingGrid.set_cell_item(_doorpos,4,ye)
 		BuildManager.instance.CurrentRoom.HasDoor = true
 		DoorwayPlaced.emit()
-
-func DrawBuildRect(StartPoint:Vector3=Vector3.ZERO,EndPoint:Vector3=Vector3.ZERO,StartPointMod:Vector3=Vector3.ZERO,EndPointMod:Vector3=Vector3.ZERO):
-	var mesh = ImmediateMesh.new()
-	mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
-	####R SIDE
-	mesh.surface_set_color(Color.RED)
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
-	mesh.surface_set_color(Color.GREEN)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_set_color(Color.WHITE)
-	
-	####L SIDE
-	mesh.surface_set_color(Color.PURPLE)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
-	mesh.surface_set_color(Color.ORANGE)
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_set_color(Color.WHITE)
-	
-	####B SIDE
-	mesh.surface_set_color(Color.YELLOW)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_set_color(Color.BLUE)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
-	
-	####F SIDE
-	mesh.surface_set_color(Color.AQUA)
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_set_color(Color.CRIMSON)
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
-
-	mesh.surface_set_color(Color.WHITE)
-	
-	####TOP
-	mesh.surface_set_uv(Vector2(0, 1))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_set_uv(Vector2(1, 0))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,EndPoint.z))
-	mesh.surface_set_uv(Vector2(0, 0))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	
-	mesh.surface_set_uv(Vector2(1, 0))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_set_uv(Vector2(0, 1))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_set_uv(Vector2(1, 1))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,StartPoint.z))
-
-	
-	mesh.surface_end()
-	PreviewBuildMesh.mesh = mesh
-	
