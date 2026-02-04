@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Project_EscapeRoom"
-run/main_scene="uid://vnxf3yga43ax"
+run/main_scene="uid://crpj6v8sqf4h"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
 

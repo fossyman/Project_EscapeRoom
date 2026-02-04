@@ -1,11 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://crpj6v8sqf4h"]
+[gd_scene load_steps=5 format=3 uid="uid://crpj6v8sqf4h"]
 
 [ext_resource type="Texture2D" uid="uid://bxpqxxxeopvi5" path="res://Assets/UI/UI Menu.svg" id="1_70n7g"]
 [ext_resource type="Script" uid="uid://de3yjnmyv4xli" path="res://Scenes/Roots/root_main_menu.gd" id="1_nned8"]
+[ext_resource type="PackedScene" uid="uid://cyxcjwc3tm3ad" path="res://Scenes/Roots/ROOT_Gameplay.tscn" id="2_a2yyp"]
 [ext_resource type="Theme" uid="uid://bt7l7xttp5w74" path="res://Assets/UI/UI Button theme.tres" id="2_ajkn1"]
 
 [node name="Root_MainMenu" type="Node"]
 script = ExtResource("1_nned8")
+level = ExtResource("2_a2yyp")
 
 [node name="CONTENT" type="Node" parent="."]
 
@@ -34,7 +36,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="PLAYSET" type="VBoxContainer" parent="CONTENT/Interactables"]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -68,7 +69,6 @@ theme_override_font_sizes/font_size = 44
 text = "Settings"
 
 [node name="CREDQUIT" type="VBoxContainer" parent="CONTENT/Interactables"]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -103,6 +103,7 @@ text = "Quit
 "
 
 [node name="Setting menu" type="VBoxContainer" parent="CONTENT/Interactables"]
+visible = false
 layout_mode = 0
 offset_left = 102.0
 offset_top = 122.0
@@ -210,9 +211,17 @@ theme_override_font_sizes/font_size = 44
 text = "Return
 "
 
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="CONTENT"]
+
 [node name="CONSTANT" type="Node" parent="."]
 
 [connection signal="pressed" from="CONTENT/Interactables/PLAYSET/BoxContainer/Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="CONTENT/Interactables/PLAYSET/BoxContainer/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="CONTENT/Interactables/CREDQUIT/BoxContainer/Credits" to="." method="_on_credits_pressed"]
 [connection signal="pressed" from="CONTENT/Interactables/CREDQUIT/BoxContainer/Quit" to="." method="_on_quit_pressed"]
+[connection signal="pressed" from="CONTENT/Interactables/Setting menu/back" to="." method="_on_back_pressed"]
+[connection signal="toggled" from="CONTENT/Interactables/Setting menu/Full screen" to="." method="_on_full_screen_toggled"]
+[connection signal="value_changed" from="CONTENT/Interactables/Setting menu/MainVolSlider" to="." method="_on_main_vol_slider_value_changed"]
+[connection signal="value_changed" from="CONTENT/Interactables/Setting menu/MusicSlider" to="." method="_on_music_slider_value_changed"]
+[connection signal="value_changed" from="CONTENT/Interactables/Setting menu/SFXSlider" to="." method="_on_sfx_slider_value_changed"]
+[connection signal="pressed" from="CONTENT/Interactables/Credits menu/back" to="." method="_on_back_pressed"]

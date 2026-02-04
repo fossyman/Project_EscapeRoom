@@ -101,7 +101,7 @@ horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Mainbar"]
 layout_mode = 0
-offset_right = 452.0
+offset_right = 445.0
 offset_bottom = 50.0
 theme_override_constants/separation = 10
 
