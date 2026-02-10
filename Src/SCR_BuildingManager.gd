@@ -17,7 +17,7 @@ var ClickPos:Vector3
 var DragStart:Vector3
 var DragEnd:Vector3
 
-@export var BuildingGrid:GridMap
+@export var BuildingGridmap:GridmapPlus
 @export var RoomParent:Node3D
 
 @export var FoundationTool:FoundationManager
@@ -49,6 +49,8 @@ var Rooms:Array[RoomResource]
 
 var CurrentRoom:RoomResource = RoomResource.new()
 var CurrentRoomScene:RoomScene
+
+var Labels:Array[Label3D]
 
 
 # Called when the node enters the scene tree for the first time.
@@ -119,7 +121,7 @@ func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 		#result.collider #gets object
 		#result.position #gets position
 		if _SnapToGrid:
-			return snapped(result.position,BuildingGrid.cell_size)
+			return snapped(result.position,BuildingGridmap.cell_size)
 		return result.position
 	else:
 		return Vector3.ZERO
@@ -202,7 +204,7 @@ func CheckBorderingGridCorners(_position:Vector3,_snap:bool = true) -> Vector3:
 	#print("RETURNING CORNER VALUE OF :: " + str(average))
 	return average.snappedf(0.1) if _snap else average
 	
-func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
+func UpdateGridSquare(_gridlayer:int,_gridsquare:Vector3,_erasing = false):
 	var LabelColor:Color = Color.WHITE
 	var Dir
 	var EdgeCount = 0
@@ -214,6 +216,9 @@ func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
 	
 	if !BuildingPoints.has(_gridsquare):
 		return
+	
+	if _erasing:
+		BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,GridMap.INVALID_CELL_ITEM,0)
 
 	
 	for x in CheckPositions.size():
@@ -238,11 +243,11 @@ func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
 			var ye = CheckBorderingGridAverage(_gridsquare,false)
 			Dir = ye
 			var noAVG = GetAverageWallRotationIndex(_gridsquare,true)
-			BuildingGrid.set_cell_item(_gridsquare,0,noAVG)
+			BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,0,noAVG)
 		4:
 			LabelColor = Color.GREEN
 			var noAVG = GetAverageWallRotationIndex(_gridsquare,true)
-			BuildingGrid.set_cell_item(_gridsquare,0,noAVG)
+			BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,0,noAVG)
 
 		5,6:
 			var EdgesDirection = round(EdgeCheck.max())
@@ -252,7 +257,7 @@ func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
 			Dir = EdgesDirection
 			match CurrentEdgeCount:
 				1:
-					BuildingGrid.set_cell_item(_gridsquare,1,no)
+					BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,no)
 				4:
 					#print("::EDGECOUNT:: " + str(EdgeCount))
 					match EdgeCount:
@@ -260,19 +265,20 @@ func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
 							#print("5's NORMAL CHECK:: at " + str(check) + " " + str(noAVG))
 							match check:
 								Vector3(Vector3.FORWARD*0.5),Vector3(Vector3.LEFT*0.5),Vector3(Vector3.RIGHT*0.5),Vector3(Vector3.BACK*0.5):
-									BuildingGrid.set_cell_item(_gridsquare,1,noAVG)
+									BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,noAVG)
 								_:
-									BuildingGrid.set_cell_item(_gridsquare,0,noAVG)
+									BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,0,noAVG)
 
 						6:
-							BuildingGrid.set_cell_item(_gridsquare,1,noAVG)
+							BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,noAVG)
 						_:
 							#print("SHOULD BE SOMETHING HERE AT")
 							pass
 				_:
 					pass
 		8:
-			BuildingGrid.set_cell_item(_gridsquare,2)
+			#BuildingGridmap.clear_cell_item(1,_gridsquare)
+			BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,2,0)
 		7:
 			var check2 = CheckBorderingGridCorners(_gridsquare,false)
 			var CurrentEdgeCount:int = EdgeCheck.size()
@@ -285,22 +291,22 @@ func UpdateGridSquare(_gridsquare:Vector3,_erasing = false):#
 				Vector3(Vector3.FORWARD),Vector3(Vector3.LEFT),Vector3(Vector3.RIGHT),Vector3(Vector3.BACK),Vector3(0,0,0.1):
 					#print("attempting to determine :: " + str(CheckBorderingGridAverage(_gridsquare,true)))
 
-					BuildingGrid.set_cell_item(_gridsquare,1,noAVG)
+					BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,noAVG)
 					#print("WOAH" + str(noAVG))
 				_:
 					#print("AVERAGE RETURN FOR 7 IS :: " + str(noAVG))
-					BuildingGrid.set_cell_item(_gridsquare,3,noAVG)
+					BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,3,noAVG)
 					#print("NOAH" + str(noAVG))
-	#if ShowLabels:
-		#var lab = Label3D.new()
-		#BuildingGrid.add_child(lab)
-		#Labels.append(lab)
-		#lab.no_depth_test = true
-		#lab.modulate = LabelColor
-		#lab.global_position = _gridsquare + Vector3.UP
-		#lab.text = str(EdgeCount)+"\n"+str(CheckBorderingGridCorners(_gridsquare))+"\n"+str(CheckBorderingGridCorners(_gridsquare,true))
-		#lab.font_size = 32
-		#lab.billboard = true
+		
+	var lab = Label3D.new()
+	add_child(lab)
+	Labels.append(lab)
+	lab.no_depth_test = true
+	lab.modulate = lerp(LabelColor,Color.RED,randf_range(0.0,1.0))
+	lab.global_position = _gridsquare + (Vector3.UP*randf_range(1.0,2.0))
+	lab.text = str(EdgeCount)+"\n"+str(CheckBorderingGridCorners(_gridsquare))+"\n"+str(CheckBorderingGridCorners(_gridsquare,true))
+	lab.font_size = 32
+	lab.billboard = true
 
 func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offset:Vector3 = Vector3.ZERO,intcheck:int = -1) -> int:
 	var checking:Vector3 = CheckBorderingGridAverage(_position,CornerFix) + _offset

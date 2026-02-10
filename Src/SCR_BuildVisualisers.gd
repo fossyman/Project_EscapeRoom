@@ -96,4 +96,5 @@ static func DrawBuildRect(_PreviewMesh:MeshInstance3D,StartPoint:Vector3,EndPoin
 	
 	mesh.surface_end()
 	_PreviewMesh.global_position = Vector3.ZERO
+	_PreviewMesh.rotation_degrees.y = 0
 	_PreviewMesh.mesh = mesh

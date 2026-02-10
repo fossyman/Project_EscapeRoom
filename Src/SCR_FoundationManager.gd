@@ -19,6 +19,9 @@ var Labels:Array[Label3D]
 
 @export var FoundationMeshArray:MeshLibrary
 
+enum SELECTED_TOOL{FOUNDATION,ERASE,FLOOR}
+var SelectedTool:SELECTED_TOOL = 0
+
 signal FoundationPlaced
 signal DoorwayPlaced
 
@@ -31,31 +34,38 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if Input.is_action_pressed("Lclick"):
+
 		var MousePos = BuildManager.instance.mouse_position(true)
 		if Input.is_action_just_pressed("Lclick"):
 			BuildManager.instance.ClickPos = MousePos
 			BuildConnector(BuildManager.instance.ClickPos)
 		if MousePos.distance_to(BuildManager.instance.ClickPos) > BuildManager.instance.DragDeadzone:
-			BuildManager.instance.DragStart = BuildManager.instance.ClickPos
-			BuildManager.instance.DragEnd = MousePos
-			PreviewBuildMesh.visible = true
-			##print("MAKING SQUARE BETWEEN " + str(DragStart) + " AND " + str(DragEnd))
-			BuildVisualiser.DrawBuildRect(PreviewBuildMesh,BuildManager.instance.DragStart,BuildManager.instance.DragEnd)
+			match(SelectedTool):
+				_:
+					BuildManager.instance.DragStart = BuildManager.instance.ClickPos
+					BuildManager.instance.DragEnd = MousePos
+					PreviewBuildMesh.visible = true
+					##print("MAKING SQUARE BETWEEN " + str(DragStart) + " AND " + str(DragEnd))
+					BuildVisualiser.DrawBuildRect(PreviewBuildMesh,BuildManager.instance.DragStart,BuildManager.instance.DragEnd)
 
 	BuildSizeLabel.text = str((BuildManager.instance.DragEnd - BuildManager.instance.DragStart).x) + ", " + str((BuildManager.instance.DragEnd - BuildManager.instance.DragStart).z)
 	if Input.is_action_just_released("Lclick"):
 		if !BuildManager.instance.CurrentRoom:
 			BuildManager.instance.CurrentRoom = RoomResource.new()
-		
+			
 		var StartX = (BuildManager.instance.DragStart.x if BuildManager.instance.DragStart.x < BuildManager.instance.DragEnd.x else BuildManager.instance.DragEnd.x)
 		var StartZ = (BuildManager.instance.DragStart.z if BuildManager.instance.DragStart.z < BuildManager.instance.DragEnd.z else BuildManager.instance.DragEnd.z)
 		
 		var EndX = (BuildManager.instance.DragEnd.x if BuildManager.instance.DragEnd.x > BuildManager.instance.DragStart.x else BuildManager.instance.DragStart.x) + 1
 		var EndZ = (BuildManager.instance.DragEnd.z if BuildManager.instance.DragEnd.z > BuildManager.instance.DragStart.z else BuildManager.instance.DragStart.z) + 1
-		BuildSelectedSection(Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
+		match SelectedTool:
+			SELECTED_TOOL.ERASE:
+				BuildSelectedSection(1,Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ),true)
+			_:
+				BuildSelectedSection(1,Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
 		PreviewBuildMesh.visible = false
 
-func BuildSelectedSection(StartCorner:Vector3,EndCorner:Vector3):
+func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3,_Erasing = false):
 	push_warning(StartCorner)
 	if (StartCorner.x < 0 or StartCorner.z < 0) or (EndCorner.x < 0 or EndCorner.z < 0):
 		return
@@ -88,9 +98,10 @@ func BuildSelectedSection(StartCorner:Vector3,EndCorner:Vector3):
 
 	if NewPoints.is_empty():
 		return
+		
 	var ChunkCounter:int = 0
 	for i in BuildManager.instance.OverlappingBuildPoints.size():
-		BuildManager.instance.UpdateGridSquare(BuildManager.instance.OverlappingBuildPoints[i])
+		BuildManager.instance.UpdateGridSquare(_layer,BuildManager.instance.OverlappingBuildPoints[i],_Erasing)
 		ChunkCounter +=1
 		if ChunkCounter >= Chunksize:
 			ChunkCounter = 0
@@ -98,10 +109,13 @@ func BuildSelectedSection(StartCorner:Vector3,EndCorner:Vector3):
 		
 	BuildManager.instance.OverlappingBuildPoints.clear()
 	FoundationPlaced.emit()
-
+	
 func BuildConnector(_doorpos:Vector3):
-	if BuildManager.instance.BuildingPoints.has(_doorpos):
-		var ye:int = BuildManager.instance.GetAverageWallRotationIndex(_doorpos,true)
-		BuildManager.instance.BuildingGrid.set_cell_item(_doorpos,4,ye)
-		BuildManager.instance.CurrentRoom.HasDoor = true
+	#if BuildManager.instance.BuildingPoints.has(_doorpos):
+		#var ye:int = BuildManager.instance.GetAverageWallRotationIndex(_doorpos,true)
+		#BuildManager.instance.BuildingGrid.set_cell_item(_doorpos,4,ye)
+		#BuildManager.instance.CurrentRoom.HasDoor = true
 		DoorwayPlaced.emit()
+
+func SetTool(value:int = 0):
+	SelectedTool = value
