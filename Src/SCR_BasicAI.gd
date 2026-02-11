@@ -2,14 +2,20 @@ extends CharacterBody3D
 class_name BasicAI
 
 @export var Nav:NavigationAgent3D
-
+@export var CharacterMesh:Node3D
 @export var TargetPosition:Vector3
 @export var CharacterStatistics:Stats
 @export var SearchedClues:Array[int]
 
 @export var PartyContainer:Node#THIS WILL BE FOR SIGNALLING OTHER NPCS THAT CLUES HAVE BEEN FOUND
 
-@export var CurrentRoom:RoomResource
+@export var CurrentRoom:RoomScene
+
+@export var ReactionSpeechBubble:Sprite3D
+@export var ReactionLabel:Label3D
+
+
+@export var Reactions:Array[String]
 
 signal FoundClue
 signal UsedClue
@@ -25,7 +31,7 @@ func _ready() -> void:
 	Nav.velocity_computed.connect(_VelocityComputed)
 	Nav.target_reached.connect(_TargetReached)
 	TestSearchTime = randf_range(1,5)
-	CurrentRoom = GLOBALS.CURRENTROOT.BuildManager.Rooms[0]
+	CurrentRoom = BuildManager.instance.CurrentRoomScene
 	ScanforProps()
 	pass
 	
@@ -49,18 +55,29 @@ func SetTarget(_target:Vector3):
 
 func _VelocityComputed(_velocity:Vector3):
 	velocity = _velocity
+	if velocity != Vector3.ZERO:
+		CharacterMesh.rotation.y = lerp_angle(CharacterMesh.rotation.y,atan2(-velocity.x,-velocity.z),12 * GLOBALS.DELTA)
 	move_and_slide()
 	pass
 
 func _TargetReached():
+	InvestigateProp(BuildManager.instance.CurrentRoomScene.PropContainer.get_child(0))
 	pass
 	
 func InvestigateProp(_prop:PropScene):
+	DisplayEmotion()
 	pass
 
 func ScanforProps():
-	var NextSearchID = randi_range(0,CurrentRoom.PlacedProps.size()-1)
+	var NextSearchID = randi_range(0,CurrentRoom.PropContainer.get_child_count() -1 )
 
-	SetTarget(CurrentRoom.PlacedProps[NextSearchID].global_position)
+	SetTarget(CurrentRoom.PropContainer.get_child(NextSearchID).global_position)
 	print("PROP FOUND")
 	pass
+	
+func DisplayEmotion():
+	ReactionSpeechBubble.visible = true
+	var idx = Reactions.pick_random()
+	ReactionLabel.text = idx
+	await get_tree().create_timer(2.0).timeout
+	ReactionSpeechBubble.visible = false

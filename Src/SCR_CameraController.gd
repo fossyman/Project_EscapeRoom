@@ -23,6 +23,8 @@ var DragValue:Vector2
 @export var CameraHolder:Node3D
 @export var Camera:Camera3D
 
+@export var ScrollClamp:Vector2
+
 var delta:float
 
 @export var Movespeed:float = 0.3
@@ -49,10 +51,10 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			CurrentScroll += 1.0
-			CurrentScroll = clamp(CurrentScroll,1.0,5.0)
+			CurrentScroll = clamp(CurrentScroll,ScrollClamp.x,ScrollClamp.y)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 			CurrentScroll += -1.0
-			CurrentScroll = clamp(CurrentScroll,1.0,5.0)
+			CurrentScroll = clamp(CurrentScroll,ScrollClamp.x,ScrollClamp.y)
 			
 	if event is InputEventMouseMotion:
 		if Input.is_action_pressed("RClick"):

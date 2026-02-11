@@ -1,373 +1,110 @@
 extends Node
-class_name BuildingManagerOLD
-
-var SelectedTool:int = 0
-
-@export var BuildMat:Material
-@export var DestroyMat:Material
-@export var BuildSizeLabel:Label3D
-@export var EdgeColors:bool=false
-@export var CornerColors:bool=false
-@export var InnerCornerColors:bool=false
-
-@export var BuildingGrid:GridMap
-
-static var instance:BuildingManagerOLD
-
-@export var Cursor:Node3D
-var BuildingCursorPosition:Vector3
-
-var ClickPos:Vector3
-@export var DragDeadzone:float = 1.0
-var DragStart:Vector3
-var DragEnd:Vector3
-
-@export var PreviewBuildMesh:MeshInstance3D
-
-var SelectedSpaces:Array[Vector3]
-var CurrentDragSpaces:Array[Vector3]
-
-var Points:Array[Vector3] = []
-
-var BuildEdges:Array[Vector3] = []
-
-var Labels:Array[Label3D]
+class_name BuildManager
+static var instance = self
 
 static var CheckPositions = [Vector3(1,0,1),Vector3(0,0,1),Vector3(-1,0,1),
 							Vector3(1,0,0),Vector3(0,0,0),Vector3(-1,0,0),
 							Vector3(1,0,-1),Vector3(0,0,-1),Vector3(-1,0,-1)]
 
+@export var Cursor:Node3D
+@export var CursorMesh:MeshInstance3D
+@export var OverlapTestingArea:Area3D
+var BuildingCursorPosition:Vector3
+
+var ClickPos:Vector3
+
+@export var DragDeadzone:float = 1.0
+var DragStart:Vector3
+var DragEnd:Vector3
+
+@export var BuildingGridmap:GridmapPlus
+@export var RoomParent:Node3D
+
+@export var FoundationTool:FoundationManager
+@export var FoundationToolUI:Control
+@export var PropTool:PropPlacer
+@export var PropToolUI:Control
+
+var SelectedSpaces:Array[Vector3]
+var CurrentDragSpaces:Array[Vector3]
+
+var OccupiedGridSquares:Array[Vector3] = []
+
+var BuildingPoints:Array[Vector3] = []
+var OverlappingBuildPoints:Array[Vector3] = []
+
+var PERMANENTPLACEMENTS:Array[Vector3] = []
+
+enum SELECTEDTOOL {FOUNDATION,PROP,PUZZLE}
+var SelectedTool:SELECTEDTOOL = SELECTEDTOOL.FOUNDATION
+
+var MinimumSizeReached:bool = false
+var DoorwayPlaced:bool = false
+
+@export var BuildRequirementsLabel:RichTextLabel
+@export var BuildRequirementsText:String
+@export var FinalizeRoomButton:Button
+
+var Rooms:Array[RoomResource]
+
+var CurrentRoom:RoomResource = RoomResource.new()
+var CurrentRoomScene:RoomScene
+
+var Labels:Array[Label3D]
+
+
+# Called when the node enters the scene tree for the first time.
 func _enter_tree() -> void:
 	instance = self
+	pass # Replace with function body.
+
+func _ready() -> void:
+	FoundationTool.FoundationPlaced.connect(UpdateRequirementsPanel)
+	FoundationTool.DoorwayPlaced.connect(UpdateRequirementsPanel)
+	CreateNewRoom()
 
 func _process(delta: float) -> void:
-	
-	if Input.is_key_pressed(KEY_1):
-		SelectedTool = 0
-		PreviewBuildMesh.material_override = BuildMat
-		print(SelectedTool)
-	if Input.is_key_pressed(KEY_2):
-		SelectedTool = 1
-		PreviewBuildMesh.material_override = DestroyMat
-		print(SelectedTool)
-	
 	if !GLOBALS.CanInteract:
 		return
-		
+	match (SelectedTool):
+		SELECTEDTOOL.FOUNDATION:
+			pass
+		SELECTEDTOOL.PROP:
+			pass
+		SELECTEDTOOL.PUZZLE:
+			pass
 	MoveCursor(mouse_position(true))
-	
-	if Input.is_action_pressed("Lclick"):
-		var MousePos = mouse_position(true)
-		if Input.is_action_just_pressed("Lclick"):
-			ClickPos = MousePos
-		if MousePos.distance_to(ClickPos) > DragDeadzone:
-			DragStart = ClickPos
-			DragEnd = MousePos
-			PreviewBuildMesh.visible = true
-			#print("MAKING SQUARE BETWEEN " + str(DragStart) + " AND " + str(DragEnd))
-			DrawBuildRect(DragStart,DragEnd)
-	BuildSizeLabel.text = str((DragEnd - DragStart).x) + ", " + str((DragEnd - DragStart).z)
-	if Input.is_action_just_released("Lclick"):
+
+func UpdateRequirementsPanel():
+	MinimumSizeReached = BuildingPoints.size() >= 8
+	DoorwayPlaced = CurrentRoom.HasDoor
 		
-		var StartX = (DragStart.x if DragStart.x < DragEnd.x else DragEnd.x)
-		var StartZ = (DragStart.z if DragStart.z < DragEnd.z else DragEnd.z)
+	FinalizeRoomButton.disabled = (MinimumSizeReached and !DoorwayPlaced)
 		
-		var EndX = (DragEnd.x if DragEnd.x > DragStart.x else DragStart.x) + 1
-		var EndZ = (DragEnd.z if DragEnd.z > DragStart.z else DragStart.z) + 1
-		match(SelectedTool):
-			0:
-				BuildSelectedSection(Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
-				UpdateBuiltArea()
-			1:
-				for X in range(StartX+1,EndX-1):
-					print("width " + str(X))
-					for Z in range(StartZ+1,EndZ-1):
-						print("height " + str(Z))
-						Points.erase(Vector3(X,0,Z))
-				UpdateBuiltArea()
-		PreviewBuildMesh.visible = false
+	var MinSizeColor = "green" if MinimumSizeReached else "red"
+	var DoorwayColor = "green" if DoorwayPlaced else "red"
+	BuildRequirementsLabel.text = "[b]Requirements[/b]\n" + "[color=" + str(MinSizeColor) + "]" + str("Minimum build size: 3x3\n") + "[color=" + str(DoorwayColor) + "]" + str("Door Placed\n")
 
-
-func BuildSelectedSection(StartCorner:Vector3,EndCorner:Vector3):
-		print("BUILDING")
-		var points = []
-		if DragEnd == DragStart:
-			return
-			
-		###TODO:FIX DRAG MINIMUM TO ALLOW BOTH VALUES POSITIVE AND NEGATIVE
-		#var DragDistance = StartCorner.distance_to(EndCorner)
-		#if DragDistance.x < 3.0:
-			#return
-			
-		for X in range(StartCorner.x,EndCorner.x):
-			print("width " + str(X))
-			for Z in range(StartCorner.z,EndCorner.z):
-				print("height " + str(Z))
-				points.append(Vector3(X,0,Z))
-		print(points.size())
-		
-		Points.append_array(points)
-
-		UpdateBuiltArea()
-			
-func UpdateBuiltArea():
-
-		for i in Labels.size():
-			Labels[i].queue_free()
-		Labels.clear()
-		BuildEdges.clear()
-		BuildingGrid.clear()
-		for i in Points.size():
-			var ye = Label3D.new()
-			add_child(ye)
-			Labels.append(ye)
-			ye.global_position = Points[i]
-			
-			var EdgeCount = 0
-			var Edges = []
-			
-			var PrimaryEdge:int = 0 # 0=UP,1=RIGHT,2=DOWN,3=LEFT
-			var EdgeCheck:Array[Vector3]
-			var CornerCheck:Array[Vector3]
-			
-			for x in CheckPositions.size():
-				if Points.has(Points[i] + CheckPositions[x]) && Points[i] + CheckPositions[x] != Points[i]:
-					Edges.append(Points[i] + CheckPositions[x])
-
-					EdgeCount += 1
-				else:
-					if x == 1 or x == 3 or x == 5 or x == 7:
-						EdgeCheck.append(CheckPositions[x])
-					elif x == 0 or x == 2 or x == 6 or x == 8:
-						CornerCheck.append(CheckPositions[x])
-
-			match EdgeCount:
-				#CORNER
-				3:
-					match CheckBorderingGrid(Points[i]):
-						Vector3(-1.0,0.0,-1.0):
-							if CornerColors:
-								ye.modulate = Color.YELLOW
-							print("YELLOW IS " + str(EdgeCount))
-							BuildingGrid.set_cell_item(Points[i],0,16)
-							pass
-						Vector3(1.0,0.0,-1.0):
-							if CornerColors:
-								ye.modulate = Color.MAGENTA
-							print("MAGENTA IS " + str(EdgeCount))
-							BuildingGrid.set_cell_item(Points[i],0,0)
-							pass
-						Vector3(1.0,0.0,1.0):
-							if CornerColors:
-								ye.modulate = Color.MAROON
-							print("MAROON IS " + str(EdgeCount))
-							BuildingGrid.set_cell_item(Points[i],0,22)
-							pass
-						Vector3(-1.0,0.0,1.0):
-							if CornerColors:
-								ye.modulate = Color.AQUA
-							print("AQUA IS " + str(EdgeCount))
-							BuildingGrid.set_cell_item(Points[i],0,10)
-							pass
-				4:
-							match CheckBorderingGridCorners(Points[i]):
-								Vector3(-0.6,0.0,0.2):
-									if CornerColors:
-										ye.modulate = Color.YELLOW
-									print("YELLOW IS " + str(EdgeCount))
-									BuildingGrid.set_cell_item(Points[i],0,10)
-								pass
-								Vector3(-0.6,0.0,-0.2):
-									if CornerColors:
-										ye.modulate = Color.DEEP_PINK
-									print("DEEP_PINK IS " + str(EdgeCount))
-									BuildingGrid.set_cell_item(Points[i],0,16)
-								pass
-								Vector3(0.6,0.0,0.2):
-									if CornerColors:
-										ye.modulate = Color.AQUA
-									print("AQUA IS " + str(EdgeCount))
-									BuildingGrid.set_cell_item(Points[i],0,22)
-								pass
-								Vector3(0.6,0.0,-0.2):
-									if CornerColors:
-										ye.modulate = Color.CRIMSON
-									print("AQUA IS " + str(EdgeCount))
-									BuildingGrid.set_cell_item(Points[i],0,0)
-								pass
-								Vector3(0.2,0.0,0.6):
-									if CornerColors:
-										ye.modulate = Color.RED
-									print("AQUA IS " + str(EdgeCount))
-									BuildingGrid.set_cell_item(Points[i],0,22)
-								pass
-								Vector3(-0.2,0.0,0.6):
-									if CornerColors:
-										ye.modulate = Color.CORNFLOWER_BLUE
-									print("AQUA IS " + str(EdgeCount))
-									BuildingGrid.set_cell_item(Points[i],0,10)
-								pass
-								Vector3(-0.2,0.0,-0.6):
-									if CornerColors:
-										ye.modulate = Color.DARK_BLUE
-										print("BLUE IS " + str(Vector3(0.0,0.0,-1.0)))
-									print("AQUA IS " + str(EdgeCount))
-									BuildingGrid.set_cell_item(Points[i],0,16)
-								pass
-								Vector3(0.2,0.0,-0.6):
-									if CornerColors:
-										ye.modulate = Color.ORANGE
-										print("BLUE IS " + str(Vector3(0.0,0.0,-1.0)))
-									print("AQUA IS " + str(EdgeCount))
-									BuildingGrid.set_cell_item(Points[i],0,0)
-								pass
-				5,6:
-					BuildEdges.append(Points[i])
-					var EdgesDirection = GetPrimaryWallDirection(EdgeCheck)
-					var CurrentEdgeCount:int = EdgeCheck.size()
-					match CurrentEdgeCount:
-						1:
-							match EdgesDirection:
-								Vector3.LEFT:
-									if EdgeColors:
-										ye.modulate = Color.GREEN
-									BuildingGrid.set_cell_item(Points[i],1,16)
-									pass
-								Vector3.RIGHT:
-									if EdgeColors:
-										ye.modulate = Color.PURPLE
-									BuildingGrid.set_cell_item(Points[i],1,16)
-									pass
-								Vector3.FORWARD:
-									if EdgeColors:
-										ye.modulate = Color.PINK
-									BuildingGrid.set_cell_item(Points[i],1,0)
-									pass
-								Vector3.BACK:
-									if EdgeColors:
-										ye.modulate = Color.ORANGE
-									BuildingGrid.set_cell_item(Points[i],1,0)
-									pass
-						2:
-							print(str(EdgeCheck.size())+" EDGES!!!!!!!!!!!!!!!!!!")
-							var sum:Vector3
-							var avg:Vector3
-							for y in EdgeCheck.size():
-								print(str(EdgeCheck[y])+" EDGES SIDE!!!!!!!!!!!!!!!!!!")
-								sum+=EdgeCheck[y]
-							avg = sum/EdgeCheck.size()
-							print(str(avg)+" EDGES AVG!!!!!!!!!!!!!!!!!!")
-							match avg:
-								Vector3(0.5,0.0,0.5):
-									if EdgeColors:
-										ye.modulate = Color.GREEN
-									BuildingGrid.set_cell_item(Points[i],0,16)
-									pass
-								Vector3(0.5,0.0,-0.5):
-									if EdgeColors:
-										ye.modulate = Color.PURPLE
-									BuildingGrid.set_cell_item(Points[i],0,10)
-									pass
-								Vector3(-0.5,0.0,0.5):
-									if EdgeColors:
-										ye.modulate = Color.PINK
-									BuildingGrid.set_cell_item(Points[i],0,0)
-									pass
-								Vector3(-0.5,0.0,-0.5):
-									if EdgeColors:
-										ye.modulate = Color.ORANGE
-									BuildingGrid.set_cell_item(Points[i],0,22)
-									pass
-				7:
-					print(CheckBorderingGrid(Points[i]))
-					match(CheckBorderingGrid(Points[i],true)):
-						Vector3(-1.0,0.0,-1.0):
-							if InnerCornerColors:
-								ye.modulate = Color.YELLOW
-							print("YELLOW IS " + str(EdgeCount))
-							BuildingGrid.set_cell_item(Points[i],0,22)
-							pass
-						Vector3(1.0,0.0,-1.0):
-							if InnerCornerColors:
-								ye.modulate = Color.MAGENTA
-							print("MAGENTA IS " + str(EdgeCount))
-							BuildingGrid.set_cell_item(Points[i],0,10)
-							pass
-						Vector3(1.0,0.0,1.0):
-							if InnerCornerColors:
-								ye.modulate = Color.MAROON
-							print("MAROON IS " + str(EdgeCount))
-							BuildingGrid.set_cell_item(Points[i],0,16)
-							pass
-						Vector3(-1.0,0.0,1.0):
-							if InnerCornerColors:
-								ye.modulate = Color.AQUA
-							print("AQUA IS " + str(EdgeCount))
-							BuildingGrid.set_cell_item(Points[i],0,0)
-							pass
-						Vector3.LEFT:
-							ye.modulate = Color.BLACK
-							BuildingGrid.set_cell_item(Points[i],1,22)
-						Vector3.RIGHT:
-							ye.modulate = Color.BLACK
-							BuildingGrid.set_cell_item(Points[i],1,22)
-						Vector3.FORWARD:
-							ye.modulate = Color.PURPLE
-							BuildingGrid.set_cell_item(Points[i],1,0)
-						Vector3.BACK:
-							ye.modulate = Color.PURPLE
-							BuildingGrid.set_cell_item(Points[i],1,0)
-				8:
-					BuildingGrid.set_cell_item(Points[i],2)
-					pass
-			ye.text = str(EdgeCount)+"\n"+str(ye.global_position)
-			ye.font_size = 32
-			ye.billboard = true
-			
-func GetPrimaryWallDirection(_EdgeTable:Array[Vector3]):
-	print("Primary value is: " + str(_EdgeTable.max()))
-	return _EdgeTable.max()
-
-func CheckBorderingGrid(_position:Vector3,CornerFix:bool = false) -> Vector3:
-	var EmptyPoints:Array[Vector3]
-	var val:Vector3
-	var avg:Vector3
-	for i in CheckPositions.size():
-		if Points.has(_position + CheckPositions[i]):
-			EmptyPoints.append( (CheckPositions[i]) )
-			
-	for i in EmptyPoints.size():
-		val += EmptyPoints[i]
-		
-	avg = val / EmptyPoints.size()
-	print("BORDERS FOR " + str(_position) + " ARE THE FOLLOWING..." + str((avg*10).round()))
-	if CornerFix:
-		return (avg*10).round()
-	return avg.round()
-
-func CheckBorderingGridCorners(_position:Vector3) -> Vector3:
-	var val:Vector3
-	var avg:Vector3
-	var FoundCorners:Array[Vector3]
-	
-	var dir:Vector3
-	
-	for i in CheckPositions.size():
-		if Points.has(_position + CheckPositions[i]):
-			FoundCorners.append(CheckPositions[i])
-
-	
-	var sum = FoundCorners.reduce(func(acc, num): return acc + num)
-	var average = sum / FoundCorners.size()
-	
-	print("DIRECTION " + str(average))
-	return average
-	
-func MoveCursor(_movement:Vector3):
-	BuildingCursorPosition = _movement
-	Cursor.global_position = BuildingCursorPosition
-	#print(Cursor.global_position)
-	pass
+func ChangeSelectedTool(_tool:SELECTEDTOOL):
+	SelectedTool = _tool
+	FoundationTool.process_mode = Node.PROCESS_MODE_DISABLED
+	PropTool.process_mode = Node.PROCESS_MODE_DISABLED
+	if FoundationToolUI:
+		FoundationToolUI.visible = false
+	PropToolUI.visible = false
+	match (SelectedTool):
+		SELECTEDTOOL.FOUNDATION:
+			FoundationTool.process_mode = Node.PROCESS_MODE_INHERIT
+			if FoundationToolUI:
+				FoundationToolUI.visible = true
+			UpdateRequirementsPanel()
+			pass
+		SELECTEDTOOL.PROP:
+			PropTool.process_mode = Node.PROCESS_MODE_INHERIT
+			PropToolUI.visible = true
+			pass
+		SELECTEDTOOL.PUZZLE:
+			pass
 
 func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 	#Created with help from https://www.reddit.com/r/godot/comments/xd7lcx/how_to_turn_mouse_coordinates_in_world/
@@ -384,75 +121,315 @@ func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 		#result.collider #gets object
 		#result.position #gets position
 		if _SnapToGrid:
-			return round(result.position)
+			return snapped(result.position,BuildingGridmap.cell_size)
 		return result.position
 	else:
-		print("nonexistent")
 		return Vector3.ZERO
 
-func DrawBuildRect(StartPoint:Vector3=Vector3.ZERO,EndPoint:Vector3=Vector3.ZERO,StartPointMod:Vector3=Vector3.ZERO,EndPointMod:Vector3=Vector3.ZERO):
-	var mesh = ImmediateMesh.new()
-	mesh.surface_begin(Mesh.PRIMITIVE_TRIANGLES)
-	####R SIDE
-	mesh.surface_set_color(Color.RED)
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
-	mesh.surface_set_color(Color.GREEN)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,StartPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_set_color(Color.WHITE)
+func CreateNewRoom():
+	CurrentRoom = RoomResource.new()
+	var NewRoom:RoomScene = RoomScene.new()
+	CurrentRoomScene = NewRoom
+	RoomParent.add_child(NewRoom,true)
+	pass
 	
-	####L SIDE
-	mesh.surface_set_color(Color.PURPLE)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
-	mesh.surface_set_color(Color.ORANGE)
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_set_color(Color.WHITE)
+func FinalizeRoom():
+	CurrentRoom.RoomSquares.append_array(BuildingPoints)
+	CurrentRoom.RoomArea = AABB(CurrentRoom.RoomSquares[0],CurrentRoom.RoomSquares[CurrentRoom.RoomSquares.size()-1])
 	
-	####B SIDE
-	mesh.surface_set_color(Color.YELLOW)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,DragStart.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,DragStart.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_set_color(Color.BLUE)
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,0,DragStart.z))
+	var average = Vector3.ZERO
+	for i in CurrentRoom.RoomSquares.size():
+		average += CurrentRoom.RoomSquares[i]
+	average /= CurrentRoom.RoomSquares.size()
 	
-	####F SIDE
-	mesh.surface_set_color(Color.AQUA)
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,EndPoint.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
-	mesh.surface_set_color(Color.CRIMSON)
-	mesh.surface_add_vertex(Vector3(DragStart.x,1,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,DragStart.z))
-	mesh.surface_add_vertex(Vector3(DragStart.x,0,EndPoint.z))
+	Rooms.append(CurrentRoom)
+	CurrentRoom = null
+	
+	var ye = CollisionShape3D.new()
+	add_child(ye)
+	OccupiedGridSquares.clear()
+	OccupiedGridSquares.append_array(BuildingPoints)
+	PERMANENTPLACEMENTS.append_array(OccupiedGridSquares)
+	BuildingPoints.clear()
 
-	mesh.surface_set_color(Color.WHITE)
+func MoveCursor(_movement:Vector3):
+	BuildingCursorPosition = _movement
+	Cursor.global_position = BuildingCursorPosition
+	##print(Cursor.global_position)
+	pass
+
+func EdgeCheckPoint(_point:Vector3,_array:Array[Vector3]) -> int:
+	var count:int
+	for x in CheckPositions.size():
+		if _array.has(_point + CheckPositions[x]) && _point + CheckPositions[x] != _point:
+			count += 1
+	return count
 	
-	####TOP
-	mesh.surface_set_uv(Vector2(0, 1))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,StartPoint.z))
-	mesh.surface_set_uv(Vector2(1, 0))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,EndPoint.z))
-	mesh.surface_set_uv(Vector2(0, 0))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
+func CheckBorderingGridAverage(_position:Vector3,CornerFix:bool = false) -> Vector3:
+	var EmptyPoints:Array[Vector3]
+	var val:Vector3
+	var avg:Vector3
+	for i in CheckPositions.size():
+		if BuildingPoints.has(_position + CheckPositions[i]):
+			EmptyPoints.append( (CheckPositions[i]) )
+			
+	for i in EmptyPoints.size():
+		val += EmptyPoints[i]
+		
+	avg = val / EmptyPoints.size()
+	if CornerFix:
+		return (avg*5).round()
+	return avg.round()
 	
-	mesh.surface_set_uv(Vector2(1, 0))
-	mesh.surface_add_vertex(Vector3(StartPoint.x,1,DragStart.z))
-	mesh.surface_set_uv(Vector2(0, 1))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,EndPoint.z))
-	mesh.surface_set_uv(Vector2(1, 1))
-	mesh.surface_add_vertex(Vector3(EndPoint.x,1,DragStart.z))
+
+func CheckBorderingGridCorners(_position:Vector3,_snap:bool = true) -> Vector3:
+	var val:Vector3
+	var avg:Vector3
+	var FoundCorners:Array[Vector3]
+	
+	var dir:Vector3
+	
+	for i in CheckPositions.size():
+		if BuildingPoints.has(_position + CheckPositions[i]) and !PERMANENTPLACEMENTS.has(_position + CheckPositions[i]):
+			FoundCorners.append(CheckPositions[i])
+
+	if FoundCorners.is_empty():
+		#print("NO CORNERS FOUND")
+		return Vector3.ZERO
+		
+	var sum = FoundCorners.reduce(func(acc, num): return acc + num)
+	var average:Vector3 = sum / FoundCorners.size()*1
+	
+	
+	#print("RETURNING CORNER VALUE OF :: " + str(average))
+	return average.snappedf(0.1) if _snap else average
+	
+func UpdateGridSquare(_gridlayer:int,_gridsquare:Vector3,_erasing = false):
+	var LabelColor:Color = Color.WHITE
+	var Dir
+	var EdgeCount = 0
+	var EdgeCheck:Array[Vector3]
+	var CornerCheck:Array[Vector3]
+
+	if PERMANENTPLACEMENTS.has(_gridsquare):
+		return
+	
+	if !BuildingPoints.has(_gridsquare):
+		return
+	
+	if _erasing:
+		BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,GridMap.INVALID_CELL_ITEM,0)
 
 	
-	mesh.surface_end()
-	PreviewBuildMesh.mesh = mesh
+	for x in CheckPositions.size():
+		if (BuildingPoints.has(_gridsquare + (CheckPositions[x])) ) && (_gridsquare + CheckPositions[x]) != _gridsquare:
+			#print("HAS: " + str(CheckPositions[x]))
+			EdgeCount+=1
+
+
+		if x == 1 or x == 3 or x == 5 or x == 7:
+			EdgeCheck.append((CheckPositions[x]))
+		elif x == 0 or x == 2 or x == 6 or x == 8:
+			CornerCheck.append((CheckPositions[x]))
 	
+	var check = CheckBorderingGridCorners(_gridsquare)
+	#print("CHECK VALUE:: " + str(check))
+	#print("EDGECHECK " + str(EdgeCheck.size()))
+	#print("CORNERCHECK " + str(CornerCheck.size()))
+	match EdgeCount:
+		#CORNER
+		3:
+			#print("CORNER")
+			var ye = CheckBorderingGridAverage(_gridsquare,false)
+			Dir = ye
+			var noAVG = GetAverageWallRotationIndex(_gridsquare,true)
+			BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,0,noAVG)
+		4:
+			LabelColor = Color.GREEN
+			var noAVG = GetAverageWallRotationIndex(_gridsquare,true)
+			BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,0,noAVG)
+
+		5,6:
+			var EdgesDirection = round(EdgeCheck.max())
+			var CurrentEdgeCount:int = EdgeCheck.size()
+			var no = GetAverageWallRotationIndex(_gridsquare)
+			var noAVG = GetAverageWallRotationIndex(_gridsquare,true)
+			Dir = EdgesDirection
+			match CurrentEdgeCount:
+				1:
+					BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,no)
+				4:
+					#print("::EDGECOUNT:: " + str(EdgeCount))
+					match EdgeCount:
+						5:
+							#print("5's NORMAL CHECK:: at " + str(check) + " " + str(noAVG))
+							match check:
+								Vector3(Vector3.FORWARD*0.5),Vector3(Vector3.LEFT*0.5),Vector3(Vector3.RIGHT*0.5),Vector3(Vector3.BACK*0.5):
+									BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,noAVG)
+								_:
+									BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,0,noAVG)
+
+						6:
+							BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,noAVG)
+						_:
+							#print("SHOULD BE SOMETHING HERE AT")
+							pass
+				_:
+					pass
+		8:
+			#BuildingGridmap.clear_cell_item(1,_gridsquare)
+			BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,2,0)
+		7:
+			var check2 = CheckBorderingGridCorners(_gridsquare,false)
+			var CurrentEdgeCount:int = EdgeCheck.size()
+			#printerr(str(CurrentEdgeCount) + " 1VS1 " + str(check2))
+		
+			var no = GetAverageWallRotationIndex(_gridsquare,false,Vector3.ZERO,7)
+			var noAVG = GetAverageWallRotationIndex(_gridsquare,true,Vector3.ZERO,7)
+
+			match check:
+				Vector3(Vector3.FORWARD),Vector3(Vector3.LEFT),Vector3(Vector3.RIGHT),Vector3(Vector3.BACK),Vector3(0,0,0.1):
+					#print("attempting to determine :: " + str(CheckBorderingGridAverage(_gridsquare,true)))
+
+					BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,noAVG)
+					#print("WOAH" + str(noAVG))
+				_:
+					#print("AVERAGE RETURN FOR 7 IS :: " + str(noAVG))
+					BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,3,noAVG)
+					#print("NOAH" + str(noAVG))
+		
+	var lab = Label3D.new()
+	add_child(lab)
+	Labels.append(lab)
+	lab.no_depth_test = true
+	lab.modulate = lerp(LabelColor,Color.RED,randf_range(0.0,1.0))
+	lab.global_position = _gridsquare + (Vector3.UP*randf_range(1.0,2.0))
+	lab.text = str(EdgeCount)+"\n"+str(CheckBorderingGridCorners(_gridsquare))+"\n"+str(CheckBorderingGridCorners(_gridsquare,true))
+	lab.font_size = 32
+	lab.billboard = true
+
+func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offset:Vector3 = Vector3.ZERO,intcheck:int = -1) -> int:
+	var checking:Vector3 = CheckBorderingGridAverage(_position,CornerFix) + _offset
+	var CornerChecking = CheckBorderingGridCorners(_position,true)
+	if CornerFix:
+		match CornerChecking:
+			Vector3(-1,0,-1),Vector3(Vector3.FORWARD),Vector3(1,0,-1),Vector3(Vector3.LEFT),Vector3(Vector3.RIGHT),Vector3(Vector3(-1,0,1)),Vector3(Vector3.BACK),Vector3(1,0,1):
+				#print("KORNA " + str(CornerChecking))
+				match checking:
+					Vector3(-1,0,-1):
+						return 22
+					Vector3(-1.0,0.0,1.0):
+						return 0
+					Vector3(1,0,-1):
+						return 10
+					Vector3(1.0,0,1.0):
+						return 16
+					Vector3(0.0,0,-1.0):
+						return 6
+					Vector3(0,1,0),Vector3(-1.0,0.0,-1.0):
+						return 10
+					Vector3(1.0,0,-0.5),Vector3(1.0,0,0.5):
+						return 16
+					Vector3(1,0,1):
+						return 22
+					Vector3(-1,0,0.5),Vector3(-1,0,-0.5):
+						return 22
+					Vector3(0.5,0,-1):
+						return 10
+					
+			_:
+				#print("OTHA KORNA " + str(CornerChecking))
+				match CornerChecking:
+					
+					Vector3(-0.5,0,0.5):
+						return 10
+					
+					Vector3(-0.5,0,-0.5):
+						return 16
+										
+					Vector3(0.5,0,0.5):
+						return 22
+					
+					Vector3(0.2,0,0.6):
+						return 22
+					
+					Vector3(-0.1,0,0.3):
+						return 10
+					Vector3(-0.3,0,0.1),Vector3(-0.3,0,-0.1):
+						return 16
+					Vector3(0.3,0,0.1):
+						return 22
+					Vector3(0.1,0,0.3):
+						return 10
+					Vector3(0.3,0,-0.1):
+						return 22
+						
+					Vector3(-0.1, 0.0, -0.1):
+						#print("RETURNING 7S")
+						return 22
+					Vector3(0.1, 0.0, 0.1):
+						#print("RETURNING 7S")
+						return 16
+					
+					Vector3(-0.5,0,0):
+						return 16
+					Vector3(0.5,0,0):
+						return 22
+					Vector3(0,0,0.5):
+						return 10
+						
+					Vector3(0.1, 0.0, -0.1):
+						#print("RETURNING 7S")
+						return 10
+					Vector3(0.0, 0.0, 0.1):
+						#print("RETURNING 7S")
+						return 10
+					
+					##4
+					Vector3(0.6, 0.0, 0.2):
+						#print("RETURNING 7S")
+						return 22
+					Vector3(-0.6, 0.0, -0.2):
+						#print("RETURNING 7S")
+						return 16
+					Vector3(-0.6, 0.0, 0.2):
+						#print("RETURNING 7S")
+						return 10
+					Vector3(-0.2, 0.0, -0.6):
+						#print("RETURNING 7S")
+						return 16
+					Vector3(-0.2, 0.0, 0.6):
+						#print("RETURNING 7S")
+						return 10
+					
+	else:
+		#print("FINAL KORNAS " + str(checking))
+		match checking:
+			Vector3.FORWARD:
+				return 0
+			Vector3.BACK:
+				return 10
+			Vector3.LEFT:
+				return 16
+			Vector3.RIGHT:
+				return 22
+		if intcheck == 7:
+			#print("OH MY GOODNESS ITS 7" + str(CornerChecking))
+			match CornerChecking:
+				pass
+	return 0
+
+func CellRotationToEuler(_value:int) -> Vector3:
+	#print("CHECKING ::" + str(_value))
+	match _value:
+		0:
+			return Vector3(0,0,0)
+		10:
+			return Vector3(0,180,0)
+		16:
+			return Vector3(0,90,0)
+		22:
+			return Vector3(0,255,0)
+		_:
+			return Vector3(0,0,0)
+	pass
