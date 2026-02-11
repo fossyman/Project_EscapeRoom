@@ -210,16 +210,14 @@ func UpdateGridSquare(_gridlayer:int,_gridsquare:Vector3,_erasing = false):
 	var EdgeCount = 0
 	var EdgeCheck:Array[Vector3]
 	var CornerCheck:Array[Vector3]
-
-	if PERMANENTPLACEMENTS.has(_gridsquare):
-		return
-	
-	if !BuildingPoints.has(_gridsquare):
-		return
 	
 	if _erasing:
-		BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,GridMap.INVALID_CELL_ITEM,0)
-
+		PERMANENTPLACEMENTS.erase(_gridsquare)
+		BuildingPoints.erase(_gridsquare)
+	
+	if PERMANENTPLACEMENTS.has(_gridsquare) or !BuildingPoints.has(_gridsquare):
+		print(str(PERMANENTPLACEMENTS.has(_gridsquare)) + str(!BuildingPoints.has(_gridsquare)))
+		return
 	
 	for x in CheckPositions.size():
 		if (BuildingPoints.has(_gridsquare + (CheckPositions[x])) ) && (_gridsquare + CheckPositions[x]) != _gridsquare:
@@ -234,7 +232,7 @@ func UpdateGridSquare(_gridlayer:int,_gridsquare:Vector3,_erasing = false):
 	
 	var check = CheckBorderingGridCorners(_gridsquare)
 	#print("CHECK VALUE:: " + str(check))
-	#print("EDGECHECK " + str(EdgeCheck.size()))
+	print("EDGECHECK " + str(EdgeCheck.size()))
 	#print("CORNERCHECK " + str(CornerCheck.size()))
 	match EdgeCount:
 		#CORNER
@@ -268,7 +266,6 @@ func UpdateGridSquare(_gridlayer:int,_gridsquare:Vector3,_erasing = false):
 									BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,noAVG)
 								_:
 									BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,0,noAVG)
-
 						6:
 							BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,noAVG)
 						_:
@@ -297,7 +294,7 @@ func UpdateGridSquare(_gridlayer:int,_gridsquare:Vector3,_erasing = false):
 					#print("AVERAGE RETURN FOR 7 IS :: " + str(noAVG))
 					BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,3,noAVG)
 					#print("NOAH" + str(noAVG))
-		
+
 	var lab = Label3D.new()
 	add_child(lab)
 	Labels.append(lab)
