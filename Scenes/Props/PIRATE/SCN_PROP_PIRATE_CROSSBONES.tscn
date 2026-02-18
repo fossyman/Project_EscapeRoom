@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3 uid="uid://cpm323pu6cton"]
+
+[ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_l2fj2"]
+[ext_resource type="ArrayMesh" uid="uid://dsnpwjn3fhvyp" path="res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_SKULLBONES_WALL.res" id="1_t0ler"]
+[ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_u6gcq"]
+
+[sub_resource type="Resource" id="Resource_3bsgd"]
+script = ExtResource("2_u6gcq")
+Intelligence = 0
+Perception = 0
+ProblemSolving = 0
+Clumsy = 0
+metadata/_custom_type_script = "uid://b66mtekj02xc"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_t0ler"]
+size = Vector3(0.4, 1.3, 0.6)
+
+[node name="ScnPropPirateCrossbones" type="Node3D"]
+script = ExtResource("1_l2fj2")
+SuccessRequirements = SubResource("Resource_3bsgd")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, 0, 1, -0.158)
+mesh = ExtResource("1_t0ler")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, -0.3)
+shape = SubResource("BoxShape3D_t0ler")
