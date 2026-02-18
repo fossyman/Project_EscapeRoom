@@ -50,10 +50,10 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-			CurrentScroll += 1.0
+			CurrentScroll += -1.0
 			CurrentScroll = clamp(CurrentScroll,ScrollClamp.x,ScrollClamp.y)
 		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-			CurrentScroll += -1.0
+			CurrentScroll += 1.0
 			CurrentScroll = clamp(CurrentScroll,ScrollClamp.x,ScrollClamp.y)
 			
 	if event is InputEventMouseMotion:
@@ -65,14 +65,14 @@ func _input(event: InputEvent) -> void:
 		
 
 func MoveCam():
-	CameraHolder.position = lerp(CameraHolder.position,Vector3(0,-CurrentScroll / 0.6,-CurrentScroll / 0.9),LerpSpeed*delta)
+	CameraHolder.position = lerp(CameraHolder.position,Vector3(0,-CurrentScroll * -25,-CurrentScroll * -15),LerpSpeed*delta)
 	
 	CameraHolder.rotation_degrees.x = lerp(CameraHolder.rotation_degrees.x,-CurrentScroll / 0.5, LerpSpeed * delta)
 	
 	var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 	var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
 	if direction:
-		TargetPosition += direction * (Movespeed / CurrentScroll) * delta
+		TargetPosition += direction * (Movespeed * (Movespeed+CurrentScroll)) * delta
 	
 	var local_mouse_pos = viewport.get_mouse_position()
 	if local_mouse_pos.x < threshold:

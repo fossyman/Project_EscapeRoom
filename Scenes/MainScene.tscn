@@ -12,4 +12,5 @@
 [node name="CONSTANT" type="Node" parent="."]
 
 [node name="DEBUG TOOLS" parent="CONSTANT" node_paths=PackedStringArray("Tabs") instance=ExtResource("2_tr2i4")]
+visible = false
 Tabs = []
