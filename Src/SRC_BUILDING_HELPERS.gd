@@ -30,7 +30,7 @@ func CheckBorderingGridCorners(_points:Array[Vector3],_position:Vector3,_snap:bo
 	var dir:Vector3
 	
 	for i in CheckPositions.size():
-		if _points.has(_position + CheckPositions[i]) and !PERMANENTPLACEMENTS.has(_position + CheckPositions[i]):
+		if _points.has(_position + CheckPositions[i]) and !BuildManager.instance.PERMANENTPLACEMENTS.has(_position + CheckPositions[i]):
 			FoundCorners.append(CheckPositions[i])
 
 	if FoundCorners.is_empty():

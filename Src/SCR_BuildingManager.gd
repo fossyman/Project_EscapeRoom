@@ -45,6 +45,9 @@ var DoorwayPlaced:bool = false
 @export var BuildRequirementsText:String
 @export var FinalizeRoomButton:Button
 
+var SquaresNeedingRebuilding:Array[Vector3]
+var SquaresNeedingRebuildingIDX:Array[int]
+
 var Rooms:Array[RoomResource]
 
 var CurrentRoom:RoomResource = RoomResource.new()
@@ -74,6 +77,12 @@ func _process(delta: float) -> void:
 		SELECTEDTOOL.PUZZLE:
 			pass
 	MoveCursor(mouse_position(true))
+
+	if Input.is_action_just_pressed("DEBUG_REFRESHBUILD"):
+		for i in Labels.size():
+			Labels[i].queue_free()
+		Labels.clear()
+		RebuildGridSquares(FoundationTool.instance.SelectedTool == FoundationTool.SELECTED_TOOL.ERASE)
 
 func UpdateRequirementsPanel():
 	MinimumSizeReached = BuildingPoints.size() >= 8
@@ -121,7 +130,7 @@ func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 		#result.collider #gets object
 		#result.position #gets position
 		if _SnapToGrid:
-			return snapped(result.position,BuildingGridmap.cell_size)
+			return snapped(result.position,BuildingGridmap.cell_size/2)
 		return result.position
 	else:
 		return Vector3.ZERO
@@ -210,99 +219,198 @@ func UpdateGridSquare(_gridlayer:int,_gridsquare:Vector3,_erasing = false):
 	var EdgeCount = 0
 	var EdgeCheck:Array[Vector3]
 	var CornerCheck:Array[Vector3]
+	print("erase-0?")
+	if !_erasing:
+		if PERMANENTPLACEMENTS.has(_gridsquare) or !BuildingPoints.has(_gridsquare):
+			print("erase0?")
+			return
 	
-	if _erasing:
-		PERMANENTPLACEMENTS.erase(_gridsquare)
-		BuildingPoints.erase(_gridsquare)
-		BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,-1,0)
-		#BELOW WORKS BUT CAUSES MASSIVE LAG SPIKES. LOOK INTO USING CHECK POSITIONS
-		#for x in BuildingPoints.size():
-			#UpdateGridSquare(1,BuildingPoints[x])
-		return
-		
-	if PERMANENTPLACEMENTS.has(_gridsquare) or !BuildingPoints.has(_gridsquare):
-		print(str(PERMANENTPLACEMENTS.has(_gridsquare)) + str(!BuildingPoints.has(_gridsquare)))
-		return
+	
 	
 	for x in CheckPositions.size():
-		if (BuildingPoints.has(_gridsquare + (CheckPositions[x])) ) && (_gridsquare + CheckPositions[x]) != _gridsquare:
-			#print("HAS: " + str(CheckPositions[x]))
-			EdgeCount+=1
-
-
+		print("erase1?")
+		if _erasing:
+			print("erase3?")
+			print("ERASER")
+			if ( (BuildingPoints.has(_gridsquare + (CheckPositions[x])) or PERMANENTPLACEMENTS.has(_gridsquare + (CheckPositions[x]))  ) && (_gridsquare + (CheckPositions[x]) ) != _gridsquare):
+				print("ERASER HAS: " + str(CheckPositions[x]))
+				EdgeCount+=1
+		else:
+			print("erase4?")
+			if (BuildingPoints.has(_gridsquare + (CheckPositions[x])) ) && (_gridsquare + (CheckPositions[x]) ) != _gridsquare:
+				#print("HAS: " + str(CheckPositions[x]))
+				EdgeCount+=1
+	
 		if x == 1 or x == 3 or x == 5 or x == 7:
 			EdgeCheck.append((CheckPositions[x]))
 		elif x == 0 or x == 2 or x == 6 or x == 8:
 			CornerCheck.append((CheckPositions[x]))
+			
+	SquaresNeedingRebuilding.append(_gridsquare)
+	SquaresNeedingRebuildingIDX.append(EdgeCount)
 	
-	var check = CheckBorderingGridCorners(_gridsquare)
-	#print("CHECK VALUE:: " + str(check))
-	print("EDGECHECK " + str(EdgeCheck.size()))
-	#print("CORNERCHECK " + str(CornerCheck.size()))
-	match EdgeCount:
-		#CORNER
-		3:
-			#print("CORNER")
-			var ye = CheckBorderingGridAverage(_gridsquare,false)
-			Dir = ye
-			var noAVG = GetAverageWallRotationIndex(_gridsquare,true)
-			BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,0,noAVG)
-		4:
-			LabelColor = Color.GREEN
-			var noAVG = GetAverageWallRotationIndex(_gridsquare,true)
-			BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,0,noAVG)
+	#var lab = Label3D.new()
+	#add_child(lab)
+	#if _erasing:
+		#lab.position = _gridsquare + (Vector3.UP * 2)
+	#else:
+		#lab.position = _gridsquare + Vector3.UP
+	#lab.text = str(EdgeCount)
+	#lab.no_depth_test = true
+	#lab.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	#Labels.append(lab)
 
-		5,6:
-			var EdgesDirection = round(EdgeCheck.max())
-			var CurrentEdgeCount:int = EdgeCheck.size()
-			var no = GetAverageWallRotationIndex(_gridsquare)
-			var noAVG = GetAverageWallRotationIndex(_gridsquare,true)
-			Dir = EdgesDirection
-			match CurrentEdgeCount:
-				1:
-					BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,no)
-				4:
-					#print("::EDGECOUNT:: " + str(EdgeCount))
-					match EdgeCount:
+func RebuildGridSquares(_erasing:bool = false):
+	var Dir
+	if SquaresNeedingRebuilding.is_empty():
+		return
+	if _erasing:
+		for i in SquaresNeedingRebuilding.size():
+			match SquaresNeedingRebuildingIDX[i]:
+				#CORNER
+				2:
+					#print("CORNER")
+					var ye = CheckBorderingGridAverage(SquaresNeedingRebuilding[i],true)
+					var noAVG = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i],true)
+					BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],0,noAVG)
+				5:
+					var ye = CheckBorderingGridAverage(SquaresNeedingRebuilding[i],true)
+					var noAVG = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i],false)
+					print("NUMBER 5:::::: " + str(noAVG) + " || " + str(noAVG))
+					BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],0,noAVG)
+
+				3:
+					var EdgesDirection = round(SquaresNeedingRebuildingIDX[i])
+					var CurrentEdgeCount:int = SquaresNeedingRebuildingIDX[i]
+					var no = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i])
+					var noAVG = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i],true)
+					Dir = EdgesDirection
+					print("::EDGECOUNT:: " + str(CurrentEdgeCount))
+					match CurrentEdgeCount:
+						3:
+							BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],1,no)
 						5:
-							#print("5's NORMAL CHECK:: at " + str(check) + " " + str(noAVG))
-							match check:
+							print("5's NORMAL CHECK:: at ")
+							match SquaresNeedingRebuildingIDX[i]:
 								Vector3(Vector3.FORWARD*0.5),Vector3(Vector3.LEFT*0.5),Vector3(Vector3.RIGHT*0.5),Vector3(Vector3.BACK*0.5):
-									BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,noAVG)
+									BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],1,noAVG)
 								_:
-									BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,0,noAVG)
+									BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],1,noAVG)
 						6:
-							BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,noAVG)
+							BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],1,noAVG)
 						_:
-							#print("SHOULD BE SOMETHING HERE AT")
+							print("SHOULD BE SOMETHING HERE AT")
 							pass
+				8:
+					#BuildingGridmap.clear_cell_item(1,_gridsquare)
+					BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],2,0)
+				7:
+					var check2 = CheckBorderingGridCorners(SquaresNeedingRebuilding[i],false)
+					#printerr(str(CurrentEdgeCount) + " 1VS1 " + str(check2))
+				
+					var no = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i],false,Vector3.ZERO,7)
+					var noAVG = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i],true,Vector3.ZERO,7)
+
+					match SquaresNeedingRebuildingIDX[i]:
+						Vector3(Vector3.FORWARD),Vector3(Vector3.LEFT),Vector3(Vector3.RIGHT),Vector3(Vector3.BACK),Vector3(0,0,0.1):
+							#print("attempting to determine :: " + str(CheckBorderingGridAverage(_gridsquare,true)))
+
+							BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],1,noAVG)
+							#print("WOAH" + str(noAVG))
+						_:
+							#print("AVERAGE RETURN FOR 7 IS :: " + str(noAVG))
+							BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],3,noAVG)
+							#print("NOAH" + str(noAVG))
 				_:
+					BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],-1,0)
+
+			#var lab = Label3D.new()
+			#add_child(lab)
+			#lab.position = SquaresNeedingRebuilding[i] + Vector3.UP
+			#var noAVG = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i],false)
+			#
+			#lab.text = str(SquaresNeedingRebuildingIDX[i]) + "\n" + str(noAVG)
+			#lab.no_depth_test = true
+			#lab.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+			#Labels.append(lab)
+	else:
+		for i in SquaresNeedingRebuilding.size():
+			match SquaresNeedingRebuildingIDX[i]:
+				#CORNER
+				3:
+					#print("CORNER")
+					var ye = CheckBorderingGridAverage(SquaresNeedingRebuilding[i],false)
+					Dir = ye
+					var noAVG = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i],true)
+					BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],0,noAVG)
+				4:
+					var noAVG = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i],true)
+					BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],0,noAVG)
+
+				5,6:
+					var EdgesDirection = round(SquaresNeedingRebuildingIDX[i])
+					var CurrentEdgeCount:int = SquaresNeedingRebuildingIDX[i]
+					var no = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i])
+					var noAVG = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i],true)
+					Dir = EdgesDirection
+					print("::EDGECOUNT:: " + str(CurrentEdgeCount))
+					match CurrentEdgeCount:
+						1:
+							BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],1,no)
+						5:
+							print("5's NORMAL CHECK:: at ")
+							match SquaresNeedingRebuildingIDX[i]:
+								Vector3(Vector3.FORWARD*0.5),Vector3(Vector3.LEFT*0.5),Vector3(Vector3.RIGHT*0.5),Vector3(Vector3.BACK*0.5):
+									BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],1,noAVG)
+								_:
+									BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],1,noAVG)
+						6:
+							BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],1,noAVG)
+						_:
+							print("SHOULD BE SOMETHING HERE AT")
+							pass
+				8:
+					#BuildingGridmap.clear_cell_item(1,_gridsquare)
+					BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],2,0)
+				7:
+					var check2 = CheckBorderingGridCorners(SquaresNeedingRebuilding[i],false)
+					#printerr(str(CurrentEdgeCount) + " 1VS1 " + str(check2))
+				
+					var no = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i],false,Vector3.ZERO,7)
+					var noAVG = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i],true,Vector3.ZERO,7)
+
+					match SquaresNeedingRebuildingIDX[i]:
+						Vector3(Vector3.FORWARD),Vector3(Vector3.LEFT),Vector3(Vector3.RIGHT),Vector3(Vector3.BACK),Vector3(0,0,0.1):
+							#print("attempting to determine :: " + str(CheckBorderingGridAverage(_gridsquare,true)))
+
+							BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],1,noAVG)
+							#print("WOAH" + str(noAVG))
+						_:
+							#print("AVERAGE RETURN FOR 7 IS :: " + str(noAVG))
+							BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],3,noAVG)
+							#print("NOAH" + str(noAVG))
+				_:
+					BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],-1,0)
 					pass
-		8:
-			#BuildingGridmap.clear_cell_item(1,_gridsquare)
-			BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,2,0)
-		7:
-			var check2 = CheckBorderingGridCorners(_gridsquare,false)
-			var CurrentEdgeCount:int = EdgeCheck.size()
-			#printerr(str(CurrentEdgeCount) + " 1VS1 " + str(check2))
+				
+			#var lab = Label3D.new()
+			#add_child(lab)
+			#lab.position = SquaresNeedingRebuilding[i] + Vector3.UP
+			#var noAVG = GetAverageWallRotationIndex(SquaresNeedingRebuilding[i],true)
+			#
+			#lab.text = str(SquaresNeedingRebuildingIDX[i]) + "\n" + str(noAVG)
+			#lab.no_depth_test = true
+			#lab.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+			#Labels.append(lab)
 		
-			var no = GetAverageWallRotationIndex(_gridsquare,false,Vector3.ZERO,7)
-			var noAVG = GetAverageWallRotationIndex(_gridsquare,true,Vector3.ZERO,7)
-
-			match check:
-				Vector3(Vector3.FORWARD),Vector3(Vector3.LEFT),Vector3(Vector3.RIGHT),Vector3(Vector3.BACK),Vector3(0,0,0.1):
-					#print("attempting to determine :: " + str(CheckBorderingGridAverage(_gridsquare,true)))
-
-					BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,1,noAVG)
-					#print("WOAH" + str(noAVG))
-				_:
-					#print("AVERAGE RETURN FOR 7 IS :: " + str(noAVG))
-					BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,3,noAVG)
-					#print("NOAH" + str(noAVG))
-
+	SquaresNeedingRebuilding.clear()
+	SquaresNeedingRebuildingIDX.clear()
+	
+		
 func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offset:Vector3 = Vector3.ZERO,intcheck:int = -1) -> int:
 	var checking:Vector3 = CheckBorderingGridAverage(_position,CornerFix) + _offset
 	var CornerChecking = CheckBorderingGridCorners(_position,true)
+	print("CHECKING CORNER:::::"+str(CornerChecking))
 	if CornerFix:
 		match CornerChecking:
 			Vector3(-1,0,-1),Vector3(Vector3.FORWARD),Vector3(1,0,-1),Vector3(Vector3.LEFT),Vector3(Vector3.RIGHT),Vector3(Vector3(-1,0,1)),Vector3(Vector3.BACK),Vector3(1,0,1):
