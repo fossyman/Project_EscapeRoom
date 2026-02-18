@@ -60,12 +60,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		var EndZ = (BuildManager.instance.DragEnd.z if BuildManager.instance.DragEnd.z > BuildManager.instance.DragStart.z else BuildManager.instance.DragStart.z) + 1
 		match SelectedTool:
 			SELECTED_TOOL.ERASE:
-				BuildSelectedSection(1,Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ),true)
+				EraseArea(1,Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
+				pass
 			_:
 				BuildSelectedSection(1,Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
 		PreviewBuildMesh.visible = false
 
-func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3,_Erasing = false):
+func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
 	push_warning(StartCorner)
 	if (StartCorner.x < 0 or StartCorner.z < 0) or (EndCorner.x < 0 or EndCorner.z < 0):
 		return
@@ -97,11 +98,12 @@ func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3,_Eras
 			BuildManager.instance.BuildingPoints.append_array(NewPoints)
 
 	if NewPoints.is_empty():
+		BuildManager.instance.OverlappingBuildPoints.clear()
 		return
 		
 	var ChunkCounter:int = 0
 	for i in BuildManager.instance.OverlappingBuildPoints.size():
-		BuildManager.instance.UpdateGridSquare(_layer,BuildManager.instance.OverlappingBuildPoints[i],_Erasing)
+		BuildManager.instance.UpdateGridSquare(_layer,BuildManager.instance.OverlappingBuildPoints[i])
 		ChunkCounter +=1
 		if ChunkCounter >= Chunksize:
 			ChunkCounter = 0
@@ -109,7 +111,36 @@ func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3,_Eras
 		
 	BuildManager.instance.OverlappingBuildPoints.clear()
 	FoundationPlaced.emit()
+
+func EraseArea(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
+	if (StartCorner.x < 0 or StartCorner.z < 0) or (EndCorner.x < 0 or EndCorner.z < 0):
+		return
 	
+	if BuildManager.instance.DragEnd == BuildManager.instance.DragStart:
+		return
+		
+	var NewPoints:Array[Vector3]
+	var Borders:Array[Vector3]
+	var _border:int = 1
+	
+	for BX in range(StartCorner.x - _border,EndCorner.x + _border):
+		for BZ in range(StartCorner.z - _border,EndCorner.z + _border):
+			if BX in range(StartCorner.x,EndCorner.x) and BZ in range(StartCorner.z,EndCorner.z) and !BuildManager.instance.BuildingPoints.has(Vector3(BX,0,BZ)):
+				if !BuildManager.instance.PERMANENTPLACEMENTS.has(Vector3(BX,0,BZ)):
+					NewPoints.append(Vector3(BX,0,BZ))
+			if !BuildManager.instance.OverlappingBuildPoints.has(Vector3(BX,0,BZ)):
+				BuildManager.instance.OverlappingBuildPoints.append(Vector3(BX,0,BZ))
+	
+	var ChunkCounter:int = 0
+	
+	for i in BuildManager.instance.OverlappingBuildPoints.size():
+		BuildManager.instance.UpdateGridSquare(_layer,BuildManager.instance.OverlappingBuildPoints[i],true)
+		ChunkCounter +=1
+		if ChunkCounter >= Chunksize:
+			ChunkCounter = 0
+			await get_tree().process_frame
+	BuildManager.instance.OverlappingBuildPoints.clear()
+
 func BuildConnector(_doorpos:Vector3):
 	#if BuildManager.instance.BuildingPoints.has(_doorpos):
 		#var ye:int = BuildManager.instance.GetAverageWallRotationIndex(_doorpos,true)

@@ -214,7 +214,12 @@ func UpdateGridSquare(_gridlayer:int,_gridsquare:Vector3,_erasing = false):
 	if _erasing:
 		PERMANENTPLACEMENTS.erase(_gridsquare)
 		BuildingPoints.erase(_gridsquare)
-	
+		BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,-1,0)
+		#BELOW WORKS BUT CAUSES MASSIVE LAG SPIKES. LOOK INTO USING CHECK POSITIONS
+		#for x in BuildingPoints.size():
+			#UpdateGridSquare(1,BuildingPoints[x])
+		return
+		
 	if PERMANENTPLACEMENTS.has(_gridsquare) or !BuildingPoints.has(_gridsquare):
 		print(str(PERMANENTPLACEMENTS.has(_gridsquare)) + str(!BuildingPoints.has(_gridsquare)))
 		return
@@ -294,16 +299,6 @@ func UpdateGridSquare(_gridlayer:int,_gridsquare:Vector3,_erasing = false):
 					#print("AVERAGE RETURN FOR 7 IS :: " + str(noAVG))
 					BuildingGridmap.set_cell_item(_gridlayer,_gridsquare,3,noAVG)
 					#print("NOAH" + str(noAVG))
-
-	var lab = Label3D.new()
-	add_child(lab)
-	Labels.append(lab)
-	lab.no_depth_test = true
-	lab.modulate = lerp(LabelColor,Color.RED,randf_range(0.0,1.0))
-	lab.global_position = _gridsquare + (Vector3.UP*randf_range(1.0,2.0))
-	lab.text = str(EdgeCount)+"\n"+str(CheckBorderingGridCorners(_gridsquare))+"\n"+str(CheckBorderingGridCorners(_gridsquare,true))
-	lab.font_size = 32
-	lab.billboard = true
 
 func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offset:Vector3 = Vector3.ZERO,intcheck:int = -1) -> int:
 	var checking:Vector3 = CheckBorderingGridAverage(_position,CornerFix) + _offset
