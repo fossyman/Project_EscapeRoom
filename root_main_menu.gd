@@ -1,7 +1,6 @@
 class_name RT_MainMenu extends Node
 
 
-@export var level: PackedScene
 
 func _ready() -> void:
 	$"CONTENT/Interactables/Setting menu/Full screen".button_pressed = true if DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN else false
