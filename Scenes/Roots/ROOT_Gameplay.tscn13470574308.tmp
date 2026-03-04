@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=4 uid="uid://cyxcjwc3tm3ad"]
+[gd_scene load_steps=39 format=4 uid="uid://cyxcjwc3tm3ad"]
 
 [ext_resource type="Script" uid="uid://dg6gnwypj1hnh" path="res://Src/SCR_BuildingManager.gd" id="1_6rgy0"]
 [ext_resource type="ArrayMesh" uid="uid://dx4egntrxmrj" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_CORNER.res" id="1_emfuj"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://cbdd4svn71jhx" path="res://Src/SCR_RootManager.gd" id="1_xvs0j"]
 [ext_resource type="Script" uid="uid://c5fo8y2mkh734" path="res://Src/SCR_CameraController.gd" id="1_y3unb"]
 [ext_resource type="Texture2D" uid="uid://d15sugtlh8nby" path="res://icon.svg" id="2_wm8y7"]
+[ext_resource type="Script" uid="uid://ddw60ywmkiov1" path="res://Src/SCR_PropPlacementManager.gd" id="4_mmves"]
 [ext_resource type="ArrayMesh" uid="uid://ckcbxpp44rr7a" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_WALL.res" id="5_1caoe"]
 [ext_resource type="Script" uid="uid://kla5tnx7veom" path="res://Src/SCR_PropButton.gd" id="5_2h1dl"]
 [ext_resource type="ArrayMesh" uid="uid://rd3i7lmgeqhf" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_FLOOR.res" id="6_nitf2"]
@@ -15,8 +16,88 @@
 [ext_resource type="ArrayMesh" uid="uid://dv3lbluh686kw" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_DOORWAY.res" id="8_nitf2"]
 [ext_resource type="FontFile" uid="uid://bs530y4locaf0" path="res://Assets/Fonts/ARURaisonneSimplified-DemiBold.otf" id="8_prpd7"]
 [ext_resource type="Script" uid="uid://cpp3jda6pxtl4" path="res://Src/SCR_GridmapPlus.gd" id="14_s8imx"]
-[ext_resource type="PackedScene" uid="uid://drf8ggf1pvbr" path="res://Scenes/UI/SCN_PropEditorMenu.tscn" id="16_vq4w1"]
 [ext_resource type="PackedScene" uid="uid://24mkaup72sp6" path="res://Assets/Models/Escape room enviornment.glb" id="17_vq4w1"]
+
+[sub_resource type="GDScript" id="GDScript_vq4w1"]
+script/source = "extends Node
+class_name FoundationManager
+static var instance:FoundationManager
+#
+#@export_category(\"FOUNDATION\")
+#@export var BuildMat:Material
+#@export var DestroyMat:Material
+#@export var BuildSizeLabel:Label3D
+#@export var ShowLabels:bool=false
+#@export var EdgeColors:bool=false
+#@export var CornerColors:bool=false
+#@export var InnerCornerColors:bool=false
+#
+#@export var PreviewBuildMesh:MeshInstance3D
+#
+#var Labels:Array[Label3D]
+#
+#@export var Chunksize = 64
+#
+#@export var FoundationMeshArray:MeshLibrary
+#
+#enum SELECTED_TOOL{FOUNDATION,ERASE,FLOOR}
+#var SelectedTool:SELECTED_TOOL = 0
+#
+#signal FoundationPlaced
+#signal DoorwayPlaced
+
+func _enter_tree() -> void:
+	instance = self
+
+#func EraseArea(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
+	#if (StartCorner.x < 0 or StartCorner.z < 0) or (EndCorner.x < 0 or EndCorner.z < 0):
+		#print(\"here\")
+		#return
+	#
+	#if BuildManager.instance.DragEnd == BuildManager.instance.DragStart:
+		#print(\"or here\")
+		#return
+	#
+	#
+		#
+	#var NewPoints:Array[Vector3]
+	#var Borders:Array[Vector3]
+	#var _border:int = 1
+	#
+	#for BX in range(StartCorner.x - _border,EndCorner.x + _border):
+		#for BZ in range(StartCorner.z - _border,EndCorner.z + _border):
+			#if BX in range(StartCorner.x,EndCorner.x) and BZ in range(StartCorner.z,EndCorner.z) and !BuildManager.instance.BuildingPoints.has(Vector3(BX,0,BZ)):
+				#if BuildManager.instance.PERMANENTPLACEMENTS.has(Vector3(BX,0,BZ)):
+					#BuildManager.instance.PERMANENTPLACEMENTS.erase(Vector3(BX,0,BZ))
+			#if BuildManager.instance.BuildingPoints.has(Vector3(BX,0,BZ)):
+				#BuildManager.instance.BuildingPoints.erase(Vector3(BX,0,BZ))
+			#if !BuildManager.instance.OverlappingBuildPoints.has(Vector3(BX,0,BZ)):
+				#BuildManager.instance.OverlappingBuildPoints.append(Vector3(BX,0,BZ))
+	#var ChunkCounter:int = 0
+	#print(\"1\")
+	#if BuildManager.instance.OverlappingBuildPoints.is_empty():
+		#return
+		#
+	#for i in BuildManager.instance.OverlappingBuildPoints.size():
+		#print(\"2\")
+		#BuildManager.instance.UpdateGridSquare(_layer,BuildManager.instance.OverlappingBuildPoints[i],true)
+		#ChunkCounter +=1
+		#if ChunkCounter >= Chunksize:
+			#ChunkCounter = 0
+			#await get_tree().process_frame
+	#BuildManager.instance.OverlappingBuildPoints.clear()
+	#BuildManager.instance.RebuildGridSquares(true)
+	#
+#func BuildConnector(_doorpos:Vector3):
+	##if BuildManager.instance.BuildingPoints.has(_doorpos):
+		##var ye:int = BuildManager.instance.GetAverageWallRotationIndex(_doorpos,true)
+		##BuildManager.instance.BuildingGrid.set_cell_item(_doorpos,4,ye)
+		##BuildManager.instance.CurrentRoom.HasDoor = true
+		#DoorwayPlaced.emit()
+#
+#func SetTool(value:int = 0):
+	#SelectedTool = value
+"
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vq4w1"]
 
@@ -153,21 +234,32 @@ shadow_mesh = SubResource("ArrayMesh_wrmo1")
 script = ExtResource("1_xvs0j")
 PlayerCursor = NodePath("CONSTANT/CameraOrigin/Decal")
 
-[node name="TOOLS" type="Node" parent="." node_paths=PackedStringArray("Cursor", "CursorMesh", "OverlapTestingArea", "BuildingGridmap", "RoomParent", "FoundationToolUI", "PropToolUI", "BuildRequirementsLabel", "FinalizeRoomButton", "PreviewBuildMesh", "PropEditorMenu")]
+[node name="TOOLS" type="Node" parent="." node_paths=PackedStringArray("Cursor", "CursorMesh", "OverlapTestingArea", "BuildingGridmap", "RoomParent", "FoundationTool", "FoundationToolUI", "PropTool", "PropToolUI", "BuildRequirementsLabel", "FinalizeRoomButton", "PreviewBuildMesh")]
 script = ExtResource("1_6rgy0")
 Cursor = NodePath("../CONSTANT/Cursor")
 CursorMesh = NodePath("../CONSTANT/Cursor/CursorMesh")
 OverlapTestingArea = NodePath("../CONSTANT/Cursor/OverlapCheckingArea")
+DragDeadzone = null
 BuildingGridmap = NodePath("../MAP/NavigationRegion3D/Gridmap+")
 RoomParent = NodePath("../MAP/NavigationRegion3D/RoomParent")
+FoundationTool = NodePath("FoundationManager")
 FoundationToolUI = NodePath("Control/FoundationUI")
+PropTool = NodePath("PropPlacer")
 PropToolUI = NodePath("Control/PropUI")
 BuildRequirementsLabel = NodePath("Control/RichTextLabel2")
-BuildRequirementsText = "asd"
+BuildRequirementsText = null
 FinalizeRoomButton = NodePath("Control/Button")
 PropCollisionLayer = 2
 PreviewBuildMesh = NodePath("../CONSTANT/PREVIEW")
-PropEditorMenu = NodePath("../CONSTANT/SCN_PropeditorMenu")
+Chunksize = null
+
+[node name="FoundationManager" type="Node" parent="TOOLS"]
+process_mode = 4
+script = SubResource("GDScript_vq4w1")
+
+[node name="PropPlacer" type="Node" parent="TOOLS"]
+process_mode = 4
+script = ExtResource("4_mmves")
 
 [node name="Control" type="Control" parent="TOOLS"]
 layout_mode = 3
@@ -504,8 +596,6 @@ text = "0,10"
 font = ExtResource("8_prpd7")
 font_size = 97
 
-[node name="SCN_PropeditorMenu" parent="CONSTANT" instance=ExtResource("16_vq4w1")]
-
 [node name="Escape room enviornment" parent="." instance=ExtResource("17_vq4w1")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 50, 0, 50)
 
@@ -644,6 +734,9 @@ skeleton = NodePath("")
 
 [connection signal="pressed" from="TOOLS/Control/FoundationButton" to="TOOLS" method="ChangeSelectedTool" binds= [0]]
 [connection signal="pressed" from="TOOLS/Control/PropButton" to="TOOLS" method="ChangeSelectedTool" binds= [1]]
+[connection signal="pressed" from="TOOLS/Control/FoundationUI/FoundationToolButton" to="TOOLS/FoundationManager" method="SetTool" binds= [0]]
+[connection signal="pressed" from="TOOLS/Control/FoundationUI/WallButton" to="TOOLS/FoundationManager" method="SetTool" binds= [1]]
+[connection signal="pressed" from="TOOLS/Control/FoundationUI/FloorButton" to="TOOLS/FoundationManager" method="SetTool" binds= [2]]
 [connection signal="pressed" from="TOOLS/Control/Button" to="TOOLS" method="FinalizeRoom"]
 
 [editable path="Escape room enviornment"]

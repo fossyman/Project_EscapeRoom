@@ -7,6 +7,6 @@ class_name RoomScene
 func _init() -> void:
 	PropContainer = Node3D.new()
 	FoundationGrid = GridMap.new()
-	FoundationGrid.mesh_library = BuildManager.instance.FoundationTool.FoundationMeshArray
+	FoundationGrid.mesh_library = BuildManager.instance.FoundationMeshArray
 	add_child(PropContainer)
 	add_child(FoundationGrid)

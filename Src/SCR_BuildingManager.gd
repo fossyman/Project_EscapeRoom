@@ -16,9 +16,7 @@ var DragEnd:Vector3
 @export var BuildingGridmap:GridmapPlus
 @export var RoomParent:Node3D
 
-@export var FoundationTool:FoundationManager
 @export var FoundationToolUI:Control
-@export var PropTool:PropPlacer
 @export var PropToolUI:Control
 
 var SelectedSpaces:Array[Vector3]
@@ -50,7 +48,7 @@ var CurrentRoom:RoomResource = RoomResource.new()
 var CurrentRoomScene:RoomScene
 
 var Labels:Array[Label3D]
-var SelectedProp:RES_PropData
+var PlacingProp:RES_PropData
 var CurrentlyEditedProp:PropScene
 @export_flags_3d_physics var PropCollisionLayer
 @export var PreviewBuildMesh:MeshInstance3D
@@ -59,6 +57,8 @@ var CanPlaceFoundations:bool = true
 @export var Chunksize = 64
 
 @export var FoundationMeshArray:MeshLibrary
+
+@export var PropEditorMenu:PropEditMenuManager
 
 signal FoundationPlaced
 
@@ -81,12 +81,6 @@ func _process(delta: float) -> void:
 			pass
 	MoveCursor(mouse_position(true))
 
-	if Input.is_action_just_pressed("DEBUG_REFRESHBUILD"):
-		for i in Labels.size():
-			Labels[i].queue_free()
-		Labels.clear()
-		RebuildGridSquares(FoundationTool.instance.SelectedTool == FoundationTool.SELECTED_TOOL.ERASE)
-
 func _unhandled_input(event: InputEvent) -> void:
 	if !GLOBALS.CanInteract:
 		return
@@ -97,34 +91,45 @@ func _unhandled_input(event: InputEvent) -> void:
 			SELECTEDTOOL.FOUNDATION:
 				pass
 			SELECTEDTOOL.PROP:
-				PlaceProp(BuildManager.instance.mouse_position(true))
+				if PlacingProp:
+					PlaceProp(BuildManager.instance.mouse_position(true))
+					print("Test1")
+				else:
+					print("Test2")
+					CurrentlyEditedProp = CastToPropLayer()
+					print(CurrentlyEditedProp)
+
+					if CurrentlyEditedProp:
+						SetupPropEditMenu(CurrentlyEditedProp)
 	if Input.is_action_pressed("Lclick"):
 
 		var MousePos = BuildManager.instance.mouse_position(true)
 		if MousePos.distance_to(BuildManager.instance.ClickPos) > BuildManager.instance.DragDeadzone:
 			match(SelectedTool):
-				_:
+				SELECTEDTOOL.FOUNDATION:
 					BuildManager.instance.DragStart = BuildManager.instance.ClickPos
 					BuildManager.instance.DragEnd = MousePos
 					PreviewBuildMesh.visible = true
 					BuildVisualiser.DrawBuildRect(PreviewBuildMesh,BuildManager.instance.DragStart,BuildManager.instance.DragEnd)
 
 	if Input.is_action_just_released("Lclick"):
-		if !BuildManager.instance.CurrentRoom:
-			BuildManager.instance.CurrentRoom = RoomResource.new()
-			
-		var StartX = (BuildManager.instance.DragStart.x if BuildManager.instance.DragStart.x < BuildManager.instance.DragEnd.x else BuildManager.instance.DragEnd.x)
-		var StartZ = (BuildManager.instance.DragStart.z if BuildManager.instance.DragStart.z < BuildManager.instance.DragEnd.z else BuildManager.instance.DragEnd.z)
-		
-		var EndX = (BuildManager.instance.DragEnd.x if BuildManager.instance.DragEnd.x > BuildManager.instance.DragStart.x else BuildManager.instance.DragStart.x) + 1
-		var EndZ = (BuildManager.instance.DragEnd.z if BuildManager.instance.DragEnd.z > BuildManager.instance.DragStart.z else BuildManager.instance.DragStart.z) + 1
 		match SelectedTool:
-			#SELECTEDTOOL.ERASE:
-				#EraseArea(1,Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
-				#pass
-			_:
-				BuildSelectedSection(1,Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
-		PreviewBuildMesh.visible = false
+			SELECTEDTOOL.FOUNDATION:
+				if !BuildManager.instance.CurrentRoom:
+					BuildManager.instance.CurrentRoom = RoomResource.new()
+					
+				var StartX = (BuildManager.instance.DragStart.x if BuildManager.instance.DragStart.x < BuildManager.instance.DragEnd.x else BuildManager.instance.DragEnd.x)
+				var StartZ = (BuildManager.instance.DragStart.z if BuildManager.instance.DragStart.z < BuildManager.instance.DragEnd.z else BuildManager.instance.DragEnd.z)
+				
+				var EndX = (BuildManager.instance.DragEnd.x if BuildManager.instance.DragEnd.x > BuildManager.instance.DragStart.x else BuildManager.instance.DragStart.x) + 1
+				var EndZ = (BuildManager.instance.DragEnd.z if BuildManager.instance.DragEnd.z > BuildManager.instance.DragStart.z else BuildManager.instance.DragStart.z) + 1
+				match SelectedTool:
+					#SELECTEDTOOL.ERASE:
+						#EraseArea(1,Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
+						#pass
+					_:
+						BuildSelectedSection(1,Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
+				PreviewBuildMesh.visible = false
 
 func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
 	if !CanPlaceFoundations:
@@ -188,19 +193,15 @@ func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
 
 func ChangeSelectedTool(_tool:SELECTEDTOOL):
 	SelectedTool = _tool
-	FoundationTool.process_mode = Node.PROCESS_MODE_DISABLED
-	PropTool.process_mode = Node.PROCESS_MODE_DISABLED
 	if FoundationToolUI:
 		FoundationToolUI.visible = false
 	PropToolUI.visible = false
 	match (SelectedTool):
 		SELECTEDTOOL.FOUNDATION:
-			FoundationTool.process_mode = Node.PROCESS_MODE_INHERIT
 			if FoundationToolUI:
 				FoundationToolUI.visible = true
 			pass
 		SELECTEDTOOL.PROP:
-			PropTool.process_mode = Node.PROCESS_MODE_INHERIT
 			PropToolUI.visible = true
 			pass
 		SELECTEDTOOL.PUZZLE:
@@ -226,17 +227,19 @@ func mouse_position(_SnapToGrid:bool = false) -> Vector3:
 	else:
 		return Vector3.ZERO
 
-func CastToPropLayer():
+func CastToPropLayer() -> PropScene:
 	var Cam = CameraController.instance.Camera
 	var mouse_position:Vector2 = Cam.get_viewport().get_mouse_position()
 	var from:Vector3 = Cam.global_position
-	var to:Vector3 = Cam.project_position(mouse_position,1000)
+	var to:Vector3 = Cam.project_position(mouse_position,5000)
 	var State = PhysicsRayQueryParameters3D.create(from,to,PropCollisionLayer)
+	State.collide_with_areas = true
 	var space_state = get_tree().root.world_3d.direct_space_state
 	var result = space_state.intersect_ray(State)
+	print(result)
 	if result:
-		print("CLICKED ON PROP")
-		return result
+		return (result.values()[4] as Area3D).get_parent()
+	return null
 	pass
 
 func CreateNewRoom():
@@ -433,18 +436,23 @@ func RebuildGridSquares(_erasing:bool = false):
 	SquaresNeedingRebuildingIDX.clear()
 
 func PlaceProp(_location:Vector3):
-	if !SelectedProp:
+	if !PlacingProp:
 		return
 	print("Placing Prop")
-	var placement = SelectedProp._Scene.instantiate()
+	var placement = PlacingProp._Scene.instantiate()
 	BuildManager.instance.CurrentRoomScene.PropContainer.add_child(placement)
 	placement.position = _location
 	placement.rotation_degrees = BuildingHelpers.CellRotationToEuler(BuildingHelpers.GetAverageWallRotationIndex(_location,true))
-	BuildManager.instance.CurrentRoom.PlacedProps.append(SelectedProp)
+	BuildManager.instance.CurrentRoom.PlacedProps.append(PlacingProp)
 	BuildManager.instance.CurrentRoom.PlacedPropLocations.append(_location)
-	SelectedProp = null
+	PlacingProp = null
 	pass
 
-func SetSelectedProp(_data:RES_PropData):
-	SelectedProp = _data
+func SetPlacingProp(_data:RES_PropData):
+	PlacingProp = _data
+	pass
+	
+func SetupPropEditMenu(_prop:PropScene):
+	PropEditorMenu.visible = true
+	PropEditorMenu.SelectedProp = _prop
 	pass
