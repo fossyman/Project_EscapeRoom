@@ -1,5 +1,5 @@
 class_name RT_MainMenu extends Node
-
+var level = preload("res://Scenes/Roots/ROOT_Gameplay.tscn")
 
 
 func _ready() -> void:
