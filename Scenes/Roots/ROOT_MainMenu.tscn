@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://crpj6v8sqf4h"]
+[gd_scene load_steps=7 format=3 uid="uid://crpj6v8sqf4h"]
 
 [ext_resource type="Texture2D" uid="uid://bxpqxxxeopvi5" path="res://Assets/UI/UI Menu.svg" id="1_70n7g"]
 [ext_resource type="Script" uid="uid://de3yjnmyv4xli" path="res://root_main_menu.gd" id="1_nned8"]
 [ext_resource type="PackedScene" uid="uid://cyxcjwc3tm3ad" path="res://Scenes/Roots/ROOT_Gameplay.tscn" id="2_a2yyp"]
 [ext_resource type="Theme" uid="uid://bt7l7xttp5w74" path="res://Assets/UI/UI Button theme.tres" id="2_ajkn1"]
+[ext_resource type="PackedScene" uid="uid://cch0a3rtnctwp" path="res://Scenes/HEROPORT-UI/setting_menu.tscn" id="5_k1jgs"]
 [ext_resource type="AudioStream" uid="uid://deyfu5jq15sqv" path="res://Assets/Audio/Sci Fi Theme Demo 2.2.wav" id="5_k5vy4"]
 
 [node name="Root_MainMenu" type="Node"]
@@ -103,80 +104,13 @@ theme_override_font_sizes/font_size = 44
 text = "Quit
 "
 
-[node name="Setting menu" type="VBoxContainer" parent="CONTENT/Interactables"]
+[node name="Setting menu" parent="CONTENT/Interactables" instance=ExtResource("5_k1jgs")]
 visible = false
 layout_mode = 0
-offset_left = 102.0
-offset_top = 122.0
-offset_right = 335.0
-offset_bottom = 559.0
-theme = ExtResource("2_ajkn1")
-theme_override_constants/separation = 50
-
-[node name="back" type="Button" parent="CONTENT/Interactables/Setting menu"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 44
-text = "Return
-"
-
-[node name="Full screen" type="CheckButton" parent="CONTENT/Interactables/Setting menu"]
-layout_mode = 2
-theme = ExtResource("2_ajkn1")
-theme_override_constants/outline_size = 6
-theme_override_constants/h_separation = 0
-theme_override_font_sizes/font_size = 36
-text = "FullScreen "
-
-[node name="MainVolSlider" type="HSlider" parent="CONTENT/Interactables/Setting menu"]
-custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
-max_value = 1.0
-step = 0.01
-
-[node name="Label" type="Label" parent="CONTENT/Interactables/Setting menu/MainVolSlider"]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 4.0
+offset_left = 0.0
+offset_top = 0.0
 offset_right = 233.0
-offset_bottom = 27.0
-theme = ExtResource("2_ajkn1")
-text = "Volume"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="MusicSlider" type="HSlider" parent="CONTENT/Interactables/Setting menu"]
-custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
-max_value = 1.0
-step = 0.01
-
-[node name="Label" type="Label" parent="CONTENT/Interactables/Setting menu/MusicSlider"]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 4.0
-offset_right = 233.0
-offset_bottom = 27.0
-theme = ExtResource("2_ajkn1")
-text = "Music Volume"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="SFXSlider" type="HSlider" parent="CONTENT/Interactables/Setting menu"]
-custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
-max_value = 1.0
-step = 0.01
-
-[node name="Label" type="Label" parent="CONTENT/Interactables/Setting menu/SFXSlider"]
-layout_mode = 0
-offset_left = 10.0
-offset_top = 4.0
-offset_right = 233.0
-offset_bottom = 27.0
-theme = ExtResource("2_ajkn1")
-text = "SFX Volume"
-horizontal_alignment = 1
-vertical_alignment = 1
+offset_bottom = 437.0
 
 [node name="Credits menu" type="VBoxContainer" parent="CONTENT/Interactables"]
 visible = false
@@ -214,6 +148,7 @@ text = "Return
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="CONTENT"]
 stream = ExtResource("5_k5vy4")
+bus = &"Main volume"
 
 [node name="CONSTANT" type="Node" parent="."]
 
@@ -221,9 +156,4 @@ stream = ExtResource("5_k5vy4")
 [connection signal="pressed" from="CONTENT/Interactables/PLAYSET/BoxContainer/Settings" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="CONTENT/Interactables/CREDQUIT/BoxContainer/Credits" to="." method="_on_credits_pressed"]
 [connection signal="pressed" from="CONTENT/Interactables/CREDQUIT/BoxContainer/Quit" to="." method="_on_quit_pressed"]
-[connection signal="pressed" from="CONTENT/Interactables/Setting menu/back" to="." method="_on_back_pressed"]
-[connection signal="toggled" from="CONTENT/Interactables/Setting menu/Full screen" to="." method="_on_full_screen_toggled"]
-[connection signal="value_changed" from="CONTENT/Interactables/Setting menu/MainVolSlider" to="." method="_on_main_vol_slider_value_changed"]
-[connection signal="value_changed" from="CONTENT/Interactables/Setting menu/MusicSlider" to="." method="_on_music_slider_value_changed"]
-[connection signal="value_changed" from="CONTENT/Interactables/Setting menu/SFXSlider" to="." method="_on_sfx_slider_value_changed"]
 [connection signal="pressed" from="CONTENT/Interactables/Credits menu/back" to="." method="_on_back_pressed"]

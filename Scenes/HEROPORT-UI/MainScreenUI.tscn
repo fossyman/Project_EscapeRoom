@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://by5wxvdmg3kwo"]
+[gd_scene load_steps=7 format=3 uid="uid://by5wxvdmg3kwo"]
 
 [ext_resource type="Texture2D" uid="uid://r74gnb7trixq" path="res://Assets/UI/Asset 1.png" id="1_31q56"]
 [ext_resource type="Script" uid="uid://5p4pdfa21am8" path="res://Src/UITime/Time_system.gd" id="2_clymg"]
 [ext_resource type="Script" uid="uid://3h6a33t7665" path="res://Src/UITime/Date_Time.gd" id="3_j707p"]
 [ext_resource type="PackedScene" uid="uid://crvbpb66wn8d6" path="res://Scenes/HEROPORT-UI/Timer.tscn" id="4_j707p"]
+[ext_resource type="PackedScene" uid="uid://1rcns5ryj4i0" path="res://Scenes/HEROPORT-UI/pausemenu.tscn" id="5_vgxwv"]
 
 [sub_resource type="Resource" id="Resource_vgxwv"]
 script = ExtResource("3_j707p")
@@ -102,7 +103,7 @@ offset_right = 445.0
 offset_bottom = 50.0
 theme_override_constants/separation = 10
 
-[node name="Management screen" type="Button" parent="Mainbar/HBoxContainer"]
+[node name="PauseMenu" type="Button" parent="Mainbar/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 
@@ -131,5 +132,8 @@ layout_mode = 2
 [node name="Fast forward" type="Button" parent="Mainbar/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+
+[node name="Pausemenu" parent="." instance=ExtResource("5_vgxwv")]
+visible = false
 
 [connection signal="Updated" from="TimeSystem" to="Mainbar/clock/Clock System" method="_on_time_system_updated"]

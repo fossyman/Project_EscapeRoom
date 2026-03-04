@@ -1,0 +1,84 @@
+[gd_scene load_steps=3 format=3 uid="uid://cch0a3rtnctwp"]
+
+[ext_resource type="Theme" uid="uid://bt7l7xttp5w74" path="res://Assets/UI/UI Button theme.tres" id="1_xigob"]
+[ext_resource type="Script" uid="uid://cfb054r4nurds" path="res://Src/SCR_setting_menu.gd" id="2_q3edc"]
+
+[node name="Setting menu" type="VBoxContainer"]
+offset_left = 102.0
+offset_top = 122.0
+offset_right = 335.0
+offset_bottom = 559.0
+theme = ExtResource("1_xigob")
+theme_override_constants/separation = 50
+script = ExtResource("2_q3edc")
+
+[node name="back" type="Button" parent="."]
+layout_mode = 2
+theme_override_font_sizes/font_size = 44
+text = "Return
+"
+
+[node name="Full screen" type="CheckButton" parent="."]
+layout_mode = 2
+theme = ExtResource("1_xigob")
+theme_override_constants/outline_size = 6
+theme_override_constants/h_separation = 0
+theme_override_font_sizes/font_size = 36
+text = "FullScreen "
+
+[node name="MainVolSlider" type="HSlider" parent="."]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+
+[node name="Label" type="Label" parent="MainVolSlider"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 4.0
+offset_right = 233.0
+offset_bottom = 27.0
+theme = ExtResource("1_xigob")
+text = "Volume"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MusicSlider" type="HSlider" parent="."]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+
+[node name="Label" type="Label" parent="MusicSlider"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 4.0
+offset_right = 233.0
+offset_bottom = 27.0
+theme = ExtResource("1_xigob")
+text = "Music Volume"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SFXSlider" type="HSlider" parent="."]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+
+[node name="Label" type="Label" parent="SFXSlider"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 4.0
+offset_right = 233.0
+offset_bottom = 27.0
+theme = ExtResource("1_xigob")
+text = "SFX Volume"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="pressed" from="back" to="." method="_on_back_pressed"]
+[connection signal="toggled" from="Full screen" to="." method="_on_full_screen_toggled"]
+[connection signal="value_changed" from="MainVolSlider" to="." method="_on_main_vol_slider_value_changed"]
+[connection signal="value_changed" from="MusicSlider" to="." method="_on_music_slider_value_changed"]
+[connection signal="value_changed" from="SFXSlider" to="." method="_on_sfx_slider_value_changed"]
