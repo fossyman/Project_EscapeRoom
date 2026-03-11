@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://kla5tnx7veom" path="res://Src/SCR_PropButton.gd" id="5_2h1dl"]
 [ext_resource type="ArrayMesh" uid="uid://rd3i7lmgeqhf" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_FLOOR.res" id="6_nitf2"]
 [ext_resource type="Material" uid="uid://bgxc0n0u8y8b0" path="res://Assets/Material/MAT_BuildOverlay.tres" id="6_nxnwt"]
-[ext_resource type="Resource" uid="uid://d4m52qy8lmy6j" path="res://Assets/Resources/PropData/Pirate Props/PROPDATA_PIRATE_CUTLASS.tres" id="6_vq4w1"]
+[ext_resource type="Resource" uid="uid://mqqndisa5eoc" path="res://Assets/Resources/PropData/Pirate_Props/RES_PROP_PIRATE_SKULLCROSSBONES.tres" id="6_vq4w1"]
 [ext_resource type="ArrayMesh" uid="uid://ciyjkuhm7o5w8" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_INNERCORNER.res" id="7_1caoe"]
 [ext_resource type="ArrayMesh" uid="uid://dv3lbluh686kw" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_DOORWAY.res" id="8_nitf2"]
 [ext_resource type="FontFile" uid="uid://bs530y4locaf0" path="res://Assets/Fonts/ARURaisonneSimplified-DemiBold.otf" id="8_prpd7"]
@@ -252,14 +252,12 @@ custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 text = "TEST PROP"
 script = ExtResource("5_2h1dl")
-Propdata = ExtResource("6_vq4w1")
 
 [node name="Button2" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 text = "TEST PROP"
 script = ExtResource("5_2h1dl")
-Propdata = ExtResource("6_vq4w1")
 
 [node name="Button3" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
 custom_minimum_size = Vector2(100, 100)
@@ -273,56 +271,48 @@ custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 text = "TEST PROP"
 script = ExtResource("5_2h1dl")
-Propdata = ExtResource("6_vq4w1")
 
 [node name="Button5" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 text = "TEST PROP"
 script = ExtResource("5_2h1dl")
-Propdata = ExtResource("6_vq4w1")
 
 [node name="Button6" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 text = "TEST PROP"
 script = ExtResource("5_2h1dl")
-Propdata = ExtResource("6_vq4w1")
 
 [node name="Button7" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 text = "TEST PROP"
 script = ExtResource("5_2h1dl")
-Propdata = ExtResource("6_vq4w1")
 
 [node name="Button8" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 text = "TEST PROP"
 script = ExtResource("5_2h1dl")
-Propdata = ExtResource("6_vq4w1")
 
 [node name="Button9" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 text = "TEST PROP"
 script = ExtResource("5_2h1dl")
-Propdata = ExtResource("6_vq4w1")
 
 [node name="Button10" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 text = "TEST PROP"
 script = ExtResource("5_2h1dl")
-Propdata = ExtResource("6_vq4w1")
 
 [node name="Button11" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 text = "TEST PROP"
 script = ExtResource("5_2h1dl")
-Propdata = ExtResource("6_vq4w1")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="TOOLS/Control/PropUI"]
 layout_mode = 1

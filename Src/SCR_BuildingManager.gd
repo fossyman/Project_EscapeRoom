@@ -439,7 +439,8 @@ func PlaceProp(_location:Vector3):
 	if !PlacingProp:
 		return
 	print("Placing Prop")
-	var placement = PlacingProp._Scene.instantiate()
+	var placement = PlacingProp._Scene.instantiate() as PropScene
+	placement.Create(PlacingProp)
 	BuildManager.instance.CurrentRoomScene.PropContainer.add_child(placement)
 	placement.position = _location
 	placement.rotation_degrees = BuildingHelpers.CellRotationToEuler(BuildingHelpers.GetAverageWallRotationIndex(_location,true))
@@ -455,4 +456,5 @@ func SetPlacingProp(_data:RES_PropData):
 func SetupPropEditMenu(_prop:PropScene):
 	PropEditorMenu.visible = true
 	PropEditorMenu.SelectedProp = _prop
+	PropEditorMenu.InitializeMenu(PropEditorMenu.SelectedProp)
 	pass

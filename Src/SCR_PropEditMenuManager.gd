@@ -21,8 +21,8 @@ func _process(delta: float) -> void:
 
 func InitializeMenu(_prop:PropScene):
 	SelectedProp = _prop
-	PropIcon.texture = _prop.PropData._Icon
-	PropTitleText.text = _prop.PropData._Name
+	PropIcon.texture = _prop.Icon
+	PropTitleText.text = _prop.Name
 	visible = true
 	pass
 	
