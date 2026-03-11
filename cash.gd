@@ -1,4 +1,14 @@
-class_name cash extends Node
+class_name cash extends Label
 
-var moneyTotal : float = 0
-var rentTax: float = 0
+var rentTax: float = 10
+
+
+func _ready() -> void:
+	_update_cash()
+
+func _process(delta: float) -> void:
+
+	_update_cash()
+
+func _update_cash():
+	text = "cash: " + str(GLOBALS.money)
