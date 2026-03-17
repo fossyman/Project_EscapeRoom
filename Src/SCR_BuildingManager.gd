@@ -3,6 +3,8 @@ class_name BuildManager
 static var instance = self
 
 @export var Cursor:Node3D
+var CursorRotationTween:Tween
+@export var CursorRotation:Vector3
 @export var CursorMesh:MeshInstance3D
 @export var OverlapTestingArea:Area3D
 var BuildingCursorPosition:Vector3
@@ -80,6 +82,9 @@ func _process(delta: float) -> void:
 		SELECTEDTOOL.PUZZLE:
 			pass
 	MoveCursor(mouse_position(true))
+	
+	if Input.is_action_just_pressed("rotate"):
+		RotateCursor(90)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if !GLOBALS.CanInteract:
@@ -443,16 +448,38 @@ func PlaceProp(_location:Vector3):
 	placement.Create(PlacingProp)
 	BuildManager.instance.CurrentRoomScene.PropContainer.add_child(placement)
 	placement.position = _location
-	placement.rotation_degrees = BuildingHelpers.CellRotationToEuler(BuildingHelpers.GetAverageWallRotationIndex(_location,true))
-	BuildManager.instance.CurrentRoom.PlacedProps.append(PlacingProp)
-	BuildManager.instance.CurrentRoom.PlacedPropLocations.append(_location)
+	placement.rotation_degrees.y = CursorRotation.y
+	BuildManager.instance.CurrentRoom.PlacedProps.append(placement)
 	PlacingProp = null
+	CursorMesh.rotation_degrees.y = 0
+	ResetCursorMesh()
 	pass
 
 func SetPlacingProp(_data:RES_PropData):
 	PlacingProp = _data
+	var PlacementExample = _data._Scene.instantiate()
+	CursorMesh.add_child(PlacementExample)
 	pass
+
+func RotateCursor(_amount):
+	CursorRotation.y += _amount
+	if CursorRotation.y == 360:
+		CursorRotation.y = 0
+		CursorMesh.rotation_degrees.y = -90
+	CursorRotation.y = wrap(CursorRotation.y,-450,360)
+	if CursorRotationTween:
+		CursorRotationTween.kill()
+	CursorRotationTween = create_tween()
 	
+	CursorRotationTween.tween_property(CursorMesh,"rotation_degrees:y",CursorRotation.y,0.1)
+
+func ResetCursorMesh():
+	CursorMesh.rotation_degrees.y = 0
+	CursorRotation.y = 0
+	for i in CursorMesh.get_child_count():
+		CursorMesh.get_child(i).queue_free()
+	
+
 func SetupPropEditMenu(_prop:PropScene):
 	PropEditorMenu.visible = true
 	PropEditorMenu.SelectedProp = _prop

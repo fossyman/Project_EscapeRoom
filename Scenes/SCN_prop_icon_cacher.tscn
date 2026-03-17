@@ -9,6 +9,7 @@
 sky_material = SubResource("ProceduralSkyMaterial_ruodo")
 
 [sub_resource type="Environment" id="Environment_8oako"]
+background_mode = 2
 sky = SubResource("Sky_df6e7")
 
 [node name="PropIconCacher" type="Node3D" node_paths=PackedStringArray("Camera", "CameraHolder", "CameraViewport", "SubjectArea")]
@@ -18,28 +19,35 @@ CameraHolder = NodePath("CameraHolder")
 CameraViewport = NodePath("SubViewport")
 SubjectArea = NodePath("Subject")
 TestResource = ExtResource("2_ruodo")
+PropRenderLayer = 262144
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
-render_target_update_mode = 1
+render_target_update_mode = 0
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport"]
-transform = Transform3D(-0.674275, 0.084906, 0.733583, 0, 0.993369, -0.114974, -0.738481, -0.077524, -0.669803, 0.673, 0, -0.796)
+transform = Transform3D(-0.584958, 0.00566225, -0.811044, 0, 0.999976, 0.00698126, 0.811064, 0.00408374, -0.584943, -3.294, -0.0386212, -2.41021)
+cull_mask = 262144
 environment = SubResource("Environment_8oako")
+projection = 1
 
 [node name="Subject" type="Node3D" parent="."]
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.707107, 0.707107, 0, -0.707107, -0.707107, 0, 1.61543, -1)
+layers = 262144
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.956264, -0.292505, 0, 0.292505, -0.956264, 0, 0.304484, -1)
+layers = 262144
 
 [node name="SpotLight3D3" type="SpotLight3D" parent="."]
 transform = Transform3D(-0.872675, -0.142831, 0.466945, 0, -0.956264, -0.292505, 0.488301, -0.255262, 0.834508, 0.394832, 0.597009, 0.471137)
+layers = 262144
 
 [node name="CameraHolder" type="Node3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 
 [node name="RemoteTransform3D" type="RemoteTransform3D" parent="CameraHolder"]
-transform = Transform3D(-0.674275, 0.084906, 0.733583, 0, 0.993369, -0.114974, -0.738481, -0.077524, -0.669803, 0.673, 0, -0.796)
+transform = Transform3D(-0.811064, -0.00408374, 0.584943, 0, 0.999976, 0.00698126, -0.584958, 0.00566225, -0.811044, 2.41021, -0.0386212, -3.294)
 remote_path = NodePath("../../SubViewport/Camera3D")

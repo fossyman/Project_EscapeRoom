@@ -1,51 +1,47 @@
 extends Node3D
-
+class_name IconCacher
+static var instance:IconCacher
 @export var Camera:Camera3D
 @export var CameraHolder:Node3D
-@export var CameraViewport:Viewport
+@export var CameraViewport:SubViewport
 @export var SubjectArea:Node3D
 @export var TestResource:RES_PropData
+@export_flags_3d_render var PropRenderLayer
 var CurrentAsset:RES_PropData
 var CachingScene:PackedScene
 
 var PropArray:Array[RES_PropData]
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	CollectAllPropReferences()
-
-	pass # Replace with function body.
-
-func CollectAllPropReferences():
-	
-	var PropPath = "res://Assets/Resources/PropData/"
-	var PropDirectory = DirAccess.open(PropPath)
-	
-	if PropDirectory == null:
-		return
-
-	for x in PropDirectory.get_directories().size():
-		print("ATTEMPTING " + str(PropDirectory.get_directories()[x]))
-		for y in PropDirectory.get_files_at(PropDirectory.get_directories()[x]):
-			print("ATTEMPTING " + str(y))
-			var resource = load(PropPath+PropDirectory.get_directories()[x]+"/"+y) as RES_PropData
-			print("RES?: "+resource)
-			PropArray.append(resource)
-			print("Y?: "+y)
-		print("X?: "+PropDirectory.get_directories()[x])
-	if PropArray.is_empty():
-		return
-	PrepareSceneForPicture(PropArray[0])
-	SnapPicture()
+func _enter_tree() -> void:
+	instance = self
 
 func PrepareSceneForPicture(_prop:RES_PropData):
+		
 	CurrentAsset = _prop
 	CachingScene = CurrentAsset._Scene
 	var instance = CachingScene.instantiate() as PropScene
 	SubjectArea.add_child(instance)
+	
+	for i in instance.MeshContainer.get_children(true):
+		print(i.name + i.get_class())
+		if i is MeshInstance3D:
+			i.layers = PropRenderLayer
+	
+	print(CameraHolder.position)
 	CameraHolder.position = instance.MeshContainer.position
+	print(CameraHolder.position)
 
-func SnapPicture():
+func SnapPicture(_prop:RES_PropData) -> Texture2D:
+	PrepareSceneForPicture(_prop)
+	await get_tree().process_frame
+	CameraViewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	await RenderingServer.frame_post_draw
-	var NewIcon = CameraViewport.get_texture().get_image()
-	NewIcon.save_png("res://Cache/Icons/"+ CurrentAsset._Name + "ICON"+".png")
+	var ico = CameraViewport.get_texture().get_image()
+	var NewIcon = ImageTexture.create_from_image(ico)
+	ClearPlayspace()
+	return NewIcon
+	#NewIcon.save_png("res://Cache/Icons/"+ CurrentAsset._Name + "ICON"+".png")
+
+func ClearPlayspace():
+	for i in SubjectArea.get_child_count():
+		SubjectArea.get_child(i).queue_free()
