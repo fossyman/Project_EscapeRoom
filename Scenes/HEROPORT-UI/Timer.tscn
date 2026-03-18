@@ -23,18 +23,19 @@ scale = Vector2(4.00186, 4.00186)
 
 [node name="Day" type="Label" parent="day control"]
 layout_mode = 0
-offset_left = 36.632
-offset_top = 0.995467
-offset_right = 81.632
-offset_bottom = 33.9955
+offset_left = 50.9877
+offset_top = 0.497733
+offset_right = 95.9877
+offset_bottom = 33.4978
 text = "999"
 label_settings = ExtResource("1_7ffiv")
 
 [node name="Text" type="Label" parent="day control"]
 layout_mode = 0
+offset_left = 10.0
 offset_top = 2.0
-offset_right = 32.0
-offset_bottom = 20.0
+offset_right = 111.0
+offset_bottom = 35.0
 scale = Vector2(0.595411, 0.9336)
 text = "Day :"
 label_settings = ExtResource("1_7ffiv")
@@ -48,27 +49,27 @@ scale = Vector2(4.02251, 4.00186)
 
 [node name="hours" type="Label" parent="clock control"]
 layout_mode = 0
-offset_left = 91.6023
+offset_left = 143.313
 offset_top = 3.98187
-offset_right = 121.602
+offset_right = 173.313
 offset_bottom = 36.9819
 text = "99"
 label_settings = ExtResource("1_7ffiv")
 
 [node name="Space" type="Label" parent="clock control"]
 layout_mode = 0
-offset_left = 125.091
+offset_left = 176.802
 offset_top = 5.47507
-offset_right = 130.091
+offset_right = 181.802
 offset_bottom = 38.4751
 text = ":"
 label_settings = ExtResource("1_7ffiv")
 
 [node name="mintues" type="Label" parent="clock control"]
 layout_mode = 0
-offset_left = 131.986
+offset_left = 183.697
 offset_top = 3.98187
-offset_right = 161.986
+offset_right = 213.697
 offset_bottom = 36.9819
 text = "99"
 label_settings = ExtResource("1_7ffiv")

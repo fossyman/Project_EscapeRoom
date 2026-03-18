@@ -11,4 +11,8 @@ func _process(delta: float) -> void:
 	_update_cash()
 
 func _update_cash():
-	text = "cash: " + str(GLOBALS.money)
+	text = "CAD$: " + str(GLOBALS.money)
+
+func _Tax():
+	GLOBALS.money - rentTax
+	_update_cash()
