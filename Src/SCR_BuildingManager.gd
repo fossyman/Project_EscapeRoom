@@ -456,6 +456,7 @@ func PlaceProp(_location:Vector3):
 	pass
 
 func SetPlacingProp(_data:RES_PropData):
+	ResetCursorMesh()
 	PlacingProp = _data
 	var PlacementExample = _data._Scene.instantiate()
 	CursorMesh.add_child(PlacementExample)
