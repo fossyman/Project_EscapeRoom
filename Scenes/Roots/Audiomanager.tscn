@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://crx4b8d5d8yqx"]
+
+[ext_resource type="Script" uid="uid://cahu8mfaq8mcl" path="res://Scenes/Roots/audiomanager.gd" id="1_ukd3n"]
+[ext_resource type="AudioStream" uid="uid://deyfu5jq15sqv" path="res://Assets/Audio/Sci Fi Theme Demo 2.2.wav" id="2_a6s7q"]
+
+[node name="Audiomanager" type="Node" node_paths=PackedStringArray("Clips")]
+script = ExtResource("1_ukd3n")
+Clips = NodePath("Clips")
+
+[node name="Clips" type="Node" parent="."]
+
+[node name="Main" type="AudioStreamPlayer" parent="Clips"]
+stream = ExtResource("2_a6s7q")
+bus = &"Music "

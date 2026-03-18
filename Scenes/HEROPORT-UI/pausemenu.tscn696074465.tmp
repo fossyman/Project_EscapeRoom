@@ -1,0 +1,98 @@
+[gd_scene load_steps=8 format=3 uid="uid://1rcns5ryj4i0"]
+
+[ext_resource type="Script" uid="uid://b2agl4kdx8g3u" path="res://Src/UIPausemenu/pausemenu.gd" id="1_mxlpe"]
+[ext_resource type="Shader" uid="uid://djta6ojffo0m4" path="res://Assets/Shaders/SHD_PauseMenu.gdshader" id="1_sg8m0"]
+[ext_resource type="Theme" uid="uid://bt7l7xttp5w74" path="res://Assets/UI/UI Button theme.tres" id="2_mxlpe"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7f7ja"]
+shader = ExtResource("1_sg8m0")
+shader_parameter/lod = 0.0
+
+[sub_resource type="Animation" id="Animation_sg8m0"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:material:shader_parameter/lod")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.15, 0, 0.15, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_ch4mm"]
+resource_name = "blur"
+length = 0.3
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("ColorRect:material:shader_parameter/lod")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(0.1, -0.15, 0, 0.15, 0, 0.5, -0.15, 0, 0.15, 0),
+"times": PackedFloat32Array(0, 0.3)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qpvo1"]
+_data = {
+&"RESET": SubResource("Animation_sg8m0"),
+&"blur": SubResource("Animation_ch4mm")
+}
+
+[node name="Pausemenu" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_mxlpe")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_7f7ja")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 485.0
+offset_top = 242.0
+offset_right = 779.0
+offset_bottom = 455.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme = ExtResource("2_mxlpe")
+theme_override_constants/separation = 60
+
+[node name="resume" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Resume / continue
+"
+
+[node name="settings" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Settings
+"
+
+[node name="quit" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Save & quit"
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_qpvo1")
+}
+
+[connection signal="pressed" from="Panel/VBoxContainer/resume" to="." method="_on_resume_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/settings" to="." method="_on_settings_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/quit" to="." method="_on_quit_pressed"]

@@ -1,0 +1,151 @@
+[gd_scene load_steps=10 format=3 uid="uid://by5wxvdmg3kwo"]
+
+[ext_resource type="Texture2D" uid="uid://r74gnb7trixq" path="res://Assets/UI/Asset 1.png" id="1_31q56"]
+[ext_resource type="Script" uid="uid://5p4pdfa21am8" path="res://Src/UITime/Time_system.gd" id="2_clymg"]
+[ext_resource type="Script" uid="uid://3h6a33t7665" path="res://Src/UITime/Date_Time.gd" id="3_j707p"]
+[ext_resource type="PackedScene" uid="uid://crvbpb66wn8d6" path="res://Scenes/HEROPORT-UI/Timer.tscn" id="4_j707p"]
+[ext_resource type="Script" uid="uid://b7lwafp2svrh4" path="res://Src/SCR_pause_menu_Button.gd" id="5_p4b0t"]
+[ext_resource type="PackedScene" uid="uid://1rcns5ryj4i0" path="res://Scenes/HEROPORT-UI/pausemenu.tscn" id="5_vgxwv"]
+[ext_resource type="Texture2D" uid="uid://cy57n2xeg4klh" path="res://Assets/UI/Cash Image.png" id="6_8w5dx"]
+[ext_resource type="Script" uid="uid://dnqmvj00smmw7" path="res://Src/SCR_cash.gd" id="6_ty0xf"]
+
+[sub_resource type="Resource" id="Resource_vgxwv"]
+script = ExtResource("3_j707p")
+seconds = 1
+mintues = 0
+hours = 0
+days = 0
+metadata/_custom_type_script = "uid://3h6a33t7665"
+
+[node name="MainScreenUi" type="Node2D"]
+
+[node name="TimeSystem" type="Node" parent="."]
+script = ExtResource("2_clymg")
+date_time = SubResource("Resource_vgxwv")
+Ticks_per_sec = 120
+metadata/_custom_type_script = "uid://5p4pdfa21am8"
+
+[node name="phone" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 1013.0
+offset_right = 1053.0
+offset_bottom = 40.0
+
+[node name="Phone display TEX" type="Sprite2D" parent="phone"]
+visible = false
+position = Vector2(146, 362)
+scale = Vector2(1.46386, 1.44378)
+texture = ExtResource("1_31q56")
+
+[node name="Phone display2" type="GridContainer" parent="phone"]
+visible = false
+layout_mode = 2
+offset_left = 39.0
+offset_top = 171.0
+offset_right = 256.0
+offset_bottom = 456.0
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 15
+columns = 3
+
+[node name="horror" type="Button" parent="phone/Phone display2"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="priate" type="Button" parent="phone/Phone display2"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Scifi" type="Button" parent="phone/Phone display2"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Fansty" type="Button" parent="phone/Phone display2"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="foundations" type="Button" parent="phone/Phone display2"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="edit" type="Button" parent="phone/Phone display2"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Close menu" type="Button" parent="phone/Phone display2"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Settings" type="Button" parent="phone/Phone display2"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+
+[node name="Mainbar" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_top = 669.0
+offset_right = 542.0
+offset_bottom = 718.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Mainbar"]
+layout_mode = 0
+offset_right = 445.0
+offset_bottom = 50.0
+theme_override_constants/separation = 10
+
+[node name="PauseMenu" type="Button" parent="Mainbar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+script = ExtResource("5_p4b0t")
+
+[node name="Phone" type="Button" parent="Mainbar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="Mainbar/HBoxContainer"]
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="Mainbar/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("6_8w5dx")
+expand_mode = 2
+
+[node name="Cash-Label" type="Label" parent="Mainbar/HBoxContainer"]
+layout_mode = 2
+text = "                 "
+script = ExtResource("6_ty0xf")
+
+[node name="VSeparator2" type="VSeparator" parent="Mainbar/HBoxContainer"]
+layout_mode = 2
+
+[node name="Play" type="Button" parent="Mainbar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Pause" type="Button" parent="Mainbar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="Fast forward" type="Button" parent="Mainbar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+
+[node name="clock" type="CanvasLayer" parent="Mainbar/HBoxContainer"]
+
+[node name="Clock System" parent="Mainbar/HBoxContainer/clock" instance=ExtResource("4_j707p")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_top = 635.0
+offset_right = 238.0
+offset_bottom = 683.0
+grow_horizontal = 1
+grow_vertical = 1
+scale = Vector2(0.276732, 0.276732)
+
+[node name="Pausemenu" parent="." instance=ExtResource("5_vgxwv")]
+visible = false
+
+[connection signal="Updated" from="TimeSystem" to="Mainbar/HBoxContainer/clock/Clock System" method="_on_time_system_updated"]
+[connection signal="pressed" from="Mainbar/HBoxContainer/PauseMenu" to="Mainbar/HBoxContainer/PauseMenu" method="_on_pressed"]
