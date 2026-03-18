@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://dgykg04pq8l5c"]
+
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="1_8ab1c"]
+[ext_resource type="ArrayMesh" uid="uid://bamgm1soo30fu" path="res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_CHAIR.res" id="1_32tfd"]
+[ext_resource type="PackedScene" uid="uid://dytec3juhspsu" path="res://Scenes/Props/SCIFI/SCN_PROP_SCIFI_CHAIR.tscn" id="2_8vk77"]
+
+[resource]
+script = ExtResource("1_8ab1c")
+_PropCategories = Array[int]([1])
+_Name = &"Hover chair"
+_Scene = ExtResource("2_8vk77")
+_PreviewMesh = ExtResource("1_32tfd")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"
