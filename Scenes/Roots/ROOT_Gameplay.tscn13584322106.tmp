@@ -6,15 +6,15 @@
 [ext_resource type="Script" uid="uid://cbdd4svn71jhx" path="res://Src/SCR_RootManager.gd" id="1_xvs0j"]
 [ext_resource type="Script" uid="uid://c5fo8y2mkh734" path="res://Src/SCR_CameraController.gd" id="1_y3unb"]
 [ext_resource type="Texture2D" uid="uid://d15sugtlh8nby" path="res://icon.svg" id="2_wm8y7"]
-[ext_resource type="Script" uid="uid://bhuqwo0uselyc" path="res://Src/SCR_PropUIManager.gd" id="3_s8imx"]
 [ext_resource type="ArrayMesh" uid="uid://ckcbxpp44rr7a" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_WALL.res" id="5_1caoe"]
+[ext_resource type="Script" uid="uid://kla5tnx7veom" path="res://Src/SCR_PropButton.gd" id="5_2h1dl"]
 [ext_resource type="ArrayMesh" uid="uid://rd3i7lmgeqhf" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_FLOOR.res" id="6_nitf2"]
 [ext_resource type="Material" uid="uid://bgxc0n0u8y8b0" path="res://Assets/Material/MAT_BuildOverlay.tres" id="6_nxnwt"]
+[ext_resource type="Resource" uid="uid://d4m52qy8lmy6j" path="res://Assets/Resources/PropData/Pirate Props/PROPDATA_PIRATE_CUTLASS.tres" id="6_vq4w1"]
 [ext_resource type="ArrayMesh" uid="uid://ciyjkuhm7o5w8" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_INNERCORNER.res" id="7_1caoe"]
 [ext_resource type="ArrayMesh" uid="uid://dv3lbluh686kw" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_DOORWAY.res" id="8_nitf2"]
 [ext_resource type="FontFile" uid="uid://bs530y4locaf0" path="res://Assets/Fonts/ARURaisonneSimplified-DemiBold.otf" id="8_prpd7"]
 [ext_resource type="Script" uid="uid://cpp3jda6pxtl4" path="res://Src/SCR_GridmapPlus.gd" id="14_s8imx"]
-[ext_resource type="PackedScene" uid="uid://drf8ggf1pvbr" path="res://Scenes/UI/SCN_PropEditorMenu.tscn" id="16_vq4w1"]
 [ext_resource type="PackedScene" uid="uid://24mkaup72sp6" path="res://Assets/Models/Escape room enviornment.glb" id="17_vq4w1"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vq4w1"]
@@ -152,7 +152,7 @@ shadow_mesh = SubResource("ArrayMesh_wrmo1")
 script = ExtResource("1_xvs0j")
 PlayerCursor = NodePath("CONSTANT/CameraOrigin/Decal")
 
-[node name="TOOLS" type="Node" parent="." node_paths=PackedStringArray("Cursor", "CursorMesh", "OverlapTestingArea", "BuildingGridmap", "RoomParent", "FoundationToolUI", "PropToolUI", "BuildRequirementsLabel", "FinalizeRoomButton", "PreviewBuildMesh", "PropEditorMenu")]
+[node name="TOOLS" type="Node" parent="." node_paths=PackedStringArray("Cursor", "CursorMesh", "OverlapTestingArea", "BuildingGridmap", "RoomParent", "FoundationToolUI", "PropToolUI", "BuildRequirementsLabel", "FinalizeRoomButton", "PreviewBuildMesh")]
 script = ExtResource("1_6rgy0")
 Cursor = NodePath("../CONSTANT/Cursor")
 CursorMesh = NodePath("../CONSTANT/Cursor/CursorMesh")
@@ -162,11 +162,9 @@ RoomParent = NodePath("../MAP/NavigationRegion3D/RoomParent")
 FoundationToolUI = NodePath("Control/FoundationUI")
 PropToolUI = NodePath("Control/PropUI")
 BuildRequirementsLabel = NodePath("Control/RichTextLabel2")
-BuildRequirementsText = "asd"
 FinalizeRoomButton = NodePath("Control/Button")
 PropCollisionLayer = 2
 PreviewBuildMesh = NodePath("../CONSTANT/PREVIEW")
-PropEditorMenu = NodePath("../CONSTANT/SCN_PropeditorMenu")
 
 [node name="Control" type="Control" parent="TOOLS"]
 layout_mode = 3
@@ -223,7 +221,8 @@ offset_right = 292.0
 offset_bottom = 136.0
 text = "Floor"
 
-[node name="PropUI" type="Panel" parent="TOOLS/Control" node_paths=PackedStringArray("PropButtonGrid")]
+[node name="PropUI" type="Panel" parent="TOOLS/Control"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.759
@@ -233,11 +232,8 @@ offset_left = 0.479919
 offset_top = 56.0
 grow_horizontal = 0
 grow_vertical = 2
-script = ExtResource("3_s8imx")
-PropResourcePath = "res://Assets/Resources/PropData/"
-PropButtonGrid = NodePath("PropButtonGrid")
 
-[node name="PropButtonGrid" type="GridContainer" parent="TOOLS/Control/PropUI"]
+[node name="GridContainer" type="GridContainer" parent="TOOLS/Control/PropUI"]
 layout_direction = 3
 layout_mode = 1
 anchors_preset = 15
@@ -247,6 +243,83 @@ offset_top = 131.0
 grow_horizontal = 2
 grow_vertical = 2
 columns = 3
+
+[node name="Button" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button2" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button3" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button4" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button5" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button6" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button7" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button8" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button9" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button10" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
+
+[node name="Button11" type="Button" parent="TOOLS/Control/PropUI/GridContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST PROP"
+script = ExtResource("5_2h1dl")
+Propdata = ExtResource("6_vq4w1")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="TOOLS/Control/PropUI"]
 layout_mode = 1
@@ -259,30 +332,41 @@ vertical_scroll_mode = 0
 [node name="HBoxContainer" type="HBoxContainer" parent="TOOLS/Control/PropUI/ScrollContainer"]
 layout_mode = 2
 
-[node name="Button5" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 2
-text = "GENERIC"
-
 [node name="Button" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-text = "PIRATE"
-
-[node name="Button3" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 2
-text = "FANTASY"
-
-[node name="Button4" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
-custom_minimum_size = Vector2(100, 100)
-layout_mode = 2
-text = "HORROR"
+text = "TEST
+CATEGORY"
 
 [node name="Button2" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-text = "SCI-FI"
+text = "TEST
+CATEGORY"
+
+[node name="Button3" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST
+CATEGORY"
+
+[node name="Button4" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST
+CATEGORY"
+
+[node name="Button5" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST
+CATEGORY"
+
+[node name="Button6" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "TEST
+CATEGORY"
 
 [node name="RichTextLabel" type="RichTextLabel" parent="TOOLS/Control"]
 visible = false
@@ -361,12 +445,12 @@ skeleton = NodePath("../..")
 [node name="CONSTANT" type="Node" parent="."]
 
 [node name="CameraOrigin" type="Node3D" parent="CONSTANT" node_paths=PackedStringArray("CameraPositionRoot", "CameraHolder", "Camera")]
-transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 11.0951, 0, 7.3525)
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 0, 0, 0)
 script = ExtResource("1_y3unb")
 CameraPositionRoot = NodePath("CameraPosRoot")
 CameraHolder = NodePath("CameraPosRoot/CameraHolder")
 Camera = NodePath("CameraPosRoot/CameraHolder/Node3D/Camera3D")
-ScrollClamp = Vector2(0, 1)
+ScrollClamp = Vector2(0.1, 5)
 Movespeed = 5.0
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="CONSTANT/CameraOrigin"]
@@ -380,11 +464,11 @@ mesh = SubResource("SphereMesh_cy1kc")
 [node name="Node3D" type="Node3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder"]
 
 [node name="RemoteTransform3D" type="RemoteTransform3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder/Node3D"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 1.6251, 1.6251)
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 11, 11)
 remote_path = NodePath("../Camera3D")
 
 [node name="Camera3D" type="Camera3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder/Node3D"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, -9.53674e-07, 1.6251, 1.6251)
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 11, 11)
 cull_mask = 1023
 current = true
 
@@ -416,8 +500,6 @@ no_depth_test = true
 text = "0,10"
 font = ExtResource("8_prpd7")
 font_size = 97
-
-[node name="SCN_PropeditorMenu" parent="CONSTANT" instance=ExtResource("16_vq4w1")]
 
 [node name="Escape room enviornment" parent="." instance=ExtResource("17_vq4w1")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 50, 0, 50)

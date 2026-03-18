@@ -1,16 +1,25 @@
 extends Node
 class_name BuildingHelpers
 
+
+
 static var CheckPositions = [Vector3(1,0,1),Vector3(0,0,1),Vector3(-1,0,1),
 							Vector3(1,0,0),Vector3(0,0,0),Vector3(-1,0,0),
 							Vector3(1,0,-1),Vector3(0,0,-1),Vector3(-1,0,-1)]
 
-static func CheckBorderingGridAverage(_points:Array[Vector3], _position:Vector3,CornerFix:bool = false) -> Vector3:
+static func EdgeCheckPoint(_point:Vector3,_array:Array[Vector3]) -> int:
+	var count:int
+	for x in CheckPositions.size():
+		if _array.has(_point + CheckPositions[x]) && _point + CheckPositions[x] != _point:
+			count += 1
+	return count
+	
+static func CheckBorderingGridAverage(_position:Vector3,CornerFix:bool = false) -> Vector3:
 	var EmptyPoints:Array[Vector3]
 	var val:Vector3
 	var avg:Vector3
 	for i in CheckPositions.size():
-		if _points.has(_position + CheckPositions[i]):
+		if BuildManager.instance.BuildingPoints.has(_position + CheckPositions[i]):
 			EmptyPoints.append( (CheckPositions[i]) )
 			
 	for i in EmptyPoints.size():
@@ -22,7 +31,7 @@ static func CheckBorderingGridAverage(_points:Array[Vector3], _position:Vector3,
 	return avg.round()
 	
 
-func CheckBorderingGridCorners(_points:Array[Vector3],_position:Vector3,_snap:bool = true) -> Vector3:
+static func CheckBorderingGridCorners(_position:Vector3,_snap:bool = true) -> Vector3:
 	var val:Vector3
 	var avg:Vector3
 	var FoundCorners:Array[Vector3]
@@ -30,7 +39,7 @@ func CheckBorderingGridCorners(_points:Array[Vector3],_position:Vector3,_snap:bo
 	var dir:Vector3
 	
 	for i in CheckPositions.size():
-		if _points.has(_position + CheckPositions[i]) and !BuildManager.instance.PERMANENTPLACEMENTS.has(_position + CheckPositions[i]):
+		if BuildManager.instance.BuildingPoints.has(_position + CheckPositions[i]) and !BuildManager.instance.PERMANENTPLACEMENTS.has(_position + CheckPositions[i]):
 			FoundCorners.append(CheckPositions[i])
 
 	if FoundCorners.is_empty():
@@ -43,10 +52,11 @@ func CheckBorderingGridCorners(_points:Array[Vector3],_position:Vector3,_snap:bo
 	
 	#print("RETURNING CORNER VALUE OF :: " + str(average))
 	return average.snappedf(0.1) if _snap else average
-
-func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offset:Vector3 = Vector3.ZERO,intcheck:int = -1) -> int:
+	
+static func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offset:Vector3 = Vector3.ZERO,intcheck:int = -1) -> int:
 	var checking:Vector3 = CheckBorderingGridAverage(_position,CornerFix) + _offset
 	var CornerChecking = CheckBorderingGridCorners(_position,true)
+	print("CHECKING CORNER:::::"+str(CornerChecking))
 	if CornerFix:
 		match CornerChecking:
 			Vector3(-1,0,-1),Vector3(Vector3.FORWARD),Vector3(1,0,-1),Vector3(Vector3.LEFT),Vector3(Vector3.RIGHT),Vector3(Vector3(-1,0,1)),Vector3(Vector3.BACK),Vector3(1,0,1):
@@ -154,3 +164,18 @@ func GetAverageWallRotationIndex(_position:Vector3,CornerFix:bool = false,_offse
 			match CornerChecking:
 				pass
 	return 0
+
+static func CellRotationToEuler(_value:int) -> Vector3:
+	#print("CHECKING ::" + str(_value))
+	match _value:
+		0:
+			return Vector3(0,0,0)
+		10:
+			return Vector3(0,180,0)
+		16:
+			return Vector3(0,90,0)
+		22:
+			return Vector3(0,255,0)
+		_:
+			return Vector3(0,0,0)
+	pass

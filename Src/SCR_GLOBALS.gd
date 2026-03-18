@@ -8,6 +8,8 @@ var CURRENTROOT:RootManager
 var CONSTANT:Node
 var DELTA:float
 
+enum PROP_CATEGORIES{GENERIC,PIRATE,FANTASY,HORROR,SCIFI}
+
 func _ready() -> void:
 	MAIN = get_tree().root.find_child("MAIN",true,false)
 	ROOT_CONTAINER = MAIN.get_child(0)

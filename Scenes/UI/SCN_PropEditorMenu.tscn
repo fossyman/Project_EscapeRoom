@@ -1,0 +1,466 @@
+[gd_scene load_steps=19 format=3 uid="uid://drf8ggf1pvbr"]
+
+[ext_resource type="Script" uid="uid://cpg8wws750vvh" path="res://Src/SCR_PropEditMenuManager.gd" id="1_awba4"]
+[ext_resource type="Texture2D" uid="uid://d15sugtlh8nby" path="res://icon.svg" id="1_n08ke"]
+
+[sub_resource type="Gradient" id="Gradient_ndipv"]
+offsets = PackedFloat32Array(0, 0.7, 1)
+colors = PackedColorArray(1, 0.3, 0.3, 1, 1, 0.3, 0.3, 1, 0.26, 0.0884, 0.0884, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_awba4"]
+gradient = SubResource("Gradient_ndipv")
+fill = 2
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_awba4"]
+texture = SubResource("GradientTexture2D_awba4")
+
+[sub_resource type="Gradient" id="Gradient_mtmgv"]
+colors = PackedColorArray(0, 0, 0, 1, 0.389287, 0.389287, 0.389287, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ndipv"]
+gradient = SubResource("Gradient_mtmgv")
+width = 10
+
+[sub_resource type="Gradient" id="Gradient_55e5u"]
+offsets = PackedFloat32Array(0, 0.0263789, 0.5, 0.968825, 1)
+colors = PackedColorArray(0, 0, 0, 1, 0.1178, 0.1178, 0.38, 1, 0.0191882, 0.0191291, 0.121366, 1, 0.1178, 0.1178, 0.38, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_mtmgv"]
+gradient = SubResource("Gradient_55e5u")
+fill_to = Vector2(0, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ndipv"]
+content_margin_left = 10.0
+texture = SubResource("GradientTexture2D_mtmgv")
+
+[sub_resource type="Gradient" id="Gradient_awba4"]
+offsets = PackedFloat32Array(0.915367, 0.951002, 1)
+colors = PackedColorArray(0.051971, 0.051971, 0.051971, 1, 0.172833, 0.172833, 0.172833, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_bolau"]
+gradient = SubResource("Gradient_awba4")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bolau"]
+bg_color = Color(0, 1, 0, 0.0941176)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_awba4"]
+bg_color = Color(1, 0, 0, 0.0941176)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="Gradient" id="Gradient_mem3s"]
+offsets = PackedFloat32Array(0, 0.708241, 0.812918)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 0.117647, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_55e5u"]
+gradient = SubResource("Gradient_mem3s")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.6)
+
+[sub_resource type="Gradient" id="Gradient_bolau"]
+offsets = PackedFloat32Array(0, 0.457666, 0.466819, 0.659039, 0.787185, 0.894737)
+colors = PackedColorArray(0.646029, 0.646029, 0.646029, 1, 0.506104, 0.506104, 0.506104, 1, 0.344076, 0.344076, 0.344076, 1, 0.466181, 0.466181, 0.466181, 1, 0.481789, 0.481789, 0.481789, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_mem3s"]
+gradient = SubResource("Gradient_bolau")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="SCN_PropeditorMenu" type="Control" node_paths=PackedStringArray("PropIcon", "PropTitleText", "HeightSlider", "PropRotationText", "PropTransformerButton", "PropTransformerCenter", "PropTransformerBase")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_awba4")
+PropIcon = NodePath("CoreControls/GenericPropPanel/TextureRect")
+PropTitleText = NodePath("CoreControls/GenericPropPanel/Title")
+HeightSlider = NodePath("CoreControls/GenericPropPanel2/VSlider")
+PropRotationText = NodePath("CoreControls/GenericPropPanel2/CurrentPropRotationLabel")
+PropTransformerButton = NodePath("CoreControls/GenericPropPanel2/TextureRect/ButtonBase/ButtonCenter/TextureButton")
+PropTransformerCenter = NodePath("CoreControls/GenericPropPanel2/TextureRect/ButtonBase/ButtonCenter")
+PropTransformerBase = NodePath("CoreControls/GenericPropPanel2/TextureRect/ButtonBase")
+
+[node name="CoreControls" type="Control" parent="."]
+anchors_preset = 0
+offset_left = -280.21
+offset_top = -311.0
+offset_right = -74.21
+offset_bottom = 33.0
+
+[node name="GenericPropPanel" type="Panel" parent="CoreControls"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.442
+offset_bottom = -0.0480042
+grow_horizontal = 2
+
+[node name="TextureRect" type="TextureRect" parent="CoreControls/GenericPropPanel"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 54.0
+offset_bottom = 54.0
+texture = ExtResource("1_n08ke")
+expand_mode = 1
+
+[node name="Title" type="RichTextLabel" parent="CoreControls/GenericPropPanel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.277
+anchor_right = 0.772
+offset_left = -0.0620003
+offset_right = -0.0319977
+offset_bottom = 54.0
+grow_horizontal = 2
+text = "PROP TITLE"
+vertical_alignment = 1
+
+[node name="PALETTE MENU" type="Control" parent="CoreControls/GenericPropPanel"]
+anchors_preset = 0
+offset_top = 60.0
+offset_right = 266.0
+offset_bottom = 100.0
+
+[node name="RichTextLabel4" type="RichTextLabel" parent="CoreControls/GenericPropPanel/PALETTE MENU"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -193.0
+offset_top = -15.0
+offset_right = -120.0
+offset_bottom = 16.0
+grow_horizontal = 0
+grow_vertical = 2
+text = "Palette"
+vertical_alignment = 1
+
+[node name="Button3" type="Button" parent="CoreControls/GenericPropPanel/PALETTE MENU"]
+layout_mode = 0
+offset_left = 51.0
+offset_top = 5.0
+offset_right = 69.0
+offset_bottom = 36.0
+text = ">"
+
+[node name="Button4" type="Button" parent="CoreControls/GenericPropPanel/PALETTE MENU"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 5.0
+offset_right = 24.0
+offset_bottom = 36.0
+text = "<"
+
+[node name="RichTextLabel5" type="RichTextLabel" parent="CoreControls/GenericPropPanel/PALETTE MENU"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 24.0
+offset_top = -15.0
+offset_right = 51.0
+offset_bottom = 16.0
+grow_vertical = 2
+text = "01"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="CoreControls/GenericPropPanel"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -47.0
+offset_top = 6.0
+offset_right = -6.0
+offset_bottom = 47.0
+grow_horizontal = 0
+text = "X"
+
+[node name="Button2" type="Button" parent="CoreControls/GenericPropPanel"]
+layout_mode = 0
+offset_left = 6.20999
+offset_top = 102.0
+offset_right = 48.21
+offset_bottom = 144.0
+theme_override_styles/normal = SubResource("StyleBoxTexture_awba4")
+text = "🗑️"
+
+[node name="GenericPropPanel2" type="Panel" parent="CoreControls"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.001
+anchor_top = 0.442
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.00399144
+offset_top = -0.0480042
+offset_right = 0.209991
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="VSlider" type="VSlider" parent="CoreControls/GenericPropPanel2"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -47.0
+offset_top = 36.0
+offset_right = -25.0
+offset_bottom = 186.0
+grow_horizontal = 0
+theme_override_icons/tick = SubResource("GradientTexture1D_ndipv")
+theme_override_styles/slider = SubResource("StyleBoxTexture_ndipv")
+max_value = 2.0
+step = 0.25
+value = 1.0
+tick_count = 5
+ticks_on_borders = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CoreControls/GenericPropPanel2"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -71.0
+offset_top = 9.0
+offset_bottom = 33.0
+grow_horizontal = 0
+text = "Height"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="CoreControls/GenericPropPanel2"]
+layout_mode = 1
+offset_left = 35.0
+offset_top = 9.27499
+offset_right = 126.0
+offset_bottom = 33.275
+text = "Position"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="CoreControls/GenericPropPanel2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.386
+anchor_top = 0.391
+anchor_right = 0.388
+anchor_bottom = 0.391
+offset_left = -74.516
+offset_top = -58.5508
+offset_right = 75.072
+offset_bottom = 91.4929
+mouse_filter = 0
+texture = SubResource("GradientTexture2D_bolau")
+expand_mode = 1
+
+[node name="Panel" type="Panel" parent="CoreControls/GenericPropPanel2/TextureRect"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -3.0
+offset_top = -8.0
+offset_right = 3.0
+offset_bottom = 41.885
+grow_horizontal = 2
+grow_vertical = 0
+rotation = 3.14159
+pivot_offset = Vector2(3, 0)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bolau")
+
+[node name="Panel4" type="Panel" parent="CoreControls/GenericPropPanel2/TextureRect"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -11.0
+offset_right = -5.0
+offset_bottom = 49.885
+grow_horizontal = 0
+grow_vertical = 2
+rotation = 1.5708
+pivot_offset = Vector2(3, 0)
+theme_override_styles/panel = SubResource("StyleBoxFlat_awba4")
+
+[node name="Panel2" type="Panel" parent="CoreControls/GenericPropPanel2/TextureRect"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -3.0
+offset_top = 8.0
+offset_right = 3.0
+offset_bottom = 57.885
+grow_horizontal = 2
+pivot_offset = Vector2(3, 0)
+theme_override_styles/panel = SubResource("StyleBoxFlat_bolau")
+
+[node name="Panel3" type="Panel" parent="CoreControls/GenericPropPanel2/TextureRect"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 5.0
+offset_right = 11.0
+offset_bottom = 49.885
+grow_vertical = 2
+rotation = -1.57079
+pivot_offset = Vector2(3, 0)
+theme_override_styles/panel = SubResource("StyleBoxFlat_awba4")
+
+[node name="TextureRect" type="TextureRect" parent="CoreControls/GenericPropPanel2/TextureRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture2D_55e5u")
+expand_mode = 1
+
+[node name="ButtonBase" type="Control" parent="CoreControls/GenericPropPanel2/TextureRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ButtonCenter" type="Control" parent="CoreControls/GenericPropPanel2/TextureRect/ButtonBase"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TextureButton" type="TextureButton" parent="CoreControls/GenericPropPanel2/TextureRect/ButtonBase/ButtonCenter"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -64.0
+offset_right = 64.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.4, 0.4)
+pivot_offset = Vector2(64, 64)
+texture_normal = SubResource("GradientTexture2D_mem3s")
+texture_pressed = SubResource("GradientTexture2D_mem3s")
+stretch_mode = 0
+
+[node name="Button" type="Button" parent="CoreControls/GenericPropPanel2"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -90.0
+offset_top = -43.0
+offset_right = -43.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "<-"
+
+[node name="Button2" type="Button" parent="CoreControls/GenericPropPanel2"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -3.0
+offset_top = -43.0
+offset_right = 44.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "->"
+
+[node name="CurrentPropRotationLabel" type="RichTextLabel" parent="CoreControls/GenericPropPanel2"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -43.0
+offset_top = -43.0
+offset_right = -3.0
+offset_bottom = -11.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "0.0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Addons" type="Control" parent="CoreControls"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = 237.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="GenericPropPanel3" type="Panel" parent="CoreControls/Addons"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.001
+anchor_top = 0.169
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.00399144
+offset_top = -0.0530052
+offset_right = 0.209991
+offset_bottom = 40.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[connection signal="pressed" from="CoreControls/GenericPropPanel/Button" to="." method="CloseMenu"]
+[connection signal="pressed" from="CoreControls/GenericPropPanel/Button2" to="." method="RemoveProp"]
+[connection signal="value_changed" from="CoreControls/GenericPropPanel2/VSlider" to="." method="SetPropHeight"]
+[connection signal="pressed" from="CoreControls/GenericPropPanel2/Button" to="." method="AddPropRotation" binds= [-90.0]]
+[connection signal="pressed" from="CoreControls/GenericPropPanel2/Button2" to="." method="AddPropRotation" binds= [90.0]]
