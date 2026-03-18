@@ -41,6 +41,14 @@ _subresources={
 "lods/normal_merge_angle": 60.0,
 "save_to_file/enabled": true,
 "save_to_file/path": "res://Assets/Meshes/Props/Fantasy/Throne_Fantasy.res"
+},
+"All Fantasy Props joined _Sphere_001": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Fantasy/DAVINCI CODE.res"
 }
 }
 }
