@@ -34,6 +34,30 @@ animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
 "meshes": {
+"Cube": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_DOORWAY.res"
+},
+"Cube.001": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_SKULL.res"
+},
+"Cube.003": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_HAT1.res"
+},
 "Cube.004": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
@@ -42,6 +66,46 @@ _subresources={
 "save_to_file/enabled": true,
 "save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_SKULLBONES_WALL.res"
 },
+"Cube.006": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_BONE.res"
+},
+"Cube.011": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_SCIMITAR.res"
+},
+"Cube.014": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_CHEST.res"
+},
+"Cube.017": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_LOCK.res"
+},
+"Cube.019": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_TABLE.res"
+},
 "Cube.023": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
@@ -49,6 +113,126 @@ _subresources={
 "lods/normal_merge_angle": 60.0,
 "save_to_file/enabled": true,
 "save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_Lantern.res"
+},
+"Cube.025": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_CANDLES.res"
+},
+"Cube.030": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_CANNON.res"
+},
+"Cube.031": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_KEY.res"
+},
+"Cube.033": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_BOOKSHELF.res"
+},
+"Cube.037": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_DOOR.res"
+},
+"Cylinder.001": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_WHEEL.res"
+},
+"Cylinder.024": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_BARREL.res"
+},
+"Cylinder.029": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_BOTTLE6.res"
+},
+"Cylinder.030": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_BOTTLE5.res"
+},
+"Cylinder.031": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_BOTTLE4.res"
+},
+"Cylinder.032": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_BOTTLE3.res"
+},
+"Cylinder.033": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_BOTTLE2.res"
+},
+"Cylinder.034": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_BOTTLE1.res"
+},
+"Sphere.002": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_SWORD.res"
+},
+"Sphere.009": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_CANNONBALLS.res"
 }
 }
 }
