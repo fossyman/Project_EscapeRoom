@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://cyxcjwc3tm3ad"]
+[gd_scene load_steps=33 format=3 uid="uid://cyxcjwc3tm3ad"]
 
 [ext_resource type="Script" uid="uid://dg6gnwypj1hnh" path="res://Src/SCR_BuildingManager.gd" id="1_6rgy0"]
 [ext_resource type="ArrayMesh" uid="uid://dx4egntrxmrj" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_CORNER.res" id="1_emfuj"]
@@ -15,9 +15,7 @@
 [ext_resource type="FontFile" uid="uid://bs530y4locaf0" path="res://Assets/Fonts/ARURaisonneSimplified-DemiBold.otf" id="8_prpd7"]
 [ext_resource type="Script" uid="uid://cpp3jda6pxtl4" path="res://Src/SCR_GridmapPlus.gd" id="14_s8imx"]
 [ext_resource type="PackedScene" uid="uid://drf8ggf1pvbr" path="res://Scenes/UI/SCN_PropEditorMenu.tscn" id="16_vq4w1"]
-[ext_resource type="PackedScene" uid="uid://4ks372xiq7go" path="res://Assets/Models/cars_ speaker_ traffic light group maodels.glb" id="17_s8imx"]
 [ext_resource type="PackedScene" uid="uid://24mkaup72sp6" path="res://Assets/Models/Escape room enviornment.glb" id="17_vq4w1"]
-[ext_resource type="PackedScene" uid="uid://5a2ydq5uo57o" path="res://Assets/Models/Props/Fantasy/All Fantasy Props joined .glb" id="18_w6hkk"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vq4w1"]
 
@@ -384,12 +382,6 @@ font_size = 97
 
 [node name="Escape room enviornment" parent="." instance=ExtResource("17_vq4w1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, -0.1, 50)
-
-[node name="cars_ speaker_ traffic light group maodels" parent="." instance=ExtResource("17_s8imx")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.767, 7.313, -29.3109)
-
-[node name="All Fantasy Props joined " parent="." instance=ExtResource("18_w6hkk")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45.4153, 0.0322464, -29.6718)
 
 [connection signal="pressed" from="TOOLS/Control/FoundationButton" to="TOOLS" method="ChangeSelectedTool" binds= [0]]
 [connection signal="pressed" from="TOOLS/Control/PropButton" to="TOOLS" method="ChangeSelectedTool" binds= [1]]

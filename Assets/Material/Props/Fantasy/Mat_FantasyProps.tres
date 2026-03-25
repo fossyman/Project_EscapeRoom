@@ -1,3 +1,6 @@
-[gd_resource type="StandardMaterial3D" format=3 uid="uid://cmboagmjfejsp"]
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://cmboagmjfejsp"]
+
+[ext_resource type="Texture2D" uid="uid://brg8oett8d356" path="res://Assets/Textures/Prop Textures/Fantasy/AdobeColor-My Color Theme props.jpeg" id="1_mo1jy"]
 
 [resource]
+albedo_texture = ExtResource("1_mo1jy")

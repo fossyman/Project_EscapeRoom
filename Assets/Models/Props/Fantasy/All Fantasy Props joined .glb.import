@@ -48,6 +48,54 @@ _subresources={
 "save_to_file/enabled": true,
 "save_to_file/path": "res://Assets/Meshes/Props/Fantasy/Throne_Fantasy.res"
 },
+"All Fantasy Props joined _Cube_002": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Fantasy/Fantasy_Table.res"
+},
+"All Fantasy Props joined _Cube_003": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Fantasy/Fantasy_Crystal.res"
+},
+"All Fantasy Props joined _Cube_004": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Fantasy/Fantasy_Door.res"
+},
+"All Fantasy Props joined _Cube_013": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Fantasy/Fantasy_Chest.res"
+},
+"All Fantasy Props joined _Cube_015": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Fantasy/Fantasy_Chair.res"
+},
+"All Fantasy Props joined _Cube_016": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/Fantasy/Fantasy_BookPedestal.res"
+},
 "All Fantasy Props joined _Sphere_001": {
 "generate/lightmap_uv": 0,
 "generate/lods": 0,
