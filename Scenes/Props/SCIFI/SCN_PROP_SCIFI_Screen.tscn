@@ -1,0 +1,37 @@
+[gd_scene load_steps=6 format=3 uid="uid://dl0fl8e6ucjkc"]
+
+[ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_6j548"]
+[ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_s0srm"]
+[ext_resource type="ArrayMesh" uid="uid://dm427o7nv6mty" path="res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_SCREEN.res" id="3_6j548"]
+
+[sub_resource type="Resource" id="Resource_3bsgd"]
+script = ExtResource("2_s0srm")
+Intelligence = 0
+Perception = 0
+ProblemSolving = 0
+Clumsy = 0
+metadata/_custom_type_script = "uid://b66mtekj02xc"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_t0ler"]
+size = Vector3(1.87159, 0.900917, 0.220715)
+
+[node name="ScnPropScifiChair" type="Node3D" node_paths=PackedStringArray("MeshContainer")]
+script = ExtResource("1_6j548")
+SuccessRequirements = SubResource("Resource_3bsgd")
+MeshContainer = NodePath("Mesh")
+
+[node name="Mesh" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.217684, 0.00465307)
+
+[node name="cross" type="MeshInstance3D" parent="Mesh"]
+transform = Transform3D(-2.26253e-09, 0, 0.852157, 0, 0.399867, 0, -0.0517606, 0, -3.7249e-08, 0, -0.192164, -0.00768009)
+mesh = ExtResource("3_6j548")
+skeleton = NodePath("../..")
+
+[node name="Area3D" type="Area3D" parent="."]
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0109334, 0.0117797, -0.00170141)
+shape = SubResource("BoxShape3D_t0ler")

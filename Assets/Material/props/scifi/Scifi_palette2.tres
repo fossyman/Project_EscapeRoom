@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://ddwadmsakys3j"]
+
+[ext_resource type="Texture2D" uid="uid://c5f4ky06jryva" path="res://Assets/Textures/props/scifi/Sci-Fi Color Palette Color Palette - color-hex.com.png" id="1_5pxqr"]
+
+[resource]
+albedo_texture = ExtResource("1_5pxqr")

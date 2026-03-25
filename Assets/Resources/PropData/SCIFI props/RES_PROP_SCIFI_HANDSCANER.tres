@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://ctp4tmh840x5l"]
+
+[ext_resource type="ArrayMesh" uid="uid://bamgm1soo30fu" path="res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_CHAIR.res" id="1_4iapf"]
+[ext_resource type="PackedScene" uid="uid://c8a2sd8wpxek" path="res://Scenes/Props/SCIFI/SCN_PROP_SCIFI_HANDSCANER.tscn" id="2_4iapf"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_n478h"]
+
+[resource]
+script = ExtResource("3_n478h")
+_PropCategories = Array[int]([1])
+_Name = &"Scaner"
+_Scene = ExtResource("2_4iapf")
+_PreviewMesh = ExtResource("1_4iapf")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"

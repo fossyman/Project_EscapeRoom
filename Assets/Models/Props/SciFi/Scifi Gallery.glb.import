@@ -33,6 +33,28 @@ animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
+"materials": {
+"Material.001": {
+"use_external/enabled": true,
+"use_external/path": "uid://s0iqny3ootrh"
+},
+"Material.003": {
+"use_external/enabled": true,
+"use_external/path": "uid://ddwadmsakys3j"
+},
+"Material.004": {
+"use_external/enabled": true,
+"use_external/path": "uid://ddwadmsakys3j"
+},
+"Material.005": {
+"use_external/enabled": true,
+"use_external/path": "uid://b6jvqlewn42b"
+},
+"Material_base": {
+"use_external/enabled": true,
+"use_external/path": "uid://b6jvqlewn42b"
+}
+},
 "meshes": {
 "Scifi Gallery_Cube_001": {
 "generate/lightmap_uv": 0,
@@ -41,6 +63,54 @@ _subresources={
 "lods/normal_merge_angle": 60.0,
 "save_to_file/enabled": true,
 "save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_CHAIR.res"
+},
+"Scifi Gallery_Cube_002": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_TABLE.res"
+},
+"Scifi Gallery_Cube_004": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_DOOR.res"
+},
+"Scifi Gallery_Cube_005": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_SCREEN.res"
+},
+"Scifi Gallery_Cube_006": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_HANDSCANer.res"
+},
+"Scifi Gallery_Cube_007": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_HAND.res"
+},
+"Scifi Gallery_Cube_008": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_SERVERRACK.res"
 }
 }
 }

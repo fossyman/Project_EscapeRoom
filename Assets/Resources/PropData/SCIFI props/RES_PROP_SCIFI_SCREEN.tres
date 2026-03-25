@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://2f1jpsq0i17"]
+
+[ext_resource type="ArrayMesh" uid="uid://bamgm1soo30fu" path="res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_CHAIR.res" id="1_7h0n2"]
+[ext_resource type="PackedScene" uid="uid://dl0fl8e6ucjkc" path="res://Scenes/Props/SCIFI/SCN_PROP_SCIFI_Screen.tscn" id="2_7h0n2"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_kba4i"]
+
+[resource]
+script = ExtResource("3_kba4i")
+_PropCategories = Array[int]([1])
+_Name = &"Screen"
+_Scene = ExtResource("2_7h0n2")
+_PreviewMesh = ExtResource("1_7h0n2")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"
