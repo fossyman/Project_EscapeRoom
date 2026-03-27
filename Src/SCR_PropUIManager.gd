@@ -4,17 +4,29 @@ extends Panel
 @export var PropResourcePath:String
 @export var PropButtonGrid:GridContainer
 
+@export var GenericButton:Button
+@export var PirateButton:Button
+@export var FantasyButton:Button
+@export var ScifiButton:Button
+@export var HorrorButton:Button
+
 var CachedGenericProps:Array[RES_PropData]
 var CachedPirateProps:Array[RES_PropData]
+var CachedFantasyProps:Array[RES_PropData]
 var CachedHorrorProps:Array[RES_PropData]
 var CachedSciFiProps:Array[RES_PropData]
-var CachedFantasyProps:Array[RES_PropData]
 
 var GridID:int = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	GeneratePropCache()
+	
+	GenericButton.pressed.connect(ChangeCategory.bind(GLOBALS.PROP_CATEGORIES.GENERIC))
+	PirateButton.pressed.connect(ChangeCategory.bind(GLOBALS.PROP_CATEGORIES.PIRATE))
+	FantasyButton.pressed.connect(ChangeCategory.bind(GLOBALS.PROP_CATEGORIES.FANTASY))
+	ScifiButton.pressed.connect(ChangeCategory.bind(GLOBALS.PROP_CATEGORIES.SCIFI))
+	HorrorButton.pressed.connect(ChangeCategory.bind(GLOBALS.PROP_CATEGORIES.HORROR))
 	pass # Replace with function body.
 
 
@@ -27,6 +39,7 @@ func GeneratePropCache():
 	
 	for i in Props:
 		var prop = ResourceLoader.load(i) as RES_PropData
+		print(prop._PropCategories[0])
 		if prop._PropCategories[0]:
 			match prop._PropCategories[0]:
 				GLOBALS.PROP_CATEGORIES.GENERIC:
@@ -46,7 +59,6 @@ func GeneratePropCache():
 					pass
 		else:
 			printerr("PROP HAS NO CATEGORIES")
-	GenerateGridContent(CachedPirateProps)
 	
 func GenerateGridContent(Propset:Array[RES_PropData]):
 	for i in PropButtonGrid.get_child_count():
@@ -81,3 +93,21 @@ func get_all_file_paths(path: String) -> Array[String]:
 			file_paths.append(file_path)  
 		file_name = dir.get_next()  
 	return file_paths
+	
+func ChangeCategory(_category:GLOBALS.PROP_CATEGORIES):
+	var CategoryProps:Array
+	
+	match(_category):
+		GLOBALS.PROP_CATEGORIES.GENERIC:
+			CategoryProps = CachedGenericProps
+		GLOBALS.PROP_CATEGORIES.PIRATE:
+			CategoryProps = CachedPirateProps
+		GLOBALS.PROP_CATEGORIES.FANTASY:
+			CategoryProps = CachedFantasyProps
+		GLOBALS.PROP_CATEGORIES.SCIFI:
+			CategoryProps = CachedSciFiProps
+		GLOBALS.PROP_CATEGORIES.HORROR:
+			CategoryProps = CachedHorrorProps
+		
+	GenerateGridContent(CategoryProps)
+	pass
