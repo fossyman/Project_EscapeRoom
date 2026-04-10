@@ -8,6 +8,10 @@ var CURRENTROOT:RootManager
 var CONSTANT:Node
 var DELTA:float
 
+var MAINMENU_ROOT = "res://Scenes/Roots/ROOT_MainMenu.tscn"
+var GAMEPLAYROOT_ROOT = "res://Scenes/Roots/ROOT_Gameplay.tscn"
+
+
 enum PROP_CATEGORIES{GENERIC,PIRATE,FANTASY,HORROR,SCIFI}
 
 func _ready() -> void:
@@ -19,5 +23,9 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	DELTA = delta
 
-func ChangeRoot():
+func ChangeRoot(_newRootPath:String):
+	CURRENTROOT.queue_free()
+	var instancedRoot = (ResourceLoader.load(_newRootPath) as PackedScene).instantiate()
+	add_child(instancedRoot)
+	CURRENTROOT = instancedRoot
 	pass
