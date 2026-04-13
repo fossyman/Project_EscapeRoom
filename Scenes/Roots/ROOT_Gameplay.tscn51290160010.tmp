@@ -1,0 +1,434 @@
+[gd_scene load_steps=38 format=3 uid="uid://cyxcjwc3tm3ad"]
+
+[ext_resource type="Script" uid="uid://dg6gnwypj1hnh" path="res://Src/SCR_BuildingManager.gd" id="1_6rgy0"]
+[ext_resource type="ArrayMesh" uid="uid://dx4egntrxmrj" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_CORNER.res" id="1_emfuj"]
+[ext_resource type="Script" uid="uid://6werddmho83b" path="res://Src/SCR_Gamemanager.gd" id="1_prpd7"]
+[ext_resource type="Script" uid="uid://cbdd4svn71jhx" path="res://Src/SCR_RootManager.gd" id="1_xvs0j"]
+[ext_resource type="Script" uid="uid://c5fo8y2mkh734" path="res://Src/SCR_CameraController.gd" id="1_y3unb"]
+[ext_resource type="Texture2D" uid="uid://d15sugtlh8nby" path="res://icon.svg" id="2_wm8y7"]
+[ext_resource type="Script" uid="uid://bhuqwo0uselyc" path="res://Src/SCR_PropUIManager.gd" id="3_s8imx"]
+[ext_resource type="Script" uid="uid://bgiruf8ksm8kn" path="res://Src/SCR_DEBUG_SpawnEscapeesButton.gd" id="3_w6hkk"]
+[ext_resource type="PackedScene" uid="uid://dcnfbc7ofhjyc" path="res://Scenes/AI/Basic_AI.tscn" id="4_w6hkk"]
+[ext_resource type="ArrayMesh" uid="uid://dqjfix4by4rhh" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_WALL.res" id="5_1caoe"]
+[ext_resource type="ArrayMesh" uid="uid://bb5mmlmj650i0" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_FLOOR.res" id="6_nitf2"]
+[ext_resource type="Material" uid="uid://bgxc0n0u8y8b0" path="res://Assets/Material/MAT_BuildOverlay.tres" id="6_nxnwt"]
+[ext_resource type="ArrayMesh" uid="uid://ciyjkuhm7o5w8" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_INNERCORNER.res" id="7_1caoe"]
+[ext_resource type="ArrayMesh" uid="uid://dv3lbluh686kw" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_DOORWAY.res" id="8_nitf2"]
+[ext_resource type="FontFile" uid="uid://bs530y4locaf0" path="res://Assets/Fonts/ARURaisonneSimplified-DemiBold.otf" id="8_prpd7"]
+[ext_resource type="Script" uid="uid://cpp3jda6pxtl4" path="res://Src/SCR_GridmapPlus.gd" id="14_s8imx"]
+[ext_resource type="PackedScene" uid="uid://drf8ggf1pvbr" path="res://Scenes/UI/SCN_PropEditorMenu.tscn" id="16_vq4w1"]
+[ext_resource type="PackedScene" uid="uid://24mkaup72sp6" path="res://Assets/Models/Escape room enviornment.glb" id="17_vq4w1"]
+[ext_resource type="PackedScene" uid="uid://by5wxvdmg3kwo" path="res://Scenes/HEROPORT-UI/MainScreenUI.tscn" id="19_w6hkk"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vq4w1"]
+
+[sub_resource type="Sky" id="Sky_s8imx"]
+sky_material = SubResource("ProceduralSkyMaterial_vq4w1")
+
+[sub_resource type="Environment" id="Environment_j55jw"]
+background_mode = 2
+sky = SubResource("Sky_s8imx")
+ambient_light_source = 3
+reflected_light_source = 2
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_cy1kc"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_mmves"]
+vertices = PackedVector3Array(0, 0.498998, 0, 0, 0.498998, 100, 100, 0.498998, 100, 100, 0.498998, 0)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+agent_radius = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vq4w1"]
+shading_mode = 0
+albedo_color = Color(0, 0, 0, 1)
+
+[sub_resource type="QuadMesh" id="QuadMesh_s8imx"]
+material = SubResource("StandardMaterial3D_vq4w1")
+size = Vector2(2, 2)
+
+[sub_resource type="MeshLibrary" id="MeshLibrary_cy1kc"]
+item/0/name = "Corner"
+item/0/mesh = ExtResource("1_emfuj")
+item/0/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/mesh_cast_shadow = 0
+item/0/shapes = []
+item/0/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/0/navigation_layers = 1
+item/0/preview = ExtResource("2_wm8y7")
+item/1/name = "Wall"
+item/1/mesh = ExtResource("5_1caoe")
+item/1/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/mesh_cast_shadow = 1
+item/1/shapes = []
+item/1/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/1/navigation_layers = 1
+item/2/name = "Floor"
+item/2/mesh = ExtResource("6_nitf2")
+item/2/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/2/mesh_cast_shadow = 1
+item/2/shapes = []
+item/2/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/2/navigation_layers = 1
+item/3/name = "InnerCorner"
+item/3/mesh = ExtResource("7_1caoe")
+item/3/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/3/mesh_cast_shadow = 1
+item/3/shapes = []
+item/3/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/3/navigation_layers = 1
+item/4/name = "Doorway"
+item/4/mesh = ExtResource("8_nitf2")
+item/4/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/4/mesh_cast_shadow = 1
+item/4/shapes = []
+item/4/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/4/navigation_layers = 1
+item/5/name = "VOID"
+item/5/mesh = SubResource("QuadMesh_s8imx")
+item/5/mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/5/mesh_cast_shadow = 1
+item/5/shapes = []
+item/5/navigation_mesh_transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+item/5/navigation_layers = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1caoe"]
+shading_mode = 0
+disable_ambient_light = true
+disable_fog = true
+albedo_color = Color(0, 0, 0, 1)
+uv1_scale = Vector3(3, 3, 3)
+
+[sub_resource type="QuadMesh" id="QuadMesh_1caoe"]
+material = SubResource("StandardMaterial3D_1caoe")
+size = Vector2(100, 100)
+center_offset = Vector3(0, 0, -0.001)
+
+[sub_resource type="SphereMesh" id="SphereMesh_cy1kc"]
+
+[sub_resource type="Gradient" id="Gradient_tq3kg"]
+offsets = PackedFloat32Array(0.0327869, 0.117486, 0.163934)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_mmves"]
+gradient = SubResource("Gradient_tq3kg")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xvs0j"]
+transparency = 1
+shading_mode = 0
+albedo_texture = SubResource("GradientTexture2D_mmves")
+texture_filter = 1
+texture_repeat = false
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_2h1dl"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_j55jw"]
+radial_segments = 4
+rings = 1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cy1kc"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_tq3kg"]
+
+[node name="RootGameplay" type="Node" node_paths=PackedStringArray("PlayerCursor")]
+script = ExtResource("1_xvs0j")
+PlayerCursor = NodePath("CONSTANT/CameraOrigin/Decal")
+
+[node name="TOOLS" type="Node" parent="." node_paths=PackedStringArray("Cursor", "CursorMesh", "OverlapTestingArea", "BuildingGridmap", "RoomParent", "FoundationToolUI", "PropToolUI", "BuildRequirementsLabel", "FinalizeRoomButton", "PreviewBuildMesh", "PropEditorMenu")]
+script = ExtResource("1_6rgy0")
+Cursor = NodePath("../CONSTANT/Cursor")
+CursorMesh = NodePath("../CONSTANT/Cursor/CursorMesh")
+OverlapTestingArea = NodePath("../CONSTANT/Cursor/OverlapCheckingArea")
+BuildingGridmap = NodePath("../MAP/NavigationRegion3D/Gridmap+")
+RoomParent = NodePath("../MAP/NavigationRegion3D/RoomParent")
+FoundationToolUI = NodePath("Control/FoundationUI")
+PropToolUI = NodePath("Control/PropUI")
+BuildRequirementsLabel = NodePath("Control/RichTextLabel2")
+BuildRequirementsText = "asd"
+FinalizeRoomButton = NodePath("Control/Button")
+PropCollisionLayer = 2
+PreviewBuildMesh = NodePath("../CONSTANT/PREVIEW")
+PropEditorMenu = NodePath("../CONSTANT/SCN_PropeditorMenu")
+
+[node name="Control" type="Control" parent="TOOLS"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="FoundationButton" type="Button" parent="TOOLS/Control"]
+layout_mode = 0
+offset_right = 195.0
+offset_bottom = 59.0
+text = "Foundation"
+
+[node name="PropButton" type="Button" parent="TOOLS/Control"]
+layout_mode = 0
+offset_left = 195.0
+offset_right = 390.0
+offset_bottom = 59.0
+text = "Props"
+
+[node name="PropButton2" type="Button" parent="TOOLS/Control"]
+layout_mode = 0
+offset_left = 390.0
+offset_top = 2.0
+offset_right = 585.0
+offset_bottom = 61.0
+text = "Spawn Escapees"
+script = ExtResource("3_w6hkk")
+NPCScene = ExtResource("4_w6hkk")
+
+[node name="FoundationUI" type="Control" parent="TOOLS/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="FoundationToolButton" type="Button" parent="TOOLS/Control/FoundationUI"]
+layout_mode = 0
+offset_top = 59.0
+offset_right = 88.0
+offset_bottom = 136.0
+text = "Foundation"
+
+[node name="WallButton" type="Button" parent="TOOLS/Control/FoundationUI"]
+visible = false
+layout_mode = 0
+offset_left = 97.0
+offset_top = 59.0
+offset_right = 194.0
+offset_bottom = 136.0
+text = "Erase"
+
+[node name="FloorButton" type="Button" parent="TOOLS/Control/FoundationUI"]
+visible = false
+layout_mode = 0
+offset_left = 195.0
+offset_top = 59.0
+offset_right = 292.0
+offset_bottom = 136.0
+text = "Floor"
+
+[node name="PropUI" type="Panel" parent="TOOLS/Control" node_paths=PackedStringArray("PropButtonGrid", "GenericButton", "PirateButton", "FantasyButton", "ScifiButton", "HorrorButton")]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.759
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.479919
+offset_top = 56.0
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("3_s8imx")
+PropResourcePath = "res://Assets/Resources/PropData/"
+PropButtonGrid = NodePath("PropButtonGrid")
+GenericButton = NodePath("ScrollContainer/HBoxContainer/PROP_CAT_GENERIC")
+PirateButton = NodePath("ScrollContainer/HBoxContainer/PROP_CAT_PIRATE")
+FantasyButton = NodePath("ScrollContainer/HBoxContainer/PROP_CAT_FANTASY")
+ScifiButton = NodePath("ScrollContainer/HBoxContainer/PROP_CAT_SCI-FI")
+HorrorButton = NodePath("ScrollContainer/HBoxContainer/PROP_CAT_HORROR")
+
+[node name="PropButtonGrid" type="GridContainer" parent="TOOLS/Control/PropUI"]
+layout_direction = 3
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 131.0
+grow_horizontal = 2
+grow_vertical = 2
+columns = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TOOLS/Control/PropUI"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.139
+offset_bottom = 7.91999
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TOOLS/Control/PropUI/ScrollContainer"]
+layout_mode = 2
+
+[node name="PROP_CAT_GENERIC" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "GENERIC"
+
+[node name="PROP_CAT_PIRATE" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "PIRATE"
+
+[node name="PROP_CAT_FANTASY" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "FANTASY"
+
+[node name="PROP_CAT_HORROR" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "HORROR"
+
+[node name="PROP_CAT_SCI-FI" type="Button" parent="TOOLS/Control/PropUI/ScrollContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+text = "SCI-FI"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="TOOLS/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -325.0
+offset_bottom = 36.0
+grow_horizontal = 0
+text = "£0.99"
+horizontal_alignment = 2
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="TOOLS/Control"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -149.0
+offset_right = 265.0
+offset_bottom = -67.0
+grow_horizontal = 2
+grow_vertical = 2
+bbcode_enabled = true
+text = "[b]Requirements[/b]
+[color=red]Minimum space: 3x3
+[color=red]Doorway placed"
+
+[node name="Button" type="Button" parent="TOOLS/Control"]
+visible = false
+layout_mode = 1
+offset_top = 136.0
+offset_right = 204.0
+offset_bottom = 195.0
+disabled = true
+text = "FINALISE ROOM"
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("1_prpd7")
+
+[node name="MAP" type="Node" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="MAP"]
+environment = SubResource("Environment_j55jw")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="MAP"]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="PropContainer" type="Node3D" parent="MAP"]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="MAP"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="MAP/StaticBody3D"]
+shape = SubResource("WorldBoundaryShape3D_cy1kc")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="MAP"]
+navigation_mesh = SubResource("NavigationMesh_mmves")
+
+[node name="Gridmap+" type="GridMap" parent="MAP/NavigationRegion3D" node_paths=PackedStringArray("NavRegion")]
+mesh_library = SubResource("MeshLibrary_cy1kc")
+cell_size = Vector3(2, 0.855, 2)
+bake_navigation = true
+script = ExtResource("14_s8imx")
+GridMeshLibrary = SubResource("MeshLibrary_cy1kc")
+StartingLayers = 3
+NavRegion = NodePath("..")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="MAP/NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 50, 0, 50)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_1caoe")
+skeleton = NodePath("../..")
+
+[node name="RoomParent" type="Node3D" parent="MAP/NavigationRegion3D"]
+
+[node name="CONSTANT" type="Node" parent="."]
+
+[node name="CameraOrigin" type="Node3D" parent="CONSTANT" node_paths=PackedStringArray("CameraPositionRoot", "CameraHolder", "Camera")]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 11.0951, 0, 7.3525)
+script = ExtResource("1_y3unb")
+CameraPositionRoot = NodePath("CameraPosRoot")
+CameraHolder = NodePath("CameraPosRoot/CameraHolder")
+Camera = NodePath("CameraPosRoot/CameraHolder/Node3D/Camera3D")
+ScrollClamp = Vector2(0, 1)
+Movespeed = 5.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CONSTANT/CameraOrigin"]
+visible = false
+mesh = SubResource("SphereMesh_cy1kc")
+
+[node name="CameraPosRoot" type="Node3D" parent="CONSTANT/CameraOrigin"]
+
+[node name="CameraHolder" type="Node3D" parent="CONSTANT/CameraOrigin/CameraPosRoot"]
+
+[node name="Node3D" type="Node3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder"]
+
+[node name="RemoteTransform3D" type="RemoteTransform3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 1.6251, 1.6251)
+remote_path = NodePath("../Camera3D")
+
+[node name="Camera3D" type="Camera3D" parent="CONSTANT/CameraOrigin/CameraPosRoot/CameraHolder/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 1.6251, 1.6251)
+cull_mask = 1023
+current = true
+
+[node name="Decal" type="MeshInstance3D" parent="CONSTANT/CameraOrigin"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+material_override = SubResource("StandardMaterial3D_xvs0j")
+mesh = SubResource("PlaneMesh_2h1dl")
+
+[node name="Cursor" type="Node3D" parent="CONSTANT"]
+
+[node name="CursorMesh" type="MeshInstance3D" parent="CONSTANT/Cursor"]
+mesh = SubResource("SphereMesh_j55jw")
+surface_material_override/0 = SubResource("StandardMaterial3D_cy1kc")
+
+[node name="OverlapCheckingArea" type="Area3D" parent="CONSTANT/Cursor"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CONSTANT/Cursor/OverlapCheckingArea"]
+shape = SubResource("SphereShape3D_tq3kg")
+
+[node name="PREVIEW" type="MeshInstance3D" parent="CONSTANT"]
+material_override = ExtResource("6_nxnwt")
+cast_shadow = 0
+
+[node name="BuildSizeLabel" type="Label3D" parent="CONSTANT"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.83775, 0)
+billboard = 1
+double_sided = false
+no_depth_test = true
+text = "0,10"
+font = ExtResource("8_prpd7")
+font_size = 97
+
+[node name="SCN_PropeditorMenu" parent="CONSTANT" instance=ExtResource("16_vq4w1")]
+
+[node name="Escape room enviornment" parent="." instance=ExtResource("17_vq4w1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, -0.1, 50)
+
+[node name="MainScreenUi" parent="." instance=ExtResource("19_w6hkk")]
+visible = false
+
+[connection signal="pressed" from="TOOLS/Control/FoundationButton" to="TOOLS" method="ChangeSelectedTool" binds= [0]]
+[connection signal="pressed" from="TOOLS/Control/PropButton" to="TOOLS" method="ChangeSelectedTool" binds= [1]]
+[connection signal="pressed" from="TOOLS/Control/PropButton2" to="TOOLS/Control/PropButton2" method="OnSpawnNPCButtonPressed"]
+[connection signal="pressed" from="TOOLS/Control/Button" to="TOOLS" method="FinalizeRoom"]

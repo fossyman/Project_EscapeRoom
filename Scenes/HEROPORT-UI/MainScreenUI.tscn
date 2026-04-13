@@ -17,7 +17,14 @@ hours = 0
 days = 0
 metadata/_custom_type_script = "uid://3h6a33t7665"
 
-[node name="MainScreenUi" type="Node2D"]
+[node name="MainScreenUi" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [node name="TimeSystem" type="Node" parent="."]
 script = ExtResource("2_clymg")
@@ -26,24 +33,25 @@ Ticks_per_sec = 120
 metadata/_custom_type_script = "uid://5p4pdfa21am8"
 
 [node name="phone" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 1013.0
-offset_right = 1053.0
-offset_bottom = 40.0
+visible = false
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
 
 [node name="Phone display TEX" type="Sprite2D" parent="phone"]
-visible = false
-position = Vector2(146, 362)
+position = Vector2(-122, 362)
 scale = Vector2(1.46386, 1.44378)
 texture = ExtResource("1_31q56")
 
 [node name="Phone display2" type="GridContainer" parent="phone"]
-visible = false
 layout_mode = 2
-offset_left = 39.0
+offset_left = -227.0
 offset_top = 171.0
-offset_right = 256.0
+offset_right = -10.0
 offset_bottom = 456.0
 theme_override_constants/h_separation = 15
 theme_override_constants/v_separation = 15
@@ -82,11 +90,13 @@ custom_minimum_size = Vector2(60, 60)
 layout_mode = 2
 
 [node name="Mainbar" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_top = 669.0
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -49.0
 offset_right = 542.0
-offset_bottom = 718.0
+grow_vertical = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Mainbar"]
 layout_mode = 0
@@ -146,6 +156,7 @@ scale = Vector2(0.276732, 0.276732)
 
 [node name="Pausemenu" parent="." instance=ExtResource("5_vgxwv")]
 visible = false
+layout_mode = 1
 
 [connection signal="Updated" from="TimeSystem" to="Mainbar/HBoxContainer/clock/Clock System" method="_on_time_system_updated"]
 [connection signal="pressed" from="Mainbar/HBoxContainer/PauseMenu" to="Mainbar/HBoxContainer/PauseMenu" method="_on_pressed"]

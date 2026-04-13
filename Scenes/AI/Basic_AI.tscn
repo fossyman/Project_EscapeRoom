@@ -1,8 +1,20 @@
-[gd_scene load_steps=8 format=3 uid="uid://dcnfbc7ofhjyc"]
+[gd_scene load_steps=20 format=3 uid="uid://dcnfbc7ofhjyc"]
 
 [ext_resource type="Script" uid="uid://lmbm33fm1ovc" path="res://Src/SCR_BasicAI.gd" id="1_htmd5"]
 [ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_b3f24"]
+[ext_resource type="ArrayMesh" uid="uid://bqjldopcmc2qx" path="res://Assets/Meshes/NPC Chunk/Head/MSH_HEAD1.res" id="3_4y8n7"]
 [ext_resource type="Texture2D" uid="uid://ckdq61v4pxqfh" path="res://Assets/Untitled.png" id="3_b4u8d"]
+[ext_resource type="ArrayMesh" uid="uid://b2phh3idnsaii" path="res://Assets/Meshes/NPC Chunk/Head/MSH_HEAD2.res" id="4_2jk2e"]
+[ext_resource type="ArrayMesh" uid="uid://bypfo80o45co" path="res://Assets/Meshes/NPC Chunk/Head/MSH_HEAD3.res" id="5_tmq8c"]
+[ext_resource type="ArrayMesh" uid="uid://cut1sycdn6qnm" path="res://Assets/Meshes/NPC Chunk/Head/MSH_HEAD4.res" id="6_4jcjl"]
+[ext_resource type="ArrayMesh" uid="uid://ciq7cs8a3mv06" path="res://Assets/Meshes/NPC Chunk/Head/MSH_HEAD5.res" id="7_r1fat"]
+[ext_resource type="ArrayMesh" uid="uid://dlm8hpxw4npol" path="res://Assets/Meshes/NPC Chunk/Head/MSH_HEAD6.res" id="8_7yxnv"]
+[ext_resource type="ArrayMesh" uid="uid://cpk8b0pme4tna" path="res://Assets/Meshes/NPC Chunk/Head/MSH_HEAD7.res" id="9_orkd6"]
+[ext_resource type="ArrayMesh" uid="uid://biil3aru1a5hx" path="res://Assets/Meshes/NPC Chunk/Head/MSH_HEAD8.res" id="10_ut4mt"]
+[ext_resource type="ArrayMesh" uid="uid://s5oxltbt3m5t" path="res://Assets/Meshes/NPC Chunk/Head/MSH_HEAD9.res" id="11_pspgj"]
+[ext_resource type="ArrayMesh" uid="uid://c7dmfrmpac1dp" path="res://Assets/Meshes/NPC Chunk/Body/MSH_BODY1.res" id="12_eskkh"]
+[ext_resource type="ArrayMesh" uid="uid://qjifcovgdm0k" path="res://Assets/Meshes/NPC Chunk/Body/MSH_BODY2.res" id="13_8y7d2"]
+[ext_resource type="ArrayMesh" uid="uid://cv2h06vm83rvl" path="res://Assets/Meshes/NPC Chunk/Body/MSH_BODY3.res" id="14_3qrqm"]
 
 [sub_resource type="Resource" id="Resource_b4u8d"]
 script = ExtResource("2_b3f24")
@@ -23,28 +35,35 @@ is_hemisphere = true
 radial_segments = 4
 rings = 1
 
-[node name="BasicAi" type="CharacterBody3D" node_paths=PackedStringArray("Nav", "CharacterMesh", "ReactionSpeechBubble", "ReactionLabel")]
+[node name="BasicAi" type="CharacterBody3D" node_paths=PackedStringArray("Nav", "CharacterMesh", "ReactionSpeechBubble", "ReactionLabel", "LookAtPoint", "HeadRoot", "BodyRoot")]
 script = ExtResource("1_htmd5")
 Nav = NodePath("NavigationAgent3D")
-CharacterMesh = NodePath("MeshInstance3D")
+CharacterMesh = NodePath("BodyRoot")
 CharacterStatistics = SubResource("Resource_b4u8d")
 ReactionSpeechBubble = NodePath("Sprite3D")
 ReactionLabel = NodePath("Sprite3D/Label3D")
+LookAtPoint = NodePath("LookatPoint")
+HeadRoot = NodePath("BodyRoot/HeadRoot")
+BodyRoot = NodePath("BodyRoot")
+HeadPieces = Array[Mesh]([ExtResource("3_4y8n7"), ExtResource("4_2jk2e"), ExtResource("5_tmq8c"), ExtResource("6_4jcjl"), ExtResource("7_r1fat"), ExtResource("8_7yxnv"), ExtResource("9_orkd6"), ExtResource("10_ut4mt"), ExtResource("11_pspgj")])
+BodyPieces = Array[Mesh]([ExtResource("12_eskkh"), ExtResource("13_8y7d2"), ExtResource("14_3qrqm")])
 Reactions = Array[String](["😁", "🔍", "😡", "😮"])
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.531351, 0)
 shape = SubResource("SphereShape3D_c3et4")
+disabled = true
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+[node name="BodyRoot" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.4, 0, 0, 0, 0.4, 0, 0, 0, 0.4, 0, 0, 0)
 mesh = SubResource("SphereMesh_c3et4")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+[node name="HeadRoot" type="MeshInstance3D" parent="BodyRoot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.94351, 0)
 mesh = SubResource("SphereMesh_htmd5")
 skeleton = NodePath("../..")
 
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="MeshInstance3D"]
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="BodyRoot"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1.6447)
 mesh = SubResource("SphereMesh_htmd5")
 skeleton = NodePath("../..")
@@ -65,3 +84,5 @@ transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0.3216, 0)
 pixel_size = 0.0179
 billboard = 2
 double_sided = false
+
+[node name="LookatPoint" type="Marker3D" parent="."]
