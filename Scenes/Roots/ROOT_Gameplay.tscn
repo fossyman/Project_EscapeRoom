@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 [gd_scene load_steps=47 format=3 uid="uid://ckt770dc1o2dk"]
+=======
+[gd_scene load_steps=33 format=3 uid="uid://cyxcjwc3tm3ad"]
+>>>>>>> main
 
 [ext_resource type="Script" uid="uid://dg6gnwypj1hnh" path="res://Src/SCR_BuildingManager.gd" id="1_6rgy0"]
 [ext_resource type="ArrayMesh" uid="uid://dx4egntrxmrj" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_CORNER.res" id="1_emfuj"]
@@ -20,7 +24,10 @@
 [ext_resource type="Texture2D" uid="uid://2nfj0i6t1uq4" path="res://Assets/Textures/TEXTURE_Disabled.png" id="15_o7jcl"]
 [ext_resource type="PackedScene" uid="uid://drf8ggf1pvbr" path="res://Scenes/UI/SCN_PropEditorMenu.tscn" id="16_vq4w1"]
 [ext_resource type="PackedScene" uid="uid://24mkaup72sp6" path="res://Assets/Models/Escape room enviornment.glb" id="17_vq4w1"]
+<<<<<<< HEAD
 [ext_resource type="PackedScene" uid="uid://by5wxvdmg3kwo" path="res://Scenes/HEROPORT-UI/MainScreenUI.tscn" id="19_w6hkk"]
+=======
+>>>>>>> main
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vq4w1"]
 sky_top_color = Color(0.390986, 0.460435, 0.557063, 1)
@@ -698,6 +705,7 @@ font_size = 97
 [node name="Spawnpoint" type="Marker3D" parent="CONSTANT"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.13977, 0, -78.2206)
 
+<<<<<<< HEAD
 [node name="Spawnpoint2" type="Marker3D" parent="CONSTANT"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.13977, 0, 181.51)
 
@@ -713,6 +721,8 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.8011, 0.9346, -4.55801)
 [node name="MainScreenUi" parent="." instance=ExtResource("19_w6hkk")]
 visible = false
 
+=======
+>>>>>>> main
 [connection signal="pressed" from="TOOLS/Control/FoundationButton" to="TOOLS" method="ChangeSelectedTool" binds= [0]]
 [connection signal="pressed" from="TOOLS/Control/PropButton" to="TOOLS" method="ChangeSelectedTool" binds= [1]]
 [connection signal="pressed" from="TOOLS/Control/Escapee Utilities Menu" to="TOOLS/Control/Escapee Utility Menu" method="ChangeMenuVisibility"]
