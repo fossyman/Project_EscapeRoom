@@ -53,6 +53,10 @@ _subresources={
 "Material_base": {
 "use_external/enabled": true,
 "use_external/path": "uid://b6jvqlewn42b"
+},
+"ShipMasterMat": {
+"use_external/enabled": true,
+"use_external/path": "uid://by1gma4sw0v7f"
 }
 },
 "meshes": {
@@ -111,6 +115,46 @@ _subresources={
 "lods/normal_merge_angle": 60.0,
 "save_to_file/enabled": true,
 "save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_SERVERRACK.res"
+},
+"Scifi Gallery_Cube_010": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_SERVERB.res"
+},
+"Scifi Gallery_Cube_011": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_SERVERA.res"
+},
+"Scifi Gallery_Cube_015": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_SHIP_BODY.res"
+},
+"Scifi Gallery_Cube_016": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_SHIP_WINGS.res"
+},
+"Scifi Gallery_Cylinder": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_SHIP_CORE.res"
 }
 }
 }
