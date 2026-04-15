@@ -37,6 +37,7 @@ var SelectedTool:SELECTEDTOOL = SELECTEDTOOL.FOUNDATION
 var MinimumSizeReached:bool = false
 var DoorwayPlaced:bool = false
 
+@export var BuildRequirementsTab:Control
 @export var BuildRequirementsLabel:RichTextLabel
 @export var BuildRequirementsText:String
 @export var FinalizeRoomButton:Button
@@ -70,6 +71,8 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	CreateNewRoom()
+	FoundationToolUI.visible = false
+	PropToolUI.visible = false
 
 func _process(delta: float) -> void:
 	if !GLOBALS.CanInteract:
@@ -91,13 +94,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 		
 	if Input.is_action_just_pressed("Lclick"):
-		BuildManager.instance.ClickPos = mouse_position(true)
+		ClickPos = mouse_position(true)
 		match(SelectedTool):
 			SELECTEDTOOL.FOUNDATION:
 				pass
 			SELECTEDTOOL.PROP:
 				if PlacingProp:
-					PlaceProp(BuildManager.instance.mouse_position(true))
+					PlaceProp(mouse_position(true))
 					print("Test1")
 				else:
 					print("Test2")
@@ -108,36 +111,43 @@ func _unhandled_input(event: InputEvent) -> void:
 						SetupPropEditMenu(CurrentlyEditedProp)
 	if Input.is_action_pressed("Lclick"):
 
-		var MousePos = BuildManager.instance.mouse_position(true)
-		if MousePos.distance_to(BuildManager.instance.ClickPos) > BuildManager.instance.DragDeadzone:
+		var MousePos = mouse_position(true)
+		if MousePos.distance_to(ClickPos) > DragDeadzone:
 			match(SelectedTool):
 				SELECTEDTOOL.FOUNDATION:
-					BuildManager.instance.DragStart = BuildManager.instance.ClickPos
-					BuildManager.instance.DragEnd = MousePos
+					DragStart = ClickPos
+					DragEnd = MousePos
 					PreviewBuildMesh.visible = true
-					BuildVisualiser.DrawBuildRect(PreviewBuildMesh,BuildManager.instance.DragStart,BuildManager.instance.DragEnd)
+					BuildVisualiser.DrawBuildRect(PreviewBuildMesh,DragStart,DragEnd)
 
 	if Input.is_action_just_released("Lclick"):
 		match SelectedTool:
 			SELECTEDTOOL.FOUNDATION:
-				if !BuildManager.instance.CurrentRoom:
-					BuildManager.instance.CurrentRoom = RoomResource.new()
+				if !CurrentRoom:
+					CurrentRoom = RoomResource.new()
+					FinalizeRoomButton.visible = true
 					
-				var StartX = (BuildManager.instance.DragStart.x if BuildManager.instance.DragStart.x < BuildManager.instance.DragEnd.x else BuildManager.instance.DragEnd.x)
-				var StartZ = (BuildManager.instance.DragStart.z if BuildManager.instance.DragStart.z < BuildManager.instance.DragEnd.z else BuildManager.instance.DragEnd.z)
+				var StartX = (DragStart.x if DragStart.x < DragEnd.x else DragEnd.x)
+				var StartZ = (DragStart.z if DragStart.z < DragEnd.z else DragEnd.z)
 				
-				var EndX = (BuildManager.instance.DragEnd.x if BuildManager.instance.DragEnd.x > BuildManager.instance.DragStart.x else BuildManager.instance.DragStart.x) + 1
-				var EndZ = (BuildManager.instance.DragEnd.z if BuildManager.instance.DragEnd.z > BuildManager.instance.DragStart.z else BuildManager.instance.DragStart.z) + 1
+				var EndX = (DragEnd.x if DragEnd.x > DragStart.x else DragStart.x) + 1
+				var EndZ = (DragEnd.z if DragEnd.z > DragStart.z else DragStart.z) + 1
 				match SelectedTool:
 					#SELECTEDTOOL.ERASE:
 						#EraseArea(1,Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
 						#pass
 					_:
+						printerr(str(Vector3(StartX,0,StartZ))+str(Vector3(EndX,0,EndZ)))
 						BuildSelectedSection(1,Vector3(StartX,0,StartZ),Vector3(EndX,0,EndZ))
+						DragStart = Vector3.ZERO
+						DragEnd = Vector3.ZERO
 				PreviewBuildMesh.visible = false
 
 func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
 	if !CanPlaceFoundations:
+		return
+	
+	if StartCorner.distance_to(EndCorner) < 2.0:
 		return
 		
 	if (StartCorner.x < 0 or StartCorner.x > 100) or ( StartCorner.z < 0 or StartCorner.z > 100):
@@ -154,7 +164,7 @@ func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
 		Labels[d].queue_free()
 	Labels.clear()
 	
-	if BuildManager.instance.DragEnd == BuildManager.instance.DragStart:
+	if DragEnd == DragStart:
 		return
 		
 	var NewPoints:Array[Vector3]
@@ -163,36 +173,37 @@ func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
 	
 	for BX in range(StartCorner.x - _border,EndCorner.x + _border):
 		for BZ in range(StartCorner.z - _border,EndCorner.z + _border):
-			if BX in range(StartCorner.x,EndCorner.x) and BZ in range(StartCorner.z,EndCorner.z) and !BuildManager.instance.BuildingPoints.has(Vector3(BX,0,BZ)):
-				if !BuildManager.instance.PERMANENTPLACEMENTS.has(Vector3(BX,0,BZ)):
+			if BX in range(StartCorner.x,EndCorner.x) and BZ in range(StartCorner.z,EndCorner.z) and !BuildingPoints.has(Vector3(BX,0,BZ)):
+				if !PERMANENTPLACEMENTS.has(Vector3(BX,0,BZ)):
 					NewPoints.append(Vector3(BX,0,BZ))
-			if !BuildManager.instance.OverlappingBuildPoints.has(Vector3(BX,0,BZ)):
-				BuildManager.instance.OverlappingBuildPoints.append(Vector3(BX,0,BZ))
+			if !OverlappingBuildPoints.has(Vector3(BX,0,BZ)):
+				OverlappingBuildPoints.append(Vector3(BX,0,BZ))
 
 	for i in NewPoints.size():
-		if BuildManager.instance.OccupiedGridSquares.has(NewPoints[i]):
+		if OccupiedGridSquares.has(NewPoints[i]):
 			continue
-		BuildManager.instance.OccupiedGridSquares.append(NewPoints[i])
-		if !BuildManager.instance.BuildingPoints.has(NewPoints[i]):
-			BuildManager.instance.BuildingPoints.append_array(NewPoints)
+		OccupiedGridSquares.append(NewPoints[i])
+		if !BuildingPoints.has(NewPoints[i]):
+			BuildingPoints.append_array(NewPoints)
 
 	if NewPoints.is_empty():
-		BuildManager.instance.OverlappingBuildPoints.clear()
+		OverlappingBuildPoints.clear()
 		return
 	
 	await get_tree().process_frame
 	
 	var ChunkCounter:int = 0
-	if !BuildManager.instance.OverlappingBuildPoints.is_empty():
-		for i in BuildManager.instance.OverlappingBuildPoints.size():
-			BuildManager.instance.UpdateGridSquare(_layer,BuildManager.instance.OverlappingBuildPoints[i])
+	if !OverlappingBuildPoints.is_empty():
+		for i in OverlappingBuildPoints.size():
+			UpdateGridSquare(_layer,OverlappingBuildPoints[i])
 			ChunkCounter +=1
 			if ChunkCounter >= Chunksize:
 				ChunkCounter = 0
 				await get_tree().process_frame
 	
-	BuildManager.instance.RebuildGridSquares()
-	BuildManager.instance.OverlappingBuildPoints.clear()
+	RebuildGridSquares.call_deferred()
+	
+	OverlappingBuildPoints.clear()
 	FoundationPlaced.emit()
 	CanPlaceFoundations = true
 
@@ -436,7 +447,8 @@ func RebuildGridSquares(_erasing:bool = false):
 				_:
 					BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],-1,0)
 					pass
-		
+					
+	#BuildingGridmap.NavRegion.bake_navigation_mesh()
 	SquaresNeedingRebuilding.clear()
 	SquaresNeedingRebuildingIDX.clear()
 
@@ -446,10 +458,10 @@ func PlaceProp(_location:Vector3):
 	print("Placing Prop")
 	var placement = PlacingProp._Scene.instantiate() as PropScene
 	placement.Create(PlacingProp)
-	BuildManager.instance.CurrentRoomScene.PropContainer.add_child(placement)
+	CurrentRoomScene.PropContainer.add_child(placement)
 	placement.position = _location
 	placement.rotation_degrees.y = CursorRotation.y
-	BuildManager.instance.CurrentRoom.PlacedProps.append(placement)
+	CurrentRoom.PlacedProps.append(placement)
 	PlacingProp = null
 	CursorMesh.rotation_degrees.y = 0
 	ResetCursorMesh()

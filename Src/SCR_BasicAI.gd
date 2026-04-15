@@ -9,13 +9,24 @@ class_name BasicAI
 
 @export var PartyContainer:Node#THIS WILL BE FOR SIGNALLING OTHER NPCS THAT CLUES HAVE BEEN FOUND
 
+@export var TargetProp:PropScene
+
 @export var CurrentRoom:RoomScene
 
 @export var ReactionSpeechBubble:Sprite3D
 @export var ReactionLabel:Label3D
 
+@export var LookAtPoint:Marker3D
+
+@export_category("customisation")
+@export var HeadRoot:MeshInstance3D
+@export var BodyRoot:MeshInstance3D
+@export var HeadPieces:Array[Mesh]
+@export var BodyPieces:Array[Mesh]
 
 @export var Reactions:Array[String]
+
+var GroupID:int = -1
 
 signal FoundClue
 signal UsedClue
@@ -25,21 +36,23 @@ var CharacterState:CHARACTERSTATE = CHARACTERSTATE.SEARCHING
 
 @export var HeldClue:Resource #THIS WILL BE FOR FIGURING OUT WHAT CLUE IS HELD
 
+var WanderingEyes:bool = true
+
 var TestSearchTime:float = 1.0
 var tick:float
 func _ready() -> void:
 	Nav.velocity_computed.connect(_VelocityComputed)
 	Nav.target_reached.connect(_TargetReached)
 	TestSearchTime = randf_range(1,5)
-	CurrentRoom = BuildManager.instance.CurrentRoomScene
-	ScanforProps()
+	GenerateDesign()
+	SetTarget(GLOBALS.CURRENTROOT.WaitingArea.global_position)
 	pass
 	
 func _physics_process(delta: float) -> void:
 	tick += delta
 	if tick >= TestSearchTime:
 		tick = 0
-		ScanforProps()
+		AI_TICK()
 		
 	var next_path_position: Vector3 = Nav.get_next_path_position()
 	var new_velocity: Vector3 = global_position.direction_to(next_path_position) * 10.0
@@ -47,11 +60,16 @@ func _physics_process(delta: float) -> void:
 		Nav.set_velocity(new_velocity)
 	else:
 		_VelocityComputed(new_velocity)
-		
+	
+	HeadRoot.rotation_degrees = HeadRoot.rotation_degrees.slerp(LookAtPoint.global_position - HeadRoot.global_position,2*delta)
+	#HeadRoot.look_at(LookAtPoint.global_position,Vector3.UP,false)
+	
 	pass
 
 func SetTarget(_target:Vector3):
 	Nav.target_position = _target
+	WanderingEyes = false
+	LookAtPoint.global_position = _target
 
 func _VelocityComputed(_velocity:Vector3):
 	velocity = _velocity
@@ -61,7 +79,16 @@ func _VelocityComputed(_velocity:Vector3):
 	pass
 
 func _TargetReached():
-	InvestigateProp(BuildManager.instance.CurrentRoomScene.PropContainer.get_child(0))
+	if TargetProp:
+		InvestigateProp(BuildManager.instance.CurrentRoomScene.PropContainer.get_child(0))
+	WanderingEyes = true
+	pass
+
+func AI_TICK():
+	if WanderingEyes:
+		LookAtPoint.position = -transform.basis.z + Vector3.UP + Vector3(randf_range(-15,15),randf_range(-15,15),randf_range(-5,5))
+	if !CurrentRoom:
+		pass
 	pass
 	
 func InvestigateProp(_prop:PropScene):
@@ -81,3 +108,10 @@ func DisplayEmotion():
 	ReactionLabel.text = idx
 	await get_tree().create_timer(2.0).timeout
 	ReactionSpeechBubble.visible = false
+
+func GenerateDesign(_head:int = -1, _body = -1):
+	var _RandomHead = HeadPieces.pick_random() if _head == -1 else _head
+	var _RandomBody = BodyPieces.pick_random() if _body == -1 else _body
+	HeadRoot.mesh = _RandomHead
+	BodyRoot.mesh = _RandomBody
+	pass
