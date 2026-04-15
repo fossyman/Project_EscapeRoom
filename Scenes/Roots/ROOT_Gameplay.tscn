@@ -191,7 +191,7 @@ FoundationToolUI = NodePath("Control/FoundationUI")
 PropToolUI = NodePath("Control/PropUI")
 BuildRequirementsLabel = NodePath("Control/BuildRequirementPanel/BuildRequirements")
 BuildRequirementsText = "asd"
-FinalizeRoomButton = NodePath("Control/BuildRequirementPanel/FinalizeRoomButton")
+FinalizeRoomButton = NodePath("Control/BuildRequirementPanel/Button")
 PropCollisionLayer = 2
 PreviewBuildMesh = NodePath("../CONSTANT/PREVIEW")
 PropEditorMenu = NodePath("../CONSTANT/SCN_PropeditorMenu")
@@ -347,7 +347,7 @@ text = "[b]Requirements[/b]
 [color=red]Minimum space: 3x3
 [color=red]Doorway placed"
 
-[node name="FinalizeRoomButton" type="Button" parent="TOOLS/Control/BuildRequirementPanel"]
+[node name="Button" type="Button" parent="TOOLS/Control/BuildRequirementPanel"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -356,6 +356,7 @@ offset_top = -235.0
 offset_right = 204.0
 offset_bottom = -174.0
 grow_vertical = 0
+disabled = true
 text = "FINALISE ROOM"
 
 [node name="Escapee Utility Menu" type="Control" parent="TOOLS/Control" node_paths=PackedStringArray("NPCSpawnCountText")]
@@ -725,7 +726,7 @@ visible = false
 [connection signal="pressed" from="TOOLS/Control/FoundationButton" to="TOOLS" method="ChangeSelectedTool" binds= [0]]
 [connection signal="pressed" from="TOOLS/Control/PropButton" to="TOOLS" method="ChangeSelectedTool" binds= [1]]
 [connection signal="pressed" from="TOOLS/Control/Escapee Utilities Menu" to="TOOLS/Control/Escapee Utility Menu" method="ChangeMenuVisibility"]
-[connection signal="pressed" from="TOOLS/Control/BuildRequirementPanel/FinalizeRoomButton" to="TOOLS" method="FinalizeRoom"]
+[connection signal="pressed" from="TOOLS/Control/BuildRequirementPanel/Button" to="TOOLS" method="FinalizeRoom"]
 [connection signal="pressed" from="TOOLS/Control/Escapee Utility Menu/Panel/Control/SpawnEscapeeButton" to="TOOLS/Control/Escapee Utility Menu" method="SpawnNPC"]
 [connection signal="pressed" from="TOOLS/Control/Escapee Utility Menu/Panel/Control/DecreaseAmount" to="TOOLS/Control/Escapee Utility Menu" method="ChangeNPCSpawnAmount" binds= [-1]]
 [connection signal="pressed" from="TOOLS/Control/Escapee Utility Menu/Panel/Control/IncreateAmount" to="TOOLS/Control/Escapee Utility Menu" method="ChangeNPCSpawnAmount" binds= [1]]

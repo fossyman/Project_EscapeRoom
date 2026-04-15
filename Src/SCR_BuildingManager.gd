@@ -125,6 +125,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			SELECTEDTOOL.FOUNDATION:
 				if !CurrentRoom:
 					CurrentRoom = RoomResource.new()
+					FinalizeRoomButton.visible = true
 					
 				var StartX = (DragStart.x if DragStart.x < DragEnd.x else DragEnd.x)
 				var StartZ = (DragStart.z if DragStart.z < DragEnd.z else DragEnd.z)
@@ -207,19 +208,6 @@ func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
 	CanPlaceFoundations = true
 
 func ChangeSelectedTool(_tool:SELECTEDTOOL):
-	if SelectedTool == _tool:
-		match SelectedTool:
-			SELECTEDTOOL.FOUNDATION:
-				if FoundationToolUI:
-					FoundationToolUI.visible = false
-				pass
-			SELECTEDTOOL.PROP:
-				if PropToolUI:
-					PropToolUI.visible = false
-				pass
-		SelectedTool = -1
-		return
-	
 	SelectedTool = _tool
 	if FoundationToolUI:
 		FoundationToolUI.visible = false
@@ -278,8 +266,6 @@ func CreateNewRoom():
 	pass
 	
 func FinalizeRoom():
-	if !CurrentRoom:
-		return
 	CurrentRoom.RoomSquares.append_array(BuildingPoints)
 	CurrentRoom.RoomArea = AABB(CurrentRoom.RoomSquares[0],CurrentRoom.RoomSquares[CurrentRoom.RoomSquares.size()-1])
 	
@@ -297,9 +283,6 @@ func FinalizeRoom():
 	OccupiedGridSquares.append_array(BuildingPoints)
 	PERMANENTPLACEMENTS.append_array(OccupiedGridSquares)
 	BuildingPoints.clear()
-	
-	BuildingGridmap.NavRegion.bake_navigation_mesh(true)
-
 
 func MoveCursor(_movement:Vector3):
 	BuildingCursorPosition = _movement
@@ -465,6 +448,7 @@ func RebuildGridSquares(_erasing:bool = false):
 					BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],-1,0)
 					pass
 					
+	#BuildingGridmap.NavRegion.bake_navigation_mesh()
 	SquaresNeedingRebuilding.clear()
 	SquaresNeedingRebuildingIDX.clear()
 

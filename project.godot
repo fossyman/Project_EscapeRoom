@@ -108,5 +108,4 @@ pointing/emulate_touch_from_mouse=true
 
 [rendering]
 
-driver/threads/thread_model=2
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
