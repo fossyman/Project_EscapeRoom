@@ -1,0 +1,6 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://by1gma4sw0v7f"]
+
+[ext_resource type="Texture2D" uid="uid://bvlb1jm8ra5yq" path="res://Assets/Textures/props/scifi/AdobeColor-scifi.jpeg" id="1_7m26q"]
+
+[resource]
+albedo_texture = ExtResource("1_7m26q")

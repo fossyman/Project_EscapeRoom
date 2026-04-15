@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://c7aiwanraeuvo"]
+
+[ext_resource type="ArrayMesh" uid="uid://bamgm1soo30fu" path="res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_CHAIR.res" id="1_b4yv5"]
+[ext_resource type="PackedScene" uid="uid://dvm5ux6nqinhm" path="res://Scenes/Props/SCIFI/SCN_PROP_SCIFI_TABLE.tscn" id="2_b4yv5"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_aut3n"]
+
+[resource]
+script = ExtResource("3_aut3n")
+_PropCategories = Array[int]([1])
+_Name = &"HoloDeck"
+_Scene = ExtResource("2_b4yv5")
+_PreviewMesh = ExtResource("1_b4yv5")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"

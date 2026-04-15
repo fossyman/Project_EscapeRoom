@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://na8jm06p0d8b"]
+
+[ext_resource type="ArrayMesh" uid="uid://bamgm1soo30fu" path="res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_CHAIR.res" id="1_56mov"]
+[ext_resource type="PackedScene" uid="uid://cuxr3wqbk3oue" path="res://Scenes/Props/SCIFI/SCN_PROP_SCIFI_SERVERRACK.tscn" id="2_tpjgm"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_0vai3"]
+
+[resource]
+script = ExtResource("3_0vai3")
+_PropCategories = Array[int]([1])
+_Name = &"server rack"
+_Scene = ExtResource("2_tpjgm")
+_PreviewMesh = ExtResource("1_56mov")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"

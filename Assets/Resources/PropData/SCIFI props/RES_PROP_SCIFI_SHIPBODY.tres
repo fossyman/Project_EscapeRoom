@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://cbxyn2r4bmewv"]
+
+[ext_resource type="ArrayMesh" uid="uid://bamgm1soo30fu" path="res://Assets/Meshes/Props/SciFi/PROPMESH_SCIFI_CHAIR.res" id="1_rhrwq"]
+[ext_resource type="PackedScene" uid="uid://b656vyhqa1h8v" path="res://Scenes/Props/SCIFI/SCN_PROP_SCIFI_SHIPCORE.tscn" id="2_6g6s1"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_b3prm"]
+
+[resource]
+script = ExtResource("3_b3prm")
+_PropCategories = Array[int]([1])
+_Name = &"Ship Core"
+_Scene = ExtResource("2_6g6s1")
+_PreviewMesh = ExtResource("1_rhrwq")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"

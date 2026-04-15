@@ -7,7 +7,7 @@ func _ready() -> void:
 	$"CONTENT/Interactables/Setting menu/MainVolSlider".value = db_to_linear(AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Main volume")))
 	$"CONTENT/Interactables/Setting menu/MusicSlider".value = db_to_linear(AudioServer.get_bus_volume_db(AudioServer.get_bus_index("Music ")))
 	$"CONTENT/Interactables/Setting menu/SFXSlider".value = db_to_linear(AudioServer.get_bus_volume_db(AudioServer.get_bus_index("SFX")))
-	Audiomanager.play("Main")
+	
 
 
 
