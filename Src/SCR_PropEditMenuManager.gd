@@ -62,7 +62,7 @@ func SetPropOffset(_value:Vector2):
 func AddPropRotation(_amount:float):
 	SelectedProp.MeshContainer.rotation_degrees.y += _amount
 	SelectedProp.MeshContainer.rotation_degrees.y = wrap(SelectedProp.MeshContainer.rotation_degrees.y,0,360)
-	PropRotationText.text = str(SelectedProp.MeshContainer.rotation_degrees.y).trim_suffix(".0")
+	PropRotationText.text = str(SelectedProp.MeshContainer.rotation_degrees.y).trim_suffix(".0") + "°"
 
 
 func RemoveProp() -> void:

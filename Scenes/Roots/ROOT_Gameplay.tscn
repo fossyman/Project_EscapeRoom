@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://cyxcjwc3tm3ad"]
+[gd_scene load_steps=47 format=3 uid="uid://cyxcjwc3tm3ad"]
 
 [ext_resource type="Script" uid="uid://dg6gnwypj1hnh" path="res://Src/SCR_BuildingManager.gd" id="1_6rgy0"]
 [ext_resource type="ArrayMesh" uid="uid://dx4egntrxmrj" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_CORNER.res" id="1_emfuj"]
@@ -13,14 +13,20 @@
 [ext_resource type="ArrayMesh" uid="uid://bb5mmlmj650i0" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_FLOOR.res" id="6_nitf2"]
 [ext_resource type="Material" uid="uid://bgxc0n0u8y8b0" path="res://Assets/Material/MAT_BuildOverlay.tres" id="6_nxnwt"]
 [ext_resource type="ArrayMesh" uid="uid://ciyjkuhm7o5w8" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_INNERCORNER.res" id="7_1caoe"]
+[ext_resource type="Script" uid="uid://dx3e5p0if8r56" path="res://Scenes/Roots/DayNightManager.gd" id="7_usbi3"]
 [ext_resource type="ArrayMesh" uid="uid://dv3lbluh686kw" path="res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_DOORWAY.res" id="8_nitf2"]
 [ext_resource type="FontFile" uid="uid://bs530y4locaf0" path="res://Assets/Fonts/ARURaisonneSimplified-DemiBold.otf" id="8_prpd7"]
 [ext_resource type="Script" uid="uid://cpp3jda6pxtl4" path="res://Src/SCR_GridmapPlus.gd" id="14_s8imx"]
+[ext_resource type="Texture2D" uid="uid://2nfj0i6t1uq4" path="res://Assets/Textures/TEXTURE_Disabled.png" id="15_o7jcl"]
 [ext_resource type="PackedScene" uid="uid://drf8ggf1pvbr" path="res://Scenes/UI/SCN_PropEditorMenu.tscn" id="16_vq4w1"]
 [ext_resource type="PackedScene" uid="uid://24mkaup72sp6" path="res://Assets/Models/Escape room enviornment.glb" id="17_vq4w1"]
 [ext_resource type="PackedScene" uid="uid://by5wxvdmg3kwo" path="res://Scenes/HEROPORT-UI/MainScreenUI.tscn" id="19_w6hkk"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_vq4w1"]
+sky_top_color = Color(0.390986, 0.460435, 0.557063, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0, 0, 0, 1)
+use_debanding = false
 
 [sub_resource type="Sky" id="Sky_s8imx"]
 sky_material = SubResource("ProceduralSkyMaterial_vq4w1")
@@ -28,6 +34,21 @@ sky_material = SubResource("ProceduralSkyMaterial_vq4w1")
 [sub_resource type="Environment" id="Environment_j55jw"]
 background_mode = 2
 sky = SubResource("Sky_s8imx")
+ambient_light_sky_contribution = 0.2
+reflected_light_source = 2
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_usbi3"]
+sky_top_color = Color(0.106322, 0.135523, 0.176132, 1)
+sky_horizon_color = Color(0, 0.113725, 0.301961, 1)
+ground_bottom_color = Color(0, 0, 0, 1)
+ground_horizon_color = Color(0, 0.115, 0.3, 1)
+
+[sub_resource type="Sky" id="Sky_g1rye"]
+sky_material = SubResource("ProceduralSkyMaterial_usbi3")
+
+[sub_resource type="Environment" id="Environment_po23f"]
+background_mode = 2
+sky = SubResource("Sky_g1rye")
 ambient_light_source = 3
 reflected_light_source = 2
 
@@ -103,6 +124,19 @@ uv1_scale = Vector3(3, 3, 3)
 material = SubResource("StandardMaterial3D_1caoe")
 size = Vector2(100, 100)
 center_offset = Vector3(0, 0, -0.001)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_w6hkk"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w6hkk"]
+albedo_color = Color(0.22605, 0.423352, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_usbi3"]
+transparency = 2
+alpha_scissor_threshold = 0.5
+alpha_antialiasing_mode = 0
+albedo_texture = ExtResource("15_o7jcl")
+
+[sub_resource type="BoxMesh" id="BoxMesh_w6hkk"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_cy1kc"]
 
@@ -180,13 +214,11 @@ text = "Props"
 [node name="Escapee Utilities Menu" type="Button" parent="TOOLS/Control"]
 layout_mode = 0
 offset_left = 390.0
-offset_top = 2.0
 offset_right = 585.0
 offset_bottom = 59.0
-text = "Spawn Escapees"
+text = "Escapee Utilities"
 
 [node name="FoundationUI" type="Control" parent="TOOLS/Control"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -202,14 +234,13 @@ offset_right = 88.0
 offset_bottom = 136.0
 text = "Foundation"
 
-[node name="WallButton" type="Button" parent="TOOLS/Control/FoundationUI"]
-visible = false
+[node name="PlaceDoorButton" type="Button" parent="TOOLS/Control/FoundationUI"]
 layout_mode = 0
 offset_left = 97.0
 offset_top = 59.0
 offset_right = 194.0
 offset_bottom = 136.0
-text = "Erase"
+text = "Place Door"
 
 [node name="FloorButton" type="Button" parent="TOOLS/Control/FoundationUI"]
 visible = false
@@ -329,7 +360,7 @@ offset_right = 585.0
 offset_bottom = 305.0
 script = ExtResource("3_w6hkk")
 NPCScene = ExtResource("4_w6hkk")
-NPCSpawnCountText = NodePath("Panel/RichTextLabel")
+NPCSpawnCountText = NodePath("Panel/Control/RichTextLabel")
 
 [node name="Panel" type="Panel" parent="TOOLS/Control/Escapee Utility Menu"]
 layout_mode = 1
@@ -343,61 +374,91 @@ offset_top = -0.0839999
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="SpawnEscapeeButton" type="Button" parent="TOOLS/Control/Escapee Utility Menu/Panel"]
-layout_mode = 0
-offset_right = 165.0
-offset_bottom = 84.0
+[node name="Control" type="Control" parent="TOOLS/Control/Escapee Utility Menu/Panel"]
+anchors_preset = 0
+offset_right = 195.0
+offset_bottom = 81.0
+
+[node name="SpawnEscapeeButton" type="Button" parent="TOOLS/Control/Escapee Utility Menu/Panel/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.846
+anchor_bottom = 1.0
+offset_right = 0.0299988
 text = "Spawn Escapee/s"
 
-[node name="DecreaseAmount" type="Button" parent="TOOLS/Control/Escapee Utility Menu/Panel"]
+[node name="DecreaseAmount" type="Button" parent="TOOLS/Control/Escapee Utility Menu/Panel/Control"]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 3
 anchor_left = 1.0
-anchor_top = 0.215
+anchor_top = 1.0
 anchor_right = 1.0
-anchor_bottom = 0.215
+anchor_bottom = 1.0
 offset_left = -30.0
-offset_top = 0.110001
-offset_bottom = 31.11
+offset_top = -31.0
+grow_horizontal = 0
+grow_vertical = 0
 text = "V"
 
-[node name="IncreateAmount" type="Button" parent="TOOLS/Control/Escapee Utility Menu/Panel"]
+[node name="IncreateAmount" type="Button" parent="TOOLS/Control/Escapee Utility Menu/Panel/Control"]
 layout_mode = 1
-anchors_preset = -1
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_top = 32.0
 offset_right = 30.0
 offset_bottom = 64.0
+grow_horizontal = 0
 rotation = 3.14159
 text = "V"
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TOOLS/Control/Escapee Utility Menu/Panel"]
+[node name="RichTextLabel" type="RichTextLabel" parent="TOOLS/Control/Escapee Utility Menu/Panel/Control"]
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 1.0
-anchor_top = 0.122
+anchor_top = 0.372
 anchor_right = 1.0
-anchor_bottom = 0.215
+anchor_bottom = 0.64
 offset_left = -30.0
-offset_top = -0.0120029
-offset_bottom = 0.110001
+offset_top = 0.00799942
+offset_bottom = -0.0400047
 grow_horizontal = 0
+mouse_filter = 2
 text = "1"
 scroll_active = false
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="SpawnEscapeeButton" type="Button" parent="TOOLS/Control/Escapee Utility Menu/Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.346
+anchor_bottom = 0.346
+offset_top = -0.116005
+offset_right = 195.0
+offset_bottom = 41.884
+text = "Send NPCs to room"
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("1_prpd7")
 
 [node name="MAP" type="Node" parent="."]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="MAP"]
+[node name="Node" type="Node" parent="MAP" node_paths=PackedStringArray("World", "Light")]
+script = ExtResource("7_usbi3")
+DayEnvironment = SubResource("Environment_j55jw")
+NightEnvironment = SubResource("Environment_po23f")
+World = NodePath("WorldEnvironment")
+Light = NodePath("Node3D/DirectionalLight3D")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="MAP/Node"]
 environment = SubResource("Environment_j55jw")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="MAP"]
-transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+[node name="Node3D" type="Node3D" parent="MAP/Node"]
+transform = Transform3D(1, 0, 0, 0, 0.630676, 0.776046, 0, -0.776046, 0.630676, 0, 0, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="MAP/Node/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 45.4186, 0)
 shadow_enabled = true
 
 [node name="PropContainer" type="Node3D" parent="MAP"]
@@ -429,6 +490,149 @@ skeleton = NodePath("../..")
 
 [node name="Escape room enviornment" parent="MAP/NavigationRegion3D" instance=ExtResource("17_vq4w1")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, -0.1, 50)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -8.5932, 0, 1, 0, 0.381292, 0, -3.75621e-07, 2.10161, 0, -38.2089)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -8.5932, 0, 1, 0, 0.381292, 0, -3.75621e-07, 2.10161, 0, -46.5679)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -8.5932, 0, 1, 0, 0.381292, 0, -3.75621e-07, 2.10161, 0, -54.7608)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -8.5932, 0, 1, 0, 0.381292, 0, -3.75621e-07, 2.10161, 0, -63.1198)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -8.5932, 0, 1, 0, 0.381292, 0, -3.75621e-07, 2.10161, 0, -71.7671)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -8.5932, 0, 1, 0, 0.381292, 0, -3.75621e-07, 2.10161, 0, -80.1261)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D7" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -8.5932, 0, 1, 0, 0.381292, 0, -3.75621e-07, 98.4187, 0, -38.2089)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D20" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.8057e-07, 0, -8.59319, 0, 1, 0, 4.13097, 0, -3.7562e-07, 98.698, -0.055582, -42.3583)
+material_override = SubResource("StandardMaterial3D_w6hkk")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D24" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.68945e-07, 0, -3.865, 0, 3.865, 0, 3.865, 0, -1.68945e-07, 95.1952, 0.128909, -42.3583)
+material_override = SubResource("StandardMaterial3D_usbi3")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D25" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.68945e-07, 0, 3.865, 0, 3.865, 0, -3.865, 0, -1.68945e-07, 61.7952, 0.128909, -42.3583)
+material_override = SubResource("StandardMaterial3D_usbi3")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D26" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.68945e-07, 0, -3.865, 0, 3.865, 0, 3.865, 0, -1.68945e-07, 38.3587, 0.128909, -42.3583)
+material_override = SubResource("StandardMaterial3D_usbi3")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D27" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.68945e-07, 0, 3.865, 0, 3.865, 0, -3.865, 0, -1.68945e-07, 4.95874, 0.128909, -42.3583)
+material_override = SubResource("StandardMaterial3D_usbi3")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D21" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.8057e-07, 0, -8.59319, 0, 1, 0, 4.13097, 0, -3.7562e-07, 58.9307, -0.055582, -42.3583)
+material_override = SubResource("StandardMaterial3D_w6hkk")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D22" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.8057e-07, 0, -8.59319, 0, 1, 0, 4.13097, 0, -3.7562e-07, 1.89494, -0.055582, -42.3583)
+material_override = SubResource("StandardMaterial3D_w6hkk")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D23" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.8057e-07, 0, -8.59319, 0, 1, 0, 4.13097, 0, -3.7562e-07, 41.8794, -0.055582, -42.3583)
+material_override = SubResource("StandardMaterial3D_w6hkk")
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D8" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -8.5932, 0, 1, 0, 0.381292, 0, -3.75621e-07, 98.4187, 0, -46.5679)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D9" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -8.5932, 0, 1, 0, 0.381292, 0, -3.75621e-07, 98.4187, 0, -54.7608)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D10" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -8.5932, 0, 1, 0, 0.381292, 0, -3.75621e-07, 98.4187, 0, -63.1198)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D11" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -8.5932, 0, 1, 0, 0.381292, 0, -3.75621e-07, 98.4187, 0, -71.7671)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D12" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -8.5932, 0, 1, 0, 0.381292, 0, -3.75621e-07, 98.4187, 0, -80.1261)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D13" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -17.485, 0, 1, 0, 0.381292, 0, -7.64293e-07, 50.4187, 0, -38.2089)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D14" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -17.485, 0, 1, 0, 0.381292, 0, -7.64293e-07, 50.4187, 0, -46.5679)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D15" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -17.485, 0, 1, 0, 0.381292, 0, -7.64293e-07, 50.4187, 0, -54.7608)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D16" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -17.485, 0, 1, 0, 0.381292, 0, -7.64293e-07, 50.4187, 0, -63.1198)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D17" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -17.485, 0, 1, 0, 0.381292, 0, -7.64293e-07, 50.4187, 0, -71.7671)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D18" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(-1.66668e-08, 0, -17.485, 0, 1, 0, 0.381292, 0, -7.64293e-07, 50.4187, 0, -80.1261)
+cast_shadow = 0
+mesh = SubResource("PlaneMesh_w6hkk")
+
+[node name="MeshInstance3D19" type="MeshInstance3D" parent="MAP"]
+transform = Transform3D(13.5062, 0, 0, 0, 1, 0, 0, 0, 89.7453, 50.4187, 0, -80.1261)
+cast_shadow = 0
+mesh = SubResource("BoxMesh_w6hkk")
 
 [node name="CONSTANT" type="Node" parent="."]
 
@@ -513,6 +717,7 @@ visible = false
 [connection signal="pressed" from="TOOLS/Control/PropButton" to="TOOLS" method="ChangeSelectedTool" binds= [1]]
 [connection signal="pressed" from="TOOLS/Control/Escapee Utilities Menu" to="TOOLS/Control/Escapee Utility Menu" method="ChangeMenuVisibility"]
 [connection signal="pressed" from="TOOLS/Control/BuildRequirementPanel/Button" to="TOOLS" method="FinalizeRoom"]
-[connection signal="pressed" from="TOOLS/Control/Escapee Utility Menu/Panel/SpawnEscapeeButton" to="TOOLS/Control/Escapee Utility Menu" method="SpawnNPC"]
-[connection signal="pressed" from="TOOLS/Control/Escapee Utility Menu/Panel/DecreaseAmount" to="TOOLS/Control/Escapee Utility Menu" method="ChangeNPCSpawnAmount" binds= [-1]]
-[connection signal="pressed" from="TOOLS/Control/Escapee Utility Menu/Panel/IncreateAmount" to="TOOLS/Control/Escapee Utility Menu" method="ChangeNPCSpawnAmount" binds= [1]]
+[connection signal="pressed" from="TOOLS/Control/Escapee Utility Menu/Panel/Control/SpawnEscapeeButton" to="TOOLS/Control/Escapee Utility Menu" method="SpawnNPC"]
+[connection signal="pressed" from="TOOLS/Control/Escapee Utility Menu/Panel/Control/DecreaseAmount" to="TOOLS/Control/Escapee Utility Menu" method="ChangeNPCSpawnAmount" binds= [-1]]
+[connection signal="pressed" from="TOOLS/Control/Escapee Utility Menu/Panel/Control/IncreateAmount" to="TOOLS/Control/Escapee Utility Menu" method="ChangeNPCSpawnAmount" binds= [1]]
+[connection signal="pressed" from="TOOLS/Control/Escapee Utility Menu/Panel/SpawnEscapeeButton" to="TOOLS/Control/Escapee Utility Menu" method="SendNPCToRoom"]

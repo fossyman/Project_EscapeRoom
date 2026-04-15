@@ -31,3 +31,14 @@ func SpawnNPC():
 func AssignNPCsToLatestRoom():
 	
 	pass
+
+
+func SendNPCToRoom() -> void:
+	var Npcs = GameManager.instance.ReturnNPCsByGroup()
+	if Npcs.is_empty():
+		return
+	
+	for i in Npcs:
+		i.CurrentRoom = BuildManager.instance.Rooms[0]
+		i.AI_TICK()
+	pass # Replace with function body.

@@ -14,3 +14,11 @@ func AssignNewNPCs(_npcs:Array[BasicAI]):
 	var ID = CurrentNPCGroups.size()
 	for i in _npcs:
 		i.GroupID = ID
+
+func ReturnNPCsByGroup(_id:int = 0) -> Array[BasicAI]:
+	var FoundNPCs:Array[BasicAI]
+	for i in CurrentNPCs:
+		if i.GroupID == _id:
+			FoundNPCs.append(i)
+	return FoundNPCs
+	pass
