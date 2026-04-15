@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bgqitf7wbrh4h"
+path="res://.godot/imported/Calm Beat volume reduced.mp3-cbe8e0fb604b029d7631d192cf58ab8b.mp3str"
+
+[deps]
+
+source_file="res://Assets/Music/Calm Beat volume reduced.mp3"
+dest_files=["res://.godot/imported/Calm Beat volume reduced.mp3-cbe8e0fb604b029d7631d192cf58ab8b.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

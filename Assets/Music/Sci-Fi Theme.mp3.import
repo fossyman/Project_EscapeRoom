@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://dqo3vqyw27foo"
+path="res://.godot/imported/Sci-Fi Theme.mp3-ac90b032ae4c37cbea2be9d92228665e.mp3str"
+
+[deps]
+
+source_file="res://Assets/Music/Sci-Fi Theme.mp3"
+dest_files=["res://.godot/imported/Sci-Fi Theme.mp3-ac90b032ae4c37cbea2be9d92228665e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

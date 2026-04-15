@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c7rxkl5a8domh"
+path="res://.godot/imported/Pop (Quiet).mp3-3d47d1c83554ad8847b829febcb5d29e.mp3str"
+
+[deps]
+
+source_file="res://Assets/SFX/Pop (Quiet).mp3"
+dest_files=["res://.godot/imported/Pop (Quiet).mp3-3d47d1c83554ad8847b829febcb5d29e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
