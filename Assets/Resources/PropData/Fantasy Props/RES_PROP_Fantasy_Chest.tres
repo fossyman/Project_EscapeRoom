@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=3 format=3 uid="uid://t4mud3kiboj6"]
+
+[ext_resource type="PackedScene" uid="uid://c46rn8siqykab" path="res://Scenes/Props/Fantasy/SCN_PROP_FANTASY_CHEST.tscn" id="1_ltn2c"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_e364v"]
+
+[resource]
+script = ExtResource("3_e364v")
+_PropCategories = Array[int]([1])
+_Name = &"Davinci Codex"
+_Scene = ExtResource("1_ltn2c")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"
