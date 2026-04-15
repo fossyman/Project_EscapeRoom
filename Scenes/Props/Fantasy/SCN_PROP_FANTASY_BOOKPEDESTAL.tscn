@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_pgpsy"]
 [ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_j44hk"]
-[ext_resource type="ArrayMesh" uid="uid://cd5swrwcdk5lj" path="res://Assets/Meshes/Props/Fantasy/Fantasy_BookPedestal.res" id="3_pgpsy"]
+[ext_resource type="ArrayMesh" uid="uid://bv8g1n670ewy8" path="res://Assets/Meshes/Props/Fantasy/Fantasy_BookPedestal.res" id="3_pgpsy"]
 
 [sub_resource type="Resource" id="Resource_3bsgd"]
 script = ExtResource("2_j44hk")
@@ -13,7 +13,7 @@ Clumsy = 0
 metadata/_custom_type_script = "uid://b66mtekj02xc"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t0ler"]
-size = Vector3(0.4, 0.637354, 0.383828)
+size = Vector3(0.800256, 1.5842, 0.839452)
 
 [node name="ScnPropFantasyDavinci" type="Node3D" node_paths=PackedStringArray("MeshContainer")]
 script = ExtResource("1_pgpsy")
@@ -33,5 +33,5 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00839794, 0.318677, 0.0169524)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0449153, 0.555994, 0.0199559)
 shape = SubResource("BoxShape3D_t0ler")

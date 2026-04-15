@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_b0hk2"]
 [ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_m02jh"]
-[ext_resource type="ArrayMesh" uid="uid://cj1nadsjwow4y" path="res://Assets/Meshes/Props/Fantasy/Fantasy_Door.res" id="3_b0hk2"]
+[ext_resource type="ArrayMesh" uid="uid://rx2drxls0mhi" path="res://Assets/Meshes/Props/Fantasy/Fantasy_Door.res" id="3_b0hk2"]
 
 [sub_resource type="Resource" id="Resource_3bsgd"]
 script = ExtResource("2_m02jh")
@@ -21,10 +21,10 @@ SuccessRequirements = SubResource("Resource_3bsgd")
 MeshContainer = NodePath("Mesh")
 
 [node name="Mesh" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.217684, 0.00465307)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 0)
 
 [node name="cross" type="MeshInstance3D" parent="Mesh"]
-transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, -0.0608148, 0.0634208, 0.0236973)
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, -0.0608148, -0.436579, 0.0236973)
 mesh = ExtResource("3_b0hk2")
 skeleton = NodePath("../..")
 

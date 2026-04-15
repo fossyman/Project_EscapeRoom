@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_5owb1"]
 [ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_1an1p"]
-[ext_resource type="ArrayMesh" uid="uid://s5xl0nbhqxcc" path="res://Assets/Meshes/Props/Fantasy/Fantasy_Table.res" id="3_5owb1"]
+[ext_resource type="ArrayMesh" uid="uid://bbors865wftsj" path="res://Assets/Meshes/Props/Fantasy/Fantasy_Table.res" id="3_5owb1"]
 
 [sub_resource type="Resource" id="Resource_3bsgd"]
 script = ExtResource("2_1an1p")
@@ -13,7 +13,7 @@ Clumsy = 0
 metadata/_custom_type_script = "uid://b66mtekj02xc"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t0ler"]
-size = Vector3(0.465295, 0.580127, 0.912815)
+size = Vector3(2.58996, 0.926282, 1.18701)
 
 [node name="ScnPropFantasyDavinci" type="Node3D" node_paths=PackedStringArray("MeshContainer")]
 script = ExtResource("1_5owb1")
@@ -21,10 +21,9 @@ SuccessRequirements = SubResource("Resource_3bsgd")
 MeshContainer = NodePath("Mesh")
 
 [node name="Mesh" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.217684, 0.00465307)
 
 [node name="Cross" type="MeshInstance3D" parent="Mesh"]
-transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, -0.0988875, 0.0634208, -0.353621)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 1.13201, 0.917986, -0.3)
 mesh = ExtResource("3_5owb1")
 skeleton = NodePath("../..")
 
@@ -33,5 +32,5 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00477904, 0.226636, 0.0358623)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0135117, 0.453449, 0.0258525)
 shape = SubResource("BoxShape3D_t0ler")

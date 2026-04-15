@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://s3elig54cbxk"]
 
-[ext_resource type="ArrayMesh" uid="uid://chitnumv6g0wh" path="res://Assets/Meshes/Props/Fantasy/DAVINCI CODE.res" id="1_vrp56"]
+[ext_resource type="ArrayMesh" uid="uid://bkj3o2dcrm1fi" path="res://Assets/Meshes/Props/Fantasy/DAVINCI CODE.res" id="1_vrp56"]
 [ext_resource type="PackedScene" uid="uid://pnnhgioc0ixr" path="res://Scenes/Props/Fantasy/SCN_PROP_FANTASY_Throne.tscn" id="2_vrp56"]
 [ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_dehsf"]
 
 [resource]
 script = ExtResource("3_dehsf")
-_PropCategories = Array[int]([1])
+_PropCategories = Array[int]([2])
 _Name = &"Davinci Codex"
 _Scene = ExtResource("2_vrp56")
 _PreviewMesh = ExtResource("1_vrp56")

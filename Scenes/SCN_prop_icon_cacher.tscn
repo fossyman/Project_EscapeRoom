@@ -4,6 +4,7 @@
 [ext_resource type="Resource" uid="uid://mqqndisa5eoc" path="res://Assets/Resources/PropData/Pirate_Props/RES_PROP_PIRATE_SKULLCROSSBONES.tres" id="2_ruodo"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ruodo"]
+energy_multiplier = 5.0
 
 [sub_resource type="Sky" id="Sky_df6e7"]
 sky_material = SubResource("ProceduralSkyMaterial_ruodo")
@@ -11,6 +12,7 @@ sky_material = SubResource("ProceduralSkyMaterial_ruodo")
 [sub_resource type="Environment" id="Environment_8oako"]
 background_mode = 2
 sky = SubResource("Sky_df6e7")
+ambient_light_source = 3
 
 [node name="PropIconCacher" type="Node3D" node_paths=PackedStringArray("Camera", "CameraHolder", "CameraViewport", "SubjectArea")]
 script = ExtResource("1_ruodo")
@@ -26,28 +28,32 @@ transparent_bg = true
 render_target_update_mode = 0
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport"]
-transform = Transform3D(-0.584958, 0.00566225, -0.811044, 0, 0.999976, 0.00698126, 0.811064, 0.00408374, -0.584943, -3.294, -0.0386212, -2.41021)
+transform = Transform3D(-0.584958, 0.00566225, -0.811044, 0, 0.999976, 0.00698126, 0.811064, 0.00408374, -0.584943, -3.94851, -0.0329873, -2.88226)
 cull_mask = 262144
 environment = SubResource("Environment_8oako")
-projection = 1
+fov = 30.0
+size = 2.0
 
 [node name="Subject" type="Node3D" parent="."]
 
 [node name="SpotLight3D" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.707107, 0.707107, 0, -0.707107, -0.707107, 0, 1.61543, -1)
+transform = Transform3D(1, 0, 0, 0, -0.707107, 0.707107, 0, -0.707107, -0.707107, 0, 7.41041, -6.79498)
 layers = 262144
+spot_range = 18.5374
 
 [node name="SpotLight3D2" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, -0.956264, -0.292505, 0, 0.292505, -0.956264, 0, 0.304484, -1)
+transform = Transform3D(1, 0, 0, 0, -0.956264, -0.292505, 0, 0.292505, -0.956264, 0, -3.90275, -14.7544)
 layers = 262144
+spot_range = 21.7076
 
 [node name="SpotLight3D3" type="SpotLight3D" parent="."]
-transform = Transform3D(-0.872675, -0.142831, 0.466945, 0, -0.956264, -0.292505, 0.488301, -0.255262, 0.834508, 0.394832, 0.597009, 0.471137)
+transform = Transform3D(-0.872675, -0.142831, 0.466945, 0, -0.956264, -0.292505, 0.488301, -0.255262, 0.834508, 3.59206, -1.40581, 6.18512)
 layers = 262144
+spot_range = 11.4539
 
 [node name="CameraHolder" type="Node3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 
 [node name="RemoteTransform3D" type="RemoteTransform3D" parent="CameraHolder"]
-transform = Transform3D(-0.811064, -0.00408374, 0.584943, 0, 0.999976, 0.00698126, -0.584958, 0.00566225, -0.811044, 2.41021, -0.0386212, -3.294)
+transform = Transform3D(-0.811064, -0.00408374, 0.584943, 0, 0.999976, 0.00698126, -0.584958, 0.00566225, -0.811044, 2.88226, -0.0329873, -3.94851)
 remote_path = NodePath("../../SubViewport/Camera3D")

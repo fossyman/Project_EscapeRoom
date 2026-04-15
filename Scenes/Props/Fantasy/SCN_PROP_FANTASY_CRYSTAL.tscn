@@ -1,8 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://buonpwr3gxlyq"]
+[gd_scene load_steps=7 format=3 uid="uid://buonpwr3gxlyq"]
 
 [ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_0qvcm"]
 [ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_5e25n"]
-[ext_resource type="ArrayMesh" uid="uid://nyescvd2ysx5" path="res://Assets/Meshes/Props/Fantasy/Fantasy_Crystal.res" id="3_0qvcm"]
+[ext_resource type="ArrayMesh" uid="uid://dhfrk4ige5jeq" path="res://Assets/Meshes/Props/Fantasy/Fantasy_Crystal.res" id="3_0qvcm"]
 
 [sub_resource type="Resource" id="Resource_3bsgd"]
 script = ExtResource("2_5e25n")
@@ -13,7 +13,11 @@ Clumsy = 0
 metadata/_custom_type_script = "uid://b66mtekj02xc"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t0ler"]
-size = Vector3(0.809045, 1.11919, 1.05336)
+size = Vector3(2.32715, 0.271985, 2.46704)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0qvcm"]
+radius = 0.415831
+height = 2.17256
 
 [node name="ScnPropFantasyDavinci" type="Node3D" node_paths=PackedStringArray("MeshContainer")]
 script = ExtResource("1_0qvcm")
@@ -33,5 +37,9 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000103764, 0.559595, 0.049765)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.000103764, 0.135993, 0.049765)
 shape = SubResource("BoxShape3D_t0ler")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.70203, 0)
+shape = SubResource("CapsuleShape3D_0qvcm")

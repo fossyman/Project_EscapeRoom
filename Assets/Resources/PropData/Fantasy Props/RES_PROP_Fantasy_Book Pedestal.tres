@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://enaxut2mhaeq"]
 
-[ext_resource type="ArrayMesh" uid="uid://chitnumv6g0wh" path="res://Assets/Meshes/Props/Fantasy/DAVINCI CODE.res" id="1_j1d6v"]
+[ext_resource type="ArrayMesh" uid="uid://bkj3o2dcrm1fi" path="res://Assets/Meshes/Props/Fantasy/DAVINCI CODE.res" id="1_j1d6v"]
 [ext_resource type="PackedScene" uid="uid://dml4wd2kh31iu" path="res://Scenes/Props/Fantasy/SCN_PROP_FANTASY_BOOKPEDESTAL.tscn" id="2_j1d6v"]
 [ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_l2chi"]
 
 [resource]
 script = ExtResource("3_l2chi")
-_PropCategories = Array[int]([1])
+_PropCategories = Array[int]([2])
 _Name = &"Davinci Codex"
 _Scene = ExtResource("2_j1d6v")
 _PreviewMesh = ExtResource("1_j1d6v")

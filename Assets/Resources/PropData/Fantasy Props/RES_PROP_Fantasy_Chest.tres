@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("3_e364v")
-_PropCategories = Array[int]([1])
+_PropCategories = Array[int]([2])
 _Name = &"Davinci Codex"
 _Scene = ExtResource("1_ltn2c")
 metadata/_custom_type_script = "uid://bhddxqstwwe1t"
