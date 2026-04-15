@@ -48,7 +48,7 @@ _subresources={
 "generate/shadow_meshes": 0,
 "lods/normal_merge_angle": 60.0,
 "save_to_file/enabled": true,
-"save_to_file/path": "uid://ciyjkuhm7o5w8"
+"save_to_file/path": "res://Assets/Meshes/BuildingBlocks/BasicSet/BBM_INNERCORNER.res"
 },
 "OuterCorner": {
 "generate/lightmap_uv": 0,

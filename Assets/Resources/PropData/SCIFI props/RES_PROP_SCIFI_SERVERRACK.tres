@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("3_ii0yf")
-_PropCategories = Array[int]([1])
+_PropCategories = Array[int]([4])
 _Name = &"server Alpha"
 _Scene = ExtResource("2_02ugi")
 _PreviewMesh = ExtResource("1_02ugi")

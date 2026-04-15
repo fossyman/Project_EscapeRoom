@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_xx1np"]
 [ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_o2wju"]
-[ext_resource type="ArrayMesh" uid="uid://bkj3o2dcrm1fi" path="res://Assets/Meshes/Props/Fantasy/DAVINCI CODE.res" id="3_5um7f"]
+[ext_resource type="ArrayMesh" uid="uid://blqdkqod1rlq1" path="res://Assets/Meshes/Props/Fantasy/DAVINCI CODE.res" id="3_5um7f"]
 
 [sub_resource type="Resource" id="Resource_3bsgd"]
 script = ExtResource("2_o2wju")

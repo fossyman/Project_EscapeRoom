@@ -21,7 +21,7 @@ SuccessRequirements = SubResource("Resource_3bsgd")
 MeshContainer = NodePath("Mesh")
 
 [node name="Mesh" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.217684, 0.00465307)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.517684, 0.00465307)
 
 [node name="cross" type="MeshInstance3D" parent="Mesh"]
 transform = Transform3D(-1.15695e-08, 0, 0.292062, 0, 0.062057, 0, -0.264678, 0, -1.27664e-08, 0, 0, 0)

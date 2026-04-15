@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_1whu6"]
 [ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_o4wfe"]
-[ext_resource type="ArrayMesh" uid="uid://cbfj3xi6exenu" path="res://Assets/Meshes/Props/Fantasy/Fantasy_Chest.res" id="3_1whu6"]
+[ext_resource type="ArrayMesh" uid="uid://0vkh6sgqgrqt" path="res://Assets/Meshes/Props/Fantasy/Fantasy_Chest.res" id="3_1whu6"]
 
 [sub_resource type="Resource" id="Resource_3bsgd"]
 script = ExtResource("2_o4wfe")

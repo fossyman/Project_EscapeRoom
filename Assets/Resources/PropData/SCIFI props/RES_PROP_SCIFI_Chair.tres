@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("1_8ab1c")
-_PropCategories = Array[int]([1])
+_PropCategories = Array[int]([4])
 _Name = &"Hover chair"
 _Scene = ExtResource("2_8vk77")
 _PreviewMesh = ExtResource("1_32tfd")

@@ -1,4 +1,4 @@
-class_name RT_MainMenu extends Node
+class_name RT_MainMenu extends RootManager
 var level = preload("res://Scenes/Roots/ROOT_Gameplay.tscn")
 
 
@@ -12,7 +12,7 @@ func _ready() -> void:
 
 
 func _on_play_pressed() -> void:
-	get_tree().change_scene_to_packed(level)
+	GLOBALS.ChangeRoot(GLOBALS.GAMEPLAYROOT_ROOT)
 	pass # Replace with function body.
 
 

@@ -13,7 +13,7 @@ Clumsy = 0
 metadata/_custom_type_script = "uid://b66mtekj02xc"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t0ler"]
-size = Vector3(1.06254, 0.458313, 0.863329)
+size = Vector3(0.890625, 0.332108, 0.814099)
 
 [node name="ScnPropScifiChair" type="Node3D" node_paths=PackedStringArray("MeshContainer")]
 script = ExtResource("1_fg8vr")
@@ -21,10 +21,10 @@ SuccessRequirements = SubResource("Resource_3bsgd")
 MeshContainer = NodePath("Mesh")
 
 [node name="Mesh" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.217684, 0.00465307)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.186, 0)
 
 [node name="cross" type="MeshInstance3D" parent="Mesh"]
-transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, 0, -0.192164, 0.853819)
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, 1.40496e-09, -0.192164, 0.885961)
 mesh = ExtResource("3_fg8vr")
 skeleton = NodePath("../..")
 
@@ -33,5 +33,5 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0293548, 0.161869, -0.0358871)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0293548, 0.15353, 0.00885766)
 shape = SubResource("BoxShape3D_t0ler")

@@ -59,8 +59,8 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		if Input.is_action_pressed("RClick"):
 			DragValue = (event.relative * Movespeed * 0.1)
-			TargetPosition += ( global_basis.x * -DragValue.x) * delta
-			TargetPosition += ( global_basis.z * -DragValue.y ) * delta
+			TargetPosition += ( global_basis.x * -DragValue.x * (Movespeed+CurrentScroll)) * delta
+			TargetPosition += ( global_basis.z * -DragValue.y * (Movespeed+CurrentScroll)) * delta
 			print(DragValue)
 		
 
@@ -76,13 +76,13 @@ func MoveCam():
 	
 	var local_mouse_pos = viewport.get_mouse_position()
 	if local_mouse_pos.x < threshold:
-		TargetPosition -= Camera.global_basis.x * Movespeed * delta
+		TargetPosition -= Camera.global_basis.x * Movespeed * (Movespeed+CurrentScroll) * delta
 	elif local_mouse_pos.x >= viewport_size.x - threshold:
-		TargetPosition += Camera.global_basis.x * Movespeed * delta
+		TargetPosition += Camera.global_basis.x * Movespeed * (Movespeed+CurrentScroll) * delta
 	if local_mouse_pos.y < threshold:
-		TargetPosition -= global_basis.z * Movespeed * delta
+		TargetPosition -= global_basis.z * Movespeed * (Movespeed+CurrentScroll) * delta
 	elif local_mouse_pos.y >= viewport_size.y - threshold:
-		TargetPosition += global_basis.z * Movespeed * delta
+		TargetPosition += global_basis.z * Movespeed * (Movespeed+CurrentScroll) * delta
 	
 	TargetPosition = TargetPosition.clamp(Vector3.ZERO,Vector3(100,1,100))
 	global_position = lerp(global_position, TargetPosition, LerpSpeed * delta)

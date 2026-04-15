@@ -18,8 +18,6 @@ var money:float = 0
 
 func _ready() -> void:
 	MAIN = get_tree().root.find_child("MAIN",true,false)
-	if !MAIN:
-		return
 	ROOT_CONTAINER = MAIN.get_child(0)
 	CURRENTROOT = ROOT_CONTAINER.get_child(0)
 	CONSTANT = MAIN.get_child(1)

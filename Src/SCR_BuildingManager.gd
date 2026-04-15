@@ -4,6 +4,7 @@ static var instance = self
 
 @export var Cursor:Node3D
 var CursorRotationTween:Tween
+var CursorMovementTween:Tween
 @export var CursorRotation:Vector3
 @export var CursorMesh:MeshInstance3D
 @export var OverlapTestingArea:Area3D
@@ -286,7 +287,8 @@ func FinalizeRoom():
 
 func MoveCursor(_movement:Vector3):
 	BuildingCursorPosition = _movement
-	Cursor.global_position = BuildingCursorPosition
+	#CursorMovementTween.tween_property(Cursor,"global_position",BuildingCursorPosition,0.1)
+	Cursor.global_position = lerp(Cursor.global_position,BuildingCursorPosition,15*GLOBALS.DELTA)
 	##print(Cursor.global_position)
 	pass
 

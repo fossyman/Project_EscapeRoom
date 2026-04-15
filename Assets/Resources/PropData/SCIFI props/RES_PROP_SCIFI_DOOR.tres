@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("3_aut3n")
-_PropCategories = Array[int]([1])
+_PropCategories = Array[int]([4])
 _Name = &"HoloDeck"
 _Scene = ExtResource("2_b4yv5")
 _PreviewMesh = ExtResource("1_b4yv5")

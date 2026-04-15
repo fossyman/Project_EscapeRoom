@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cuxr3wqbk3oue"]
+[gd_scene load_steps=9 format=3 uid="uid://cuxr3wqbk3oue"]
 
 [ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_78qdp"]
 [ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_xrg0c"]
@@ -13,7 +13,16 @@ Clumsy = 0
 metadata/_custom_type_script = "uid://b66mtekj02xc"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t0ler"]
-size = Vector3(1.06254, 1.0257, 0.480904)
+size = Vector3(1.06254, 0.099764, 0.271105)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_78qdp"]
+size = Vector3(0.107442, 1.00606, 0.271105)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xrg0c"]
+size = Vector3(1.02199, 0.107454, 0.271105)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_p8gja"]
+size = Vector3(1.02199, 1.01222, 0.0442439)
 
 [node name="ScnPropScifiChair" type="Node3D" node_paths=PackedStringArray("MeshContainer")]
 script = ExtResource("1_78qdp")
@@ -33,5 +42,21 @@ collision_layer = 2
 collision_mask = 0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0293548, 0.508366, -0.00742078)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0293548, 0.045398, 0.0519598)
 shape = SubResource("BoxShape3D_t0ler")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.448194, 0.498545, 0.0519598)
+shape = SubResource("BoxShape3D_78qdp")
+
+[node name="CollisionShape3D4" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.465769, 0.498545, 0.0519598)
+shape = SubResource("BoxShape3D_78qdp")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00908111, 0.967489, 0.0519598)
+shape = SubResource("BoxShape3D_xrg0c")
+
+[node name="CollisionShape3D5" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00908111, 0.515104, 0.16539)
+shape = SubResource("BoxShape3D_p8gja")

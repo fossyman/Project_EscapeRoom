@@ -3,7 +3,7 @@ class_name DEBUGTOOLS
 
 static var instance:DEBUGTOOLS
 
-var IsDebugVisible:bool = true
+var IsDebugVisible:bool = false
 
 var ViewPort:Viewport
 

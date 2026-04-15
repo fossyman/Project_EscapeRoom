@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_543qk"]
 [ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_sw4r4"]
-[ext_resource type="ArrayMesh" uid="uid://b8rc8gyeg5gfy" path="res://Assets/Meshes/Props/Fantasy/Throne_Fantasy.res" id="3_543qk"]
+[ext_resource type="ArrayMesh" uid="uid://c8jbkdmk3lx72" path="res://Assets/Meshes/Props/Fantasy/Throne_Fantasy.res" id="3_543qk"]
 
 [sub_resource type="Resource" id="Resource_3bsgd"]
 script = ExtResource("2_sw4r4")

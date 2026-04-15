@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("3_0vai3")
-_PropCategories = Array[int]([1])
+_PropCategories = Array[int]([4])
 _Name = &"server rack"
 _Scene = ExtResource("2_tpjgm")
 _PreviewMesh = ExtResource("1_56mov")
