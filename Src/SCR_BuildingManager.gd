@@ -33,7 +33,7 @@ var OverlappingBuildPoints:Array[Vector3] = []
 var PERMANENTPLACEMENTS:Array[Vector3] = []
 
 enum SELECTEDTOOL {FOUNDATION,PROP,PUZZLE,DOOR}
-var SelectedTool:SELECTEDTOOL = SELECTEDTOOL.FOUNDATION
+@export var SelectedTool:SELECTEDTOOL = SELECTEDTOOL.FOUNDATION
 
 var MinimumSizeReached:bool = false
 var DoorwayPlaced:bool = false
@@ -226,7 +226,21 @@ func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
 	FoundationPlaced.emit()
 	CanPlaceFoundations = true
 
+func openUIMenu(_menuID:int):
+	if _menuID == 0:
+		FoundationToolUI.visible = !FoundationToolUI.visible
+	elif _menuID == 1:
+		PropToolUI.visible = !PropToolUI.visible
+
 func ChangeSelectedTool(_tool:SELECTEDTOOL):
+	print(str(_tool) + " VS " + str(SelectedTool))
+	if SelectedTool == _tool:
+		match SelectedTool:
+			SELECTEDTOOL.PROP:
+				PropToolUI.visible = !PropToolUI.visible
+				pass
+		return
+		
 	SelectedTool = _tool
 	
 	match (SelectedTool):

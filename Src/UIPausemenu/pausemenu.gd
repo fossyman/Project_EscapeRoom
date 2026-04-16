@@ -31,4 +31,5 @@ func _on_settings_pressed() -> void:
 	pass
 
 func _on_quit_pressed() -> void:
+	resume()
 	GLOBALS.ChangeRoot(GLOBALS.MAINMENU_ROOT)
