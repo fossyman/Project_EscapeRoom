@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://dkti2r8n8faga"]
+
+[ext_resource type="ArrayMesh" uid="uid://bssrd0d78c5cl" path="res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_Lantern.res" id="1_tntl0"]
+[ext_resource type="PackedScene" uid="uid://2rv1uelmfyrn" path="res://Scenes/Props/PIRATE/SCN_PROP_PIRATE_LOCK.tscn" id="2_tntl0"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_u6esu"]
+
+[resource]
+script = ExtResource("3_u6esu")
+_PropCategories = Array[int]([1])
+_Name = &"Lantern"
+_Scene = ExtResource("2_tntl0")
+_PreviewMesh = ExtResource("1_tntl0")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"

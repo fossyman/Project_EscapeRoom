@@ -16,7 +16,7 @@ dest_files=["res://.godot/imported/cars_ speaker_ traffic light group maodels.gl
 nodes/root_type=""
 nodes/root_name=""
 nodes/apply_root_scale=true
-nodes/root_scale=1.0
+nodes/root_scale=2.0
 nodes/import_as_skeleton_bones=false
 nodes/use_node_type_suffixes=true
 meshes/ensure_tangents=true
@@ -32,6 +32,81 @@ animation/trimming=false
 animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
-_subresources={}
+_subresources={
+"meshes": {
+"cars_ speaker_ traffic light group maodels_Cube_001": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/TrafficLight.tres"
+},
+"cars_ speaker_ traffic light group maodels_Cube_005": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Vehicles/Truck_1.res"
+},
+"cars_ speaker_ traffic light group maodels_Cube_009": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Vehicles/Car_1.res"
+},
+"cars_ speaker_ traffic light group maodels_Cube_011": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Vehicles/Car_2.res"
+},
+"cars_ speaker_ traffic light group maodels_Cube_012": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Vehicles/Car_3.res"
+},
+"cars_ speaker_ traffic light group maodels_Cube_013": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Vehicles/Car_4.res"
+},
+"cars_ speaker_ traffic light group maodels_Cube_014": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Vehicles/Truck_2.res"
+},
+"cars_ speaker_ traffic light group maodels_Cube_015": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Vehicles/Truck_3.res"
+},
+"cars_ speaker_ traffic light group maodels_Cube_016": {
+"generate/lightmap_uv": 0,
+"generate/lods": 0,
+"generate/shadow_meshes": 0,
+"lods/normal_merge_angle": 60.0,
+"save_to_file/enabled": true,
+"save_to_file/path": "res://Assets/Meshes/Vehicles/Truck_4.res"
+}
+}
+}
 gltf/naming_version=1
 gltf/embedded_image_handling=1

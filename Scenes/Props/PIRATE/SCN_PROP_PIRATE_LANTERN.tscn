@@ -25,13 +25,21 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.269471, 0)
 
 [node name="lantern" type="MeshInstance3D" parent="Mesh"]
 transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, 0, -0.268661, 0)
+cast_shadow = 0
 mesh = ExtResource("3_1ujfg")
 skeleton = NodePath("../..")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="Area3D" type="Area3D" parent="Mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.269471, 0)
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mesh/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.243213, 0)
 shape = SubResource("BoxShape3D_t0ler")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.188933, -0.00832039)
+light_color = Color(0.933333, 1, 0, 1)
+omni_range = 1.33791
+omni_attenuation = -1.069

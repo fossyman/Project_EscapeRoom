@@ -22,11 +22,13 @@ func ChangeNPCSpawnAmount(_amount:int = 0):
 
 func SpawnNPC():
 	var SpawnPoint = GLOBALS.CURRENTROOT.NPCSpawnPoints.pick_random().global_position
+	var NPCs:Array[BasicAI]
 	for i in NPCSpawnCount:
 		var _spawn = NPCScene.instantiate()
 		GLOBALS.CURRENTROOT.add_child(_spawn)
 		_spawn.global_position = SpawnPoint
-	pass
+		NPCs.append(_spawn)
+	GameManager.instance.AssignNewNPCs(NPCs)
 
 func AssignNPCsToLatestRoom():
 	
@@ -34,11 +36,18 @@ func AssignNPCsToLatestRoom():
 
 
 func SendNPCToRoom() -> void:
-	var Npcs = GameManager.instance.ReturnNPCsByGroup()
+	var Npcs = GameManager.instance.ReturnNPCsByGroup(1)
+	print(Npcs.size())
 	if Npcs.is_empty():
 		return
-	
+	if BuildManager.instance.Rooms.is_empty():
+		return
+		
 	for i in Npcs:
 		i.CurrentRoom = BuildManager.instance.Rooms[0]
+		print(i.CurrentRoom)
 		i.AI_TICK()
+		
+	BuildManager.instance.Rooms[0].AssignedNPCs = Npcs
+	GameManager.instance.CreateNewRunTimer(0)
 	pass # Replace with function body.

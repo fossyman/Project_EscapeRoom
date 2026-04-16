@@ -33,6 +33,24 @@ animation/remove_immutable_tracks=true
 animation/import_rest_as_RESET=false
 import_script/path=""
 _subresources={
+"materials": {
+"Floor": {
+"use_external/enabled": true,
+"use_external/path": "uid://lul4gt1trlo4"
+},
+"InnerWall": {
+"use_external/enabled": true,
+"use_external/path": "uid://dx7nyrcpbgso4"
+},
+"OuterWall": {
+"use_external/enabled": true,
+"use_external/path": "uid://dx5yycjxc0mjy"
+},
+"Void": {
+"use_external/enabled": true,
+"use_external/path": "uid://bhgg3yu26x52u"
+}
+},
 "meshes": {
 "Floor": {
 "generate/lightmap_uv": 0,

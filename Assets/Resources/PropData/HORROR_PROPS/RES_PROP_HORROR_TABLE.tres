@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://b53f2kf66fyy3"]
+
+[ext_resource type="ArrayMesh" uid="uid://blqdkqod1rlq1" path="res://Assets/Meshes/Props/Fantasy/DAVINCI CODE.res" id="1_wwqxg"]
+[ext_resource type="PackedScene" uid="uid://b0xxfdmvjnopy" path="res://Scenes/Props/HORROR/SCN_PROP_HORROR_TABLE.tscn" id="2_wwqxg"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_2lpoq"]
+
+[resource]
+script = ExtResource("3_2lpoq")
+_PropCategories = Array[int]([3])
+_Name = &"Davinci Codex"
+_Scene = ExtResource("2_wwqxg")
+_PreviewMesh = ExtResource("1_wwqxg")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"

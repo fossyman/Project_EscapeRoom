@@ -24,5 +24,5 @@ func Increase_by_sec(delta_seconds: float) -> void:
 	mintues = mintues % 60
 	hours = hours % 24
 	
-	print_debug(str(days) + ":" + str(hours) + ":" + str(seconds))
+	#print_debug(str(days) + ":" + str(hours) + ":" + str(seconds))
 	pass

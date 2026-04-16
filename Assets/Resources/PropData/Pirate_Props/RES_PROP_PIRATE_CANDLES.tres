@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://bj5rtutdgp0om"]
+
+[ext_resource type="ArrayMesh" uid="uid://bssrd0d78c5cl" path="res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_Lantern.res" id="1_k0iwc"]
+[ext_resource type="PackedScene" uid="uid://wpvms34d2ptt" path="res://Scenes/Props/PIRATE/SCN_PROP_PIRATE_CANDLES.tscn" id="2_k0iwc"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_h1ihm"]
+
+[resource]
+script = ExtResource("3_h1ihm")
+_PropCategories = Array[int]([1])
+_Name = &"Candelabra"
+_Scene = ExtResource("2_k0iwc")
+_PreviewMesh = ExtResource("1_k0iwc")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"

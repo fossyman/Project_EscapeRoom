@@ -1,9 +1,14 @@
 extends Node3D
+class_name CursorManager
 
 @export var CrosshairNorthPin:Node3D
 @export var CrosshairSouthPin:Node3D
 @export var CrosshairEastPin:Node3D
 @export var CrosshairWestPin:Node3D
+
+@export var MeshParent:Node3D
+
+@export var PropPlacement:MeshInstance3D
 
 @export var CrosshairSpacing:float
 

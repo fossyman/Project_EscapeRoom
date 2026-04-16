@@ -1,0 +1,8 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://ip78xnco5iaw"]
+
+[ext_resource type="Texture2D" uid="uid://c0sqlgel03ldm" path="res://Assets/Textures/Prop Textures/Pirate Palette.png" id="1_or048"]
+
+[resource]
+albedo_texture = ExtResource("1_or048")
+texture_filter = 0
+texture_repeat = false

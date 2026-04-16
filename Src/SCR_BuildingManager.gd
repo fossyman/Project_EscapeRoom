@@ -2,7 +2,7 @@ extends Node
 class_name BuildManager
 static var instance = self
 
-@export var Cursor:Node3D
+@export var Cursor:CursorManager
 var CursorRotationTween:Tween
 var CursorMovementTween:Tween
 @export var CursorRotation:Vector3
@@ -32,14 +32,15 @@ var OverlappingBuildPoints:Array[Vector3] = []
 
 var PERMANENTPLACEMENTS:Array[Vector3] = []
 
-enum SELECTEDTOOL {FOUNDATION,PROP,PUZZLE}
+enum SELECTEDTOOL {FOUNDATION,PROP,PUZZLE,DOOR}
 var SelectedTool:SELECTEDTOOL = SELECTEDTOOL.FOUNDATION
 
 var MinimumSizeReached:bool = false
 var DoorwayPlaced:bool = false
 
 @export var BuildRequirementsTab:Control
-@export var BuildRequirementsLabel:RichTextLabel
+@export var BuildRequirementsSizeLabel:RichTextLabel
+@export var BuildRequirementsDoorLabel:RichTextLabel
 @export var BuildRequirementsText:String
 @export var FinalizeRoomButton:Button
 
@@ -47,6 +48,7 @@ var SquaresNeedingRebuilding:Array[Vector3]
 var SquaresNeedingRebuildingIDX:Array[int]
 
 var Rooms:Array[RoomResource]
+var RoomScenes:Array[RoomScene]
 
 var CurrentRoom:RoomResource = RoomResource.new()
 var CurrentRoomScene:RoomScene
@@ -65,6 +67,7 @@ var CanPlaceFoundations:bool = true
 @export var PropEditorMenu:PropEditMenuManager
 
 signal FoundationPlaced
+signal DoorPlaced
 
 func _enter_tree() -> void:
 	instance = self
@@ -96,22 +99,31 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 	if Input.is_action_just_pressed("Lclick"):
 		ClickPos = mouse_position(true)
+			
 		match(SelectedTool):
-			SELECTEDTOOL.FOUNDATION:
+			SELECTEDTOOL.DOOR:
+				PlaceDoor(ClickPos)
 				pass
 			SELECTEDTOOL.PROP:
 				if PlacingProp:
 					PlaceProp(mouse_position(true))
 					print("Test1")
+					return
 				else:
 					print("Test2")
 					CurrentlyEditedProp = CastToPropLayer()
 					print(CurrentlyEditedProp)
 
-					if CurrentlyEditedProp:
+					if CurrentlyEditedProp is PropScene:
 						SetupPropEditMenu(CurrentlyEditedProp)
+						return
+						
+		var TestClick = CastToWorld()
+		if TestClick is ExclamationManager:
+			TestClick.Use()
+		
 	if Input.is_action_pressed("Lclick"):
-
+	
 		var MousePos = mouse_position(true)
 		if MousePos.distance_to(ClickPos) > DragDeadzone:
 			match(SelectedTool):
@@ -150,6 +162,8 @@ func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
 	
 	if StartCorner.distance_to(EndCorner) < 2.0:
 		return
+	
+	print("DISTANCE CHECK")
 		
 	if (StartCorner.x < 0 or StartCorner.x > 100) or ( StartCorner.z < 0 or StartCorner.z > 100):
 		printerr("PAST START AREA")
@@ -158,8 +172,6 @@ func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
 	if (EndCorner.x < 0 or EndCorner.x > 100) or ( EndCorner.z < 0 or EndCorner.z > 100):
 		printerr("PAST END AREA")
 		return
-	
-	CanPlaceFoundations = false
 		
 	for d in Labels.size():
 		Labels[d].queue_free()
@@ -167,7 +179,9 @@ func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
 	
 	if DragEnd == DragStart:
 		return
-		
+	
+	CanPlaceFoundations = false
+	
 	var NewPoints:Array[Vector3]
 	var Borders:Array[Vector3]
 	var _border:int = 1
@@ -204,22 +218,26 @@ func BuildSelectedSection(_layer:int,StartCorner:Vector3,EndCorner:Vector3):
 	
 	RebuildGridSquares.call_deferred()
 	
+	if StartCorner.distance_to(EndCorner) > 6.0 || BuildingPoints.size() > 24:
+		BuildRequirementsSizeLabel.text = "[color=green]Minimum space: 3x3"
+		MinimumSizeReached = true
+	
 	OverlappingBuildPoints.clear()
 	FoundationPlaced.emit()
 	CanPlaceFoundations = true
 
 func ChangeSelectedTool(_tool:SELECTEDTOOL):
 	SelectedTool = _tool
-	if FoundationToolUI:
-		FoundationToolUI.visible = false
-	PropToolUI.visible = false
+	
 	match (SelectedTool):
 		SELECTEDTOOL.FOUNDATION:
 			if FoundationToolUI:
 				FoundationToolUI.visible = true
+				PropToolUI.visible = false
 			pass
 		SELECTEDTOOL.PROP:
 			PropToolUI.visible = true
+			FoundationToolUI.visible = false
 			pass
 		SELECTEDTOOL.PUZZLE:
 			pass
@@ -255,7 +273,24 @@ func CastToPropLayer() -> PropScene:
 	var result = space_state.intersect_ray(State)
 	print(result)
 	if result:
-		return (result.values()[4] as Area3D).get_parent()
+		return (result.values()[4] as Area3D).owner
+	return null
+	pass
+	
+func CastToWorld() -> Node:
+	var Cam = CameraController.instance.Camera
+	var mouse_position:Vector2 = Cam.get_viewport().get_mouse_position()
+	var from:Vector3 = Cam.global_position
+	var to:Vector3 = Cam.project_position(mouse_position,5000)
+	var State = PhysicsRayQueryParameters3D.create(from,to)
+	State.collide_with_areas = true
+	var space_state = get_tree().root.world_3d.direct_space_state
+	var result = space_state.intersect_ray(State)
+	print(result)
+	if result:
+		if result.values()[4]:
+			print(result.values()[4])
+			return (result.values()[4]).get_parent()
 	return null
 	pass
 
@@ -264,11 +299,13 @@ func CreateNewRoom():
 	var NewRoom:RoomScene = RoomScene.new()
 	CurrentRoomScene = NewRoom
 	RoomParent.add_child(NewRoom,true)
+	MinimumSizeReached = false
+	DoorwayPlaced = false
 	pass
 	
 func FinalizeRoom():
 	CurrentRoom.RoomSquares.append_array(BuildingPoints)
-	CurrentRoom.RoomArea = AABB(CurrentRoom.RoomSquares[0],CurrentRoom.RoomSquares[CurrentRoom.RoomSquares.size()-1])
+	CurrentRoom.RoomArea = AABB(CurrentRoom.RoomSquares[0],CurrentRoom.RoomSquares[CurrentRoom.RoomSquares.size()-1],)
 	
 	var average = Vector3.ZERO
 	for i in CurrentRoom.RoomSquares.size():
@@ -276,7 +313,9 @@ func FinalizeRoom():
 	average /= CurrentRoom.RoomSquares.size()
 	
 	Rooms.append(CurrentRoom)
+	RoomScenes.append(CurrentRoomScene)
 	CurrentRoom = null
+	CurrentRoomScene = null
 	
 	var ye = CollisionShape3D.new()
 	add_child(ye)
@@ -284,6 +323,8 @@ func FinalizeRoom():
 	OccupiedGridSquares.append_array(BuildingPoints)
 	PERMANENTPLACEMENTS.append_array(OccupiedGridSquares)
 	BuildingPoints.clear()
+	BuildingGridmap.NavRegion.bake_navigation_mesh()
+
 
 func MoveCursor(_movement:Vector3):
 	BuildingCursorPosition = _movement
@@ -450,13 +491,15 @@ func RebuildGridSquares(_erasing:bool = false):
 					BuildingGridmap.set_cell_item(1,SquaresNeedingRebuilding[i],-1,0)
 					pass
 					
-	#BuildingGridmap.NavRegion.bake_navigation_mesh()
 	SquaresNeedingRebuilding.clear()
 	SquaresNeedingRebuildingIDX.clear()
 
 func PlaceProp(_location:Vector3):
 	if !PlacingProp:
 		return
+	if !IsPositionInsideBuildZone(_location):
+		return
+		
 	print("Placing Prop")
 	var placement = PlacingProp._Scene.instantiate() as PropScene
 	placement.Create(PlacingProp)
@@ -465,7 +508,6 @@ func PlaceProp(_location:Vector3):
 	placement.rotation_degrees.y = CursorRotation.y
 	CurrentRoom.PlacedProps.append(placement)
 	PlacingProp = null
-	CursorMesh.rotation_degrees.y = 0
 	ResetCursorMesh()
 	pass
 
@@ -473,30 +515,51 @@ func SetPlacingProp(_data:RES_PropData):
 	ResetCursorMesh()
 	PlacingProp = _data
 	var PlacementExample = _data._Scene.instantiate()
-	CursorMesh.add_child(PlacementExample)
+	Cursor.PropPlacement.add_child(PlacementExample)
 	pass
 
 func RotateCursor(_amount):
 	CursorRotation.y += _amount
-	if CursorRotation.y == 360:
-		CursorRotation.y = 0
-		CursorMesh.rotation_degrees.y = -90
-	CursorRotation.y = wrap(CursorRotation.y,-450,360)
+	CursorRotation.y = wrap(CursorRotation.y,0,360)
+	if CursorRotation.y == -90:
+		Cursor.rotation_degrees.y = 0
 	if CursorRotationTween:
 		CursorRotationTween.kill()
 	CursorRotationTween = create_tween()
 	
-	CursorRotationTween.tween_property(CursorMesh,"rotation_degrees:y",CursorRotation.y,0.1)
+	CursorRotationTween.tween_property(Cursor,"rotation_degrees:y",CursorRotation.y,0.1)
 
 func ResetCursorMesh():
-	CursorMesh.rotation_degrees.y = 0
+	for i in Cursor.PropPlacement.get_children():
+		i.queue_free()
+		
+	Cursor.rotation_degrees.y = 0
 	CursorRotation.y = 0
-	for i in CursorMesh.get_child_count():
-		CursorMesh.get_child(i).queue_free()
-	
+	Cursor.MeshParent.visible = false if PlacingProp else true
+	print(Cursor)
 
 func SetupPropEditMenu(_prop:PropScene):
 	PropEditorMenu.visible = true
 	PropEditorMenu.SelectedProp = _prop
 	PropEditorMenu.InitializeMenu(PropEditorMenu.SelectedProp)
 	pass
+
+
+func PlaceDoor(_position:Vector3):
+	var AVG = BuildingHelpers.GetAverageWallRotationIndex(_position,true)
+	BuildingGridmap.set_cell_item(1,_position,4,AVG)
+	DoorPlaced.emit()
+	DoorwayPlaced = true
+	if BuildRequirementsDoorLabel:
+		BuildRequirementsDoorLabel.text = "[color=green]Doorway placed"
+	pass
+
+func IsPositionInsideBuildZone(_position:Vector3):
+	if (_position.x < 0 or _position.x > 100) or ( _position.z < 0 or _position.z > 100):
+		printerr("PAST START AREA")
+		return false
+		
+	if (_position.x < 0 or _position.x > 100) or ( _position.z < 0 or _position.z > 100):
+		printerr("PAST END AREA")
+		return false
+	return true

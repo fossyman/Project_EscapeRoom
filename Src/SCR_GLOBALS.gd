@@ -28,6 +28,6 @@ func _process(delta: float) -> void:
 func ChangeRoot(_newRootPath:String):
 	CURRENTROOT.queue_free()
 	var instancedRoot = (ResourceLoader.load(_newRootPath) as PackedScene).instantiate()
-	add_child(instancedRoot)
+	ROOT_CONTAINER.add_child(instancedRoot)
 	CURRENTROOT = instancedRoot
 	pass

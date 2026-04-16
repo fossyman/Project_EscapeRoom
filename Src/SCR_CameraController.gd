@@ -47,7 +47,7 @@ func _process(_delta: float) -> void:
 	if get_window().has_focus():
 		MoveCam()
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 			CurrentScroll += -0.1

@@ -1,0 +1,25 @@
+[gd_resource type="StandardMaterial3D" load_steps=4 format=3 uid="uid://dx7nyrcpbgso4"]
+
+[sub_resource type="Gradient" id="Gradient_3jymr"]
+offsets = PackedFloat32Array(0.27897, 0.472103, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0.44291, 0.442911, 0.442911, 1, 0.695503, 0.695503, 0.695503, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_xnr7c"]
+noise_type = 0
+frequency = 0.0169
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_48wh6"]
+width = 16
+height = 20
+in_3d_space = true
+seamless = true
+seamless_blend_skirt = 0.518
+color_ramp = SubResource("Gradient_3jymr")
+noise = SubResource("FastNoiseLite_xnr7c")
+
+[resource]
+resource_name = "Floor"
+cull_mode = 2
+albedo_color = Color(1, 0.904667, 0.56, 1)
+albedo_texture = SubResource("NoiseTexture2D_48wh6")
+uv1_triplanar = true

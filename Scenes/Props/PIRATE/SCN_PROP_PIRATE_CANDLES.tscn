@@ -1,0 +1,162 @@
+[gd_scene load_steps=9 format=3 uid="uid://wpvms34d2ptt"]
+
+[ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_w3vqk"]
+[ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_hsffw"]
+[ext_resource type="ArrayMesh" uid="uid://cc8scc3dmit4b" path="res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_CANDLES.res" id="3_w3vqk"]
+[ext_resource type="Texture2D" uid="uid://b7bn0wv06jf50" path="res://Assets/Textures/Crosshair_Pin.png" id="4_hsffw"]
+
+[sub_resource type="Resource" id="Resource_3bsgd"]
+script = ExtResource("2_hsffw")
+Intelligence = 0
+Perception = 0
+ProblemSolving = 0
+Clumsy = 0
+metadata/_custom_type_script = "uid://b66mtekj02xc"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hsffw"]
+transparency = 1
+disable_ambient_light = true
+disable_fog = true
+albedo_color = Color(0, 0, 0, 1)
+albedo_texture = ExtResource("4_hsffw")
+emission_enabled = true
+emission = Color(1, 0.3, 0, 1)
+emission_energy_multiplier = 100.0
+emission_operator = 1
+emission_texture = ExtResource("4_hsffw")
+disable_receive_shadows = true
+billboard_mode = 2
+
+[sub_resource type="QuadMesh" id="QuadMesh_5t6de"]
+material = SubResource("StandardMaterial3D_hsffw")
+size = Vector2(0.02, 0.05)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_t0ler"]
+size = Vector3(1.06387, 1.45208, 1.09766)
+
+[node name="ScnPropPirateLantern" type="Node3D" node_paths=PackedStringArray("MeshContainer")]
+script = ExtResource("1_w3vqk")
+SuccessRequirements = SubResource("Resource_3bsgd")
+MeshContainer = NodePath("Mesh")
+
+[node name="Mesh" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.649682, 0)
+
+[node name="lantern" type="MeshInstance3D" parent="Mesh"]
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, 0, -0.648322, 0)
+mesh = ExtResource("3_w3vqk")
+skeleton = NodePath("../..")
+
+[node name="Lights" type="Node3D" parent="Mesh"]
+
+[node name="Sprite3D" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.502196, 0.759981, 0)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D2" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.497094, 0.759981, 0)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D3" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(0.660539, 0, 0.750792, 0, 1, 0, -0.750792, 0, 0.660539, -0.332586, 0.759981, 0.37513)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D4" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(0.660539, 0, 0.750792, 0, 1, 0, -0.750792, 0, 0.660539, 0.327484, 0.759981, -0.37513)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D5" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(-0.00280994, 0, 0.999996, 0, 1, 0, -0.999996, 0, -0.00280994, -0.0011469, 0.759981, 0.499643)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D9" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(-0.00280994, 0, 0.999996, 0, 1, 0, -0.999996, 0, -0.00280994, -0.0011469, 0.607133, 0.287421)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D10" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(-0.00280994, 0, 0.999996, 0, 1, 0, -0.999996, 0, -0.00280994, -0.0011469, 0.607133, -0.288946)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D11" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(-0.725062, 0, 0.688684, 0, 1, 0, -0.688684, 0, -0.725062, 0.207246, 0.607133, 0.198291)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D12" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(-0.725062, 0, 0.688684, 0, 1, 0, -0.688684, 0, -0.725062, -0.209539, 0.607133, -0.199816)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D13" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(-0.999999, 0, 0.00109962, 0, 1, 0, -0.00109962, 0, -0.999999, 0.287035, 0.607133, 0.00036402)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D14" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(-0.999999, 0, 0.00109962, 0, 1, 0, -0.00109962, 0, -0.999999, -0.289328, 0.607133, -0.00188936)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D15" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(-0.734595, 0, -0.678506, 0, 1, 0, 0.678506, 0, -0.734595, 0.2111, 0.607133, -0.195701)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D16" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(-0.734595, 0, -0.678506, 0, 1, 0, 0.678506, 0, -0.734595, -0.213394, 0.607133, 0.194176)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D6" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(-0.00280994, 0, 0.999996, 0, 1, 0, -0.999996, 0, -0.00280994, -0.00395484, 0.759981, -0.499643)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D7" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(-0.709743, 0, 0.704461, 0, 1, 0, -0.704461, 0, -0.709743, 0.352069, 0.759981, 0.351981)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Sprite3D8" type="MeshInstance3D" parent="Mesh/Lights"]
+transform = Transform3D(-0.709743, 0, 0.704461, 0, 1, 0, -0.704461, 0, -0.709743, -0.357171, 0.759981, -0.351981)
+cast_shadow = 0
+mesh = SubResource("QuadMesh_5t6de")
+skeleton = NodePath("../..")
+
+[node name="Area3D" type="Area3D" parent="Mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.649682, 0)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mesh/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0256836, 0.726038, 0)
+shape = SubResource("BoxShape3D_t0ler")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.32326, 0)
+light_color = Color(1, 0.608, 0.02, 1)
+light_energy = 2.839
+shadow_enabled = true
+omni_attenuation = 2.155

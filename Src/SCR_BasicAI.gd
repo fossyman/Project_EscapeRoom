@@ -11,7 +11,8 @@ class_name BasicAI
 
 @export var TargetProp:PropScene
 
-@export var CurrentRoom:RoomScene
+@export var CurrentRoom:RoomResource
+@export var CurrentScene:RoomScene
 
 @export var ReactionSpeechBubble:Sprite3D
 @export var ReactionLabel:Label3D
@@ -31,7 +32,7 @@ var GroupID:int = -1
 signal FoundClue
 signal UsedClue
 
-enum CHARACTERSTATE{SEARCHING,INVESTIGATING}
+enum CHARACTERSTATE{SEARCHING,INVESTIGATING,LEAVING}
 var CharacterState:CHARACTERSTATE = CHARACTERSTATE.SEARCHING
 
 @export var HeldClue:Resource #THIS WILL BE FOR FIGURING OUT WHAT CLUE IS HELD
@@ -68,6 +69,7 @@ func _physics_process(delta: float) -> void:
 
 func SetTarget(_target:Vector3):
 	Nav.target_position = _target
+	
 	WanderingEyes = false
 	LookAtPoint.global_position = _target
 
@@ -79,16 +81,21 @@ func _VelocityComputed(_velocity:Vector3):
 	pass
 
 func _TargetReached():
+	if CharacterState == CHARACTERSTATE.LEAVING:
+		LeaveMap()
 	if TargetProp:
-		InvestigateProp(BuildManager.instance.CurrentRoomScene.PropContainer.get_child(0))
+		InvestigateProp(CurrentRoom.PlacedProps[0])
 	WanderingEyes = true
 	pass
 
 func AI_TICK():
+	if CharacterState == CHARACTERSTATE.LEAVING:
+		return
+		
 	if WanderingEyes:
 		LookAtPoint.position = -transform.basis.z + Vector3.UP + Vector3(randf_range(-15,15),randf_range(-15,15),randf_range(-5,5))
-	if !CurrentRoom:
-		pass
+	if CurrentRoom:
+		ScanforProps()
 	pass
 	
 func InvestigateProp(_prop:PropScene):
@@ -96,9 +103,9 @@ func InvestigateProp(_prop:PropScene):
 	pass
 
 func ScanforProps():
-	var NextSearchID = randi_range(0,CurrentRoom.PropContainer.get_child_count() -1 )
-
-	SetTarget(CurrentRoom.PropContainer.get_child(NextSearchID).global_position)
+	var NextSearchID = randi_range(0,CurrentRoom.PlacedProps.size()-1)
+	TargetProp = CurrentRoom.PlacedProps[NextSearchID]
+	SetTarget(CurrentRoom.PlacedProps[NextSearchID].global_position)
 	print("PROP FOUND")
 	pass
 	
@@ -115,3 +122,7 @@ func GenerateDesign(_head:int = -1, _body = -1):
 	HeadRoot.mesh = _RandomHead
 	BodyRoot.mesh = _RandomBody
 	pass
+
+func LeaveMap():
+	GameManager.instance.CurrentNPCs.erase(self)
+	queue_free()

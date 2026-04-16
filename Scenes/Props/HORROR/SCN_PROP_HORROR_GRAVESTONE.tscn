@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://bj2yfaf2wgkyf"]
+
+[ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_o8hvv"]
+[ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_h2e7p"]
+[ext_resource type="ArrayMesh" uid="uid://brljxp5yeo3gc" path="res://Assets/Meshes/Props/Horror/PROPMESH_HORROR_GRAVESTONE.res" id="3_o8hvv"]
+
+[sub_resource type="Resource" id="Resource_3bsgd"]
+script = ExtResource("2_h2e7p")
+Intelligence = 0
+Perception = 0
+ProblemSolving = 0
+Clumsy = 0
+metadata/_custom_type_script = "uid://b66mtekj02xc"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_t0ler"]
+size = Vector3(0.570313, 0.606983, 0.585938)
+
+[node name="ScnPropPirateLantern" type="Node3D" node_paths=PackedStringArray("MeshContainer")]
+script = ExtResource("1_o8hvv")
+SuccessRequirements = SubResource("Resource_3bsgd")
+MeshContainer = NodePath("Mesh")
+
+[node name="Mesh" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.340921, 0)
+
+[node name="lantern" type="MeshInstance3D" parent="Mesh"]
+transform = Transform3D(-3.49691e-09, 0, 0.08, 0, 0.08, 0, -0.08, 0, -3.49691e-09, 0, -0.268661, 0.195841)
+mesh = ExtResource("3_o8hvv")
+skeleton = NodePath("../..")
+
+[node name="Area3D" type="Area3D" parent="Mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.340921, 0)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mesh/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.303491, 0)
+shape = SubResource("BoxShape3D_t0ler")

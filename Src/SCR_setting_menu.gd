@@ -1,4 +1,4 @@
-class_name Setting extends VBoxContainer
+class_name Setting extends Control
 
 func _on_full_screen_toggled(toggled_on: bool) -> void:
 	if toggled_on:

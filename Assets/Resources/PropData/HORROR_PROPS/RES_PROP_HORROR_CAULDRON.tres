@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=3 format=3 uid="uid://ctqyxuip5wudy"]
+
+[ext_resource type="PackedScene" uid="uid://p62anfrn4wj6" path="res://Scenes/Props/HORROR/SCN_PROP_HORROR_CAULDRON.tscn" id="1_0khw0"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_0dydc"]
+
+[resource]
+script = ExtResource("3_0dydc")
+_PropCategories = Array[int]([3])
+_Name = &"Davinci Codex"
+_Scene = ExtResource("1_0khw0")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"

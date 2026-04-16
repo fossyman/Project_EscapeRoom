@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://bfo8tq5n1dvic"]
+
+[ext_resource type="ArrayMesh" uid="uid://bssrd0d78c5cl" path="res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_Lantern.res" id="1_cxri3"]
+[ext_resource type="PackedScene" uid="uid://c4u835onb1l6s" path="res://Scenes/Props/PIRATE/SCN_PROP_PIRATE_BOTTLE5.tscn" id="2_cxri3"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_5of0k"]
+
+[resource]
+script = ExtResource("3_5of0k")
+_PropCategories = Array[int]([1])
+_Name = &"Bottle(5)"
+_Scene = ExtResource("2_cxri3")
+_PreviewMesh = ExtResource("1_cxri3")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"

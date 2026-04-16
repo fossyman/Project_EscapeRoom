@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://cju6s6opstxow"]
+
+[ext_resource type="ArrayMesh" uid="uid://bssrd0d78c5cl" path="res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_Lantern.res" id="1_eqsnk"]
+[ext_resource type="PackedScene" uid="uid://b8uaj5aku6bhp" path="res://Scenes/Props/PIRATE/SCN_PROP_PIRATE_CANNON.tscn" id="2_eqsnk"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_wggj6"]
+
+[resource]
+script = ExtResource("3_wggj6")
+_PropCategories = Array[int]([1])
+_Name = &"Cannon"
+_Scene = ExtResource("2_eqsnk")
+_PreviewMesh = ExtResource("1_eqsnk")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"

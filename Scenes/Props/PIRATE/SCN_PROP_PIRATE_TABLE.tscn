@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=3 uid="uid://covpkkici7j8b"]
+
+[ext_resource type="Script" uid="uid://cfkl4a0ov4wqr" path="res://Src/SCR_PropScene.gd" id="1_4xau8"]
+[ext_resource type="Script" uid="uid://b66mtekj02xc" path="res://Src/Resource Scripts/SCR_StatsResource.gd" id="2_r0ttg"]
+[ext_resource type="ArrayMesh" uid="uid://bkpt1phmkgn6p" path="res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_TABLE.res" id="3_4xau8"]
+
+[sub_resource type="Resource" id="Resource_3bsgd"]
+script = ExtResource("2_r0ttg")
+Intelligence = 0
+Perception = 0
+ProblemSolving = 0
+Clumsy = 0
+metadata/_custom_type_script = "uid://b66mtekj02xc"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_t0ler"]
+size = Vector3(0.900391, 0.689502, 1.20996)
+
+[node name="ScnPropPirateLantern" type="Node3D" node_paths=PackedStringArray("MeshContainer")]
+script = ExtResource("1_4xau8")
+SuccessRequirements = SubResource("Resource_3bsgd")
+MeshContainer = NodePath("Mesh")
+
+[node name="Mesh" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.272505, 0)
+
+[node name="lantern" type="MeshInstance3D" parent="Mesh"]
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.5, 0, -0.5, 0, -2.18557e-08, 0, -0.270394, 0)
+mesh = ExtResource("3_4xau8")
+skeleton = NodePath("../..")
+
+[node name="Area3D" type="Area3D" parent="Mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.272505, 0)
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mesh/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.344751, 0)
+shape = SubResource("BoxShape3D_t0ler")

@@ -28,10 +28,11 @@ transform = Transform3D(-1.15695e-08, 0, 0.292062, 0, 0.062057, 0, -0.264678, 0,
 mesh = ExtResource("3_onw7g")
 skeleton = NodePath("../..")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="Area3D" type="Area3D" parent="Mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.517684, -0.00465307)
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mesh/Area3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0293548, 0.0957908, -0.0358871)
 shape = SubResource("BoxShape3D_t0ler")

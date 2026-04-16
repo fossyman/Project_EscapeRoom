@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="RES_PropData" load_steps=4 format=3 uid="uid://c2igv7qieqexv"]
+
+[ext_resource type="ArrayMesh" uid="uid://bssrd0d78c5cl" path="res://Assets/Meshes/Props/Pirate/PROPMESH_PIRATE_Lantern.res" id="1_txjqn"]
+[ext_resource type="PackedScene" uid="uid://dexhcab3rbw67" path="res://Scenes/Props/PIRATE/SCN_PROP_PIRATE_WHEEL.tscn" id="2_txjqn"]
+[ext_resource type="Script" uid="uid://bhddxqstwwe1t" path="res://Src/Resource Scripts/SCR_PropResource.gd" id="3_3r6a8"]
+
+[resource]
+script = ExtResource("3_3r6a8")
+_PropCategories = Array[int]([1])
+_Name = &"ShipWheel"
+_Scene = ExtResource("2_txjqn")
+_PreviewMesh = ExtResource("1_txjqn")
+metadata/_custom_type_script = "uid://bhddxqstwwe1t"

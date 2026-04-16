@@ -13,7 +13,7 @@ Clumsy = 0
 metadata/_custom_type_script = "uid://b66mtekj02xc"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_t0ler"]
-size = Vector3(2.58996, 0.926282, 1.18701)
+size = Vector3(2.03418, 0.722566, 0.910034)
 
 [node name="ScnPropFantasyDavinci" type="Node3D" node_paths=PackedStringArray("MeshContainer")]
 script = ExtResource("1_5owb1")
@@ -21,16 +21,18 @@ SuccessRequirements = SubResource("Resource_3bsgd")
 MeshContainer = NodePath("Mesh")
 
 [node name="Mesh" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.392407, 0)
 
 [node name="Cross" type="MeshInstance3D" parent="Mesh"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 1.13201, 0.917986, -0.3)
+transform = Transform3D(0.39, 0, 0, 0, 0.39, 0, 0, 0, 0.39, 0.870405, 0.318475, -0.258776)
 mesh = ExtResource("3_5owb1")
 skeleton = NodePath("../..")
 
-[node name="Area3D" type="Area3D" parent="."]
+[node name="Area3D" type="Area3D" parent="Mesh"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.392407, 0)
 collision_layer = 2
 collision_mask = 0
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0135117, 0.453449, 0.0258525)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mesh/Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0135117, 0.351591, -0.0064351)
 shape = SubResource("BoxShape3D_t0ler")

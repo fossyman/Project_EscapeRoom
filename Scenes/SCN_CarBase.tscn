@@ -1,0 +1,37 @@
+[gd_scene load_steps=11 format=3 uid="uid://d3my8sgbxfsd6"]
+
+[ext_resource type="ArrayMesh" uid="uid://crvbp11mlc6wk" path="res://Assets/Meshes/Vehicles/Truck_1.res" id="1_nd7wy"]
+[ext_resource type="Script" uid="uid://b55tblfhgkysh" path="res://Src/SCR_CarManager.gd" id="2_td5dp"]
+[ext_resource type="ArrayMesh" uid="uid://bwltk7npihl0n" path="res://Assets/Meshes/Vehicles/Car_1.res" id="3_ilx2y"]
+[ext_resource type="ArrayMesh" uid="uid://utujcjthl1om" path="res://Assets/Meshes/Vehicles/Car_2.res" id="4_knxqx"]
+[ext_resource type="ArrayMesh" uid="uid://da4soby5hau1n" path="res://Assets/Meshes/Vehicles/Car_3.res" id="5_uthwq"]
+[ext_resource type="ArrayMesh" uid="uid://bv6h18nkcij5f" path="res://Assets/Meshes/Vehicles/Car_4.res" id="6_4ixtg"]
+[ext_resource type="ArrayMesh" uid="uid://lw1i6ru6gb2m" path="res://Assets/Meshes/Vehicles/Truck_2.res" id="7_g4gb7"]
+[ext_resource type="ArrayMesh" uid="uid://bdaso3y7hiw1n" path="res://Assets/Meshes/Vehicles/Truck_3.res" id="8_xw1yq"]
+[ext_resource type="ArrayMesh" uid="uid://kegnt7fxy6h0" path="res://Assets/Meshes/Vehicles/Truck_4.res" id="9_xvdop"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ilx2y"]
+size = Vector3(4.15405, 4.29028, 9.26996)
+
+[node name="CAR" type="MeshInstance3D"]
+mesh = ExtResource("1_nd7wy")
+script = ExtResource("2_td5dp")
+CarMeshes = Array[Mesh]([ExtResource("3_ilx2y"), ExtResource("4_knxqx"), ExtResource("5_uthwq"), ExtResource("6_4ixtg"), ExtResource("1_nd7wy"), ExtResource("7_g4gb7"), ExtResource("8_xw1yq"), ExtResource("9_xvdop")])
+
+[node name="SpotLight3D" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.99573, 0.0923189, 0, -0.0923189, -0.99573, 0.996084, -0.398814, 4.58823)
+shadow_enabled = true
+spot_range = 26.977
+spot_attenuation = -0.66
+
+[node name="SpotLight3D2" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.99573, 0.0923189, 0, -0.0923189, -0.99573, -1.04229, -0.398814, 4.58823)
+shadow_enabled = true
+spot_range = 26.977
+spot_attenuation = -0.66
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.277222, 0.181305)
+shape = SubResource("BoxShape3D_ilx2y")
